@@ -1,14 +1,14 @@
 import 'package:equatable/equatable.dart';
 
 class AirPollutionEntity extends Equatable {
-  final double co;
-  final double nh3;
-  final double no;
-  final double no2;
-  final double o3;
-  final double pm2_5;
-  final double pm10;
-  final double so2;
+  final dynamic co;
+  final dynamic nh3;
+  final dynamic no;
+  final dynamic no2;
+  final dynamic o3;
+  final dynamic pm2_5;
+  final dynamic pm10;
+  final dynamic so2;
 
   const AirPollutionEntity({
     required this.co,
@@ -20,6 +20,19 @@ class AirPollutionEntity extends Equatable {
     required this.pm10,
     required this.so2,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'co': co,
+      'nh3': nh3,
+      'no': no,
+      'no2': no2,
+      'o3': o3,
+      'pm2_5': pm2_5,
+      'pm10': pm10,
+      'so2': so2,
+    };
+  }
 
   @override
   List<Object> get props {

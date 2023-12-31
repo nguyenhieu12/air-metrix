@@ -16,9 +16,14 @@ class AirPollutionPage extends StatefulWidget {
   State<AirPollutionPage> createState() => _AirPollutionPageState();
 }
 
-class _AirPollutionPageState extends State<AirPollutionPage> {
+class _AirPollutionPageState extends State<AirPollutionPage> with AutomaticKeepAliveClientMixin {
   late AirPollutionCubit airPollutionCubit;
+  late double currentLat;
+  late double currentLong;
   UserLocation userLocation = UserLocation();
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -29,7 +34,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
 
   Future<void> initializeAirPollution() async {
     airPollutionCubit = AirPollutionCubit(
-      getCurrentAirPollution: GetCurrentAirPollution(
+      getCurrentAirPollution: GetAirPollutionInformation(
         airPollutionRepository: AirPollutionRepositoryImpl(
           remoteDataSource: AirPollutionRemoteDataSourceImpl(Dio()),
         ),
@@ -39,6 +44,9 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
     if (await userLocation.isAccepted()) {
       Position currentPosition = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
+      
+      currentLat = currentPosition.latitude;
+      currentLong = currentPosition.longitude;
 
       print(
           'Latitude: ${currentPosition.latitude} and Longitude: ${currentPosition.longitude}');
@@ -66,9 +74,15 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
                 child: Center(
                   child: Wrap(
                     children: [
+                      Text('Latitude: $currentLat and Longitude $currentLong',
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 30
+                        ),
+                      ),
                       Text(
-                        state.airPollutionEntity.toString(),
-                        style: const TextStyle(color: Colors.black),
+                        state.airPollutionEntity.toMap().toString(),
+                        style: const TextStyle(color: Colors.black, fontSize: 30),
                       )
                     ],
                   ),

@@ -10,7 +10,7 @@ import '../../../../../core/errors/failures.dart';
 part 'air_pollution_state.dart';
 
 class AirPollutionCubit extends Cubit<AirPollutionState> {
-  final GetCurrentAirPollution getCurrentAirPollution;
+  final GetAirPollutionInformation getCurrentAirPollution;
 
   AirPollutionCubit({required this.getCurrentAirPollution})
       : super(AirPollutionInitial());
@@ -18,7 +18,7 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
   Future<void> fetchAirPollutionData(double lat, double long) async {
     emit(AirPollutionLoading());
     final Either<Failure, AirPollutionEntity> airPollutionData =
-        await getCurrentAirPollution.call(lat, long);
+        await getCurrentAirPollution.getCurrentAirPollution(lat, long);
 
     airPollutionData.fold(
       (Failure failure) {
