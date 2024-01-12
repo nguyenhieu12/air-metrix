@@ -1,5 +1,6 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dartz/dartz.dart';
-import 'package:envi_metrix/core/constraints/global_variables.dart';
+import 'package:envi_metrix/utils/global_variables.dart';
 import 'package:envi_metrix/core/errors/exceptions.dart';
 import 'package:envi_metrix/features/air_pollution/domain/entities/air_pollution_entity.dart';
 import 'package:envi_metrix/features/air_pollution/domain/use_cases/get_current_air_pollution.dart';
@@ -14,10 +15,18 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
   final GetAirPollutionInformation getCurrentAirPollution;
 
   AirPollutionCubit({required this.getCurrentAirPollution})
-      : super(AirPollutionInitial());
+      : super(AirPollutionLoading());
 
   Future<void> fetchAirPollutionData(double lat, double long) async {
     emit(AirPollutionLoading());
+
+    final connect = await Connectivity().checkConnectivity();
+
+    if(connect == ConnectivityResult.none) {
+      emit(const AirPollutionFailed(errorMessage: 'Lost Internet connection'));
+      return;
+    }
+
     final Either<Failure, AirPollutionEntity> airPollutionData =
         await getCurrentAirPollution.getCurrentAirPollution(lat, long);
 
@@ -25,8 +34,7 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
       (Failure failure) {
         throw ApiException();
       },
-      (AirPollutionEntity airPollutionEntity) {
-        // MainAQI.airQualityIndex = 
+      (AirPollutionEntity airPollutionEntity) { 
         emit(AirPollutionSuccess(airPollutionEntity: airPollutionEntity));
       },
     );
@@ -60,5 +68,9 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
         // emit(AirPollutionLoaded(airPollutionEntity: listAirPollutionEntity));
       },
     );
-  } 
+  }
+
+  void handleReloadCurrentAirPollution(double lat, double long) {
+    fetchAirPollutionData(lat, long);
+  }
 }

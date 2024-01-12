@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:envi_metrix/core/constraints/global_variables.dart';
+import 'package:envi_metrix/utils/global_variables.dart';
 import 'package:envi_metrix/core/errors/exceptions.dart';
 import 'package:envi_metrix/core/keys/app_keys.dart';
 import 'package:envi_metrix/features/air_pollution/data/models/air_pollution_model.dart';
@@ -27,7 +27,7 @@ class AirPollutionRemoteDataSourceImpl implements AirPollutionRemoteDataSource {
         'http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${long}&appid=${AppKeys.openWeatherMapKey}');
 
     if (respone.statusCode == 200) {
-      MainAQI.airQualityIndex = respone.data['list'][0]['main']['aqi'];
+      GlobalVariables.airQualityIndex = respone.data['list'][0]['main']['aqi'];
       return AirPollutionModel.fromJson(respone.data['list'][0]['components']);
     } else {
       throw ApiException();

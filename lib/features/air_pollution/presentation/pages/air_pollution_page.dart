@@ -1,8 +1,9 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:envi_metrix/core/location/default_location.dart';
-import 'package:envi_metrix/core/location/user_location.dart';
+import 'package:envi_metrix/utils/global_variables.dart';
+import 'package:envi_metrix/services/location/default_location.dart';
+import 'package:envi_metrix/services/location/user_location.dart';
 import 'package:envi_metrix/core/themes/app_colors.dart';
 import 'package:envi_metrix/features/air_pollution/data/data_sources/air_pollution_remote_data_source.dart';
 import 'package:envi_metrix/features/air_pollution/data/repositories/air_pollution_repository_impl.dart';
@@ -48,16 +49,18 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
     if (await userLocation.isAccepted()) {
       Position currentPosition = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
-      
+
       currentLat = currentPosition.latitude;
       currentLong = currentPosition.longitude;
 
       print(
           'Latitude: ${currentPosition.latitude} and Longitude: ${currentPosition.longitude}');
 
-      airPollutionCubit.fetchAirPollutionData(currentPosition.latitude, currentPosition.longitude);
+      airPollutionCubit.fetchAirPollutionData(
+          currentPosition.latitude, currentPosition.longitude);
     } else {
-      airPollutionCubit.fetchAirPollutionData(DefaultLocation.lat, DefaultLocation.long);
+      airPollutionCubit.fetchAirPollutionData(
+          DefaultLocation.lat, DefaultLocation.long);
     }
   }
 
@@ -71,45 +74,70 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
             if (state is AirPollutionLoading) {
               return Container(
                 child: Center(
-                  child: Platform.isAndroid ? CircularProgressIndicator(color: AppColors.loading) : CupertinoActivityIndicator(color: AppColors.loading),
+                  child: Platform.isAndroid
+                      ? CircularProgressIndicator(color: AppColors.loading)
+                      : CupertinoActivityIndicator(color: AppColors.loading),
                 ),
               );
             } else if (state is AirPollutionSuccess) {
-              return Container(
-                color: Colors.amber.shade100,
-                child: Center(
-                  child: Wrap(
-                    spacing: 20.w,
-                    runSpacing: 20.w,
-                    children: [
-                      ContaminantInfo(contamunantName: 'SO2', concentration: state.airPollutionEntity.so2),
-                      ContaminantInfo(contamunantName: 'NO2', concentration: state.airPollutionEntity.no2),
-                      ContaminantInfo(contamunantName: 'PM10', concentration: state.airPollutionEntity.pm10),
-                      ContaminantInfo(contamunantName: 'PM2.5', concentration: state.airPollutionEntity.pm2_5),
-                      ContaminantInfo(contamunantName: 'O3', concentration: state.airPollutionEntity.o3),
-                      ContaminantInfo(contamunantName: 'CO', concentration: state.airPollutionEntity.co),
-                    ],
-                  ),
-                ),
-              );
+              return _buildAirPollutionContent(state);
             } else {
               return Center(
                 child: GestureDetector(
+                  onTap: () => context
+                      .read<AirPollutionCubit>()
+                      .handleReloadCurrentAirPollution(currentLat, currentLong),
                   child: Row(children: [
-                    Icon(Icons.refresh, color: AppColors.reload, size: 30.w,),
+                    Icon(
+                      Icons.refresh,
+                      color: AppColors.reload,
+                      size: 30.w,
+                    ),
                     Gap(10.w),
-                    Text('Reload',
+                    Text(
+                      'Reload',
                       style: TextStyle(
-                        fontSize: 20.w,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.reload
-                      ),
+                          fontSize: 20.w,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.reload),
                     )
                   ]),
                 ),
               );
             }
           },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAirPollutionContent(AirPollutionSuccess state) {
+    return Container(
+      color: Colors.amber.shade100,
+      child: Center(
+        child: Wrap(
+          spacing: 10.w,
+          runSpacing: 15.w,
+          children: [
+            ContaminantInfo(
+                contamunantName: PollutantName.so2,
+                concentration: state.airPollutionEntity.so2),
+            ContaminantInfo(
+                contamunantName: PollutantName.no2,
+                concentration: state.airPollutionEntity.no2),
+            ContaminantInfo(
+                contamunantName: PollutantName.pm10,
+                concentration: state.airPollutionEntity.pm10),
+            ContaminantInfo(
+                contamunantName: PollutantName.pm25,
+                concentration: state.airPollutionEntity.pm2_5),
+            ContaminantInfo(
+                contamunantName: PollutantName.o3,
+                concentration: state.airPollutionEntity.o3),
+            ContaminantInfo(
+                contamunantName: PollutantName.co,
+                concentration: state.airPollutionEntity.co),
+          ],
         ),
       ),
     );
