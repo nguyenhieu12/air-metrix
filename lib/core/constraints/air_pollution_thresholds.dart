@@ -180,4 +180,6 @@ class AirPollutionThresholds {
       return PollutionMessage.hazardous;
     }
   }
+
+  
 }

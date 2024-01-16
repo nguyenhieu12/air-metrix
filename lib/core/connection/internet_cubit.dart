@@ -6,7 +6,7 @@ part 'internet_state.dart';
 class InternetCubit extends Cubit<InternetState> {
   final Connectivity _connectivity = Connectivity();
 
-  InternetCubit() : super(InternetConnected()) {
+  InternetCubit() : super(InternetInitial()) {
     _initInternetState();
   }
 

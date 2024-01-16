@@ -1,11 +1,12 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dartz/dartz.dart';
-import 'package:envi_metrix/utils/global_variables.dart';
 import 'package:envi_metrix/core/errors/exceptions.dart';
+import 'package:envi_metrix/core/models/address_model.dart';
 import 'package:envi_metrix/features/air_pollution/domain/entities/air_pollution_entity.dart';
 import 'package:envi_metrix/features/air_pollution/domain/use_cases/get_current_air_pollution.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geocoding/geocoding.dart';
 
 import '../../../../../core/errors/failures.dart';
 
@@ -30,12 +31,19 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
     final Either<Failure, AirPollutionEntity> airPollutionData =
         await getCurrentAirPollution.getCurrentAirPollution(lat, long);
 
+    
+
     airPollutionData.fold(
       (Failure failure) {
         throw ApiException();
       },
-      (AirPollutionEntity airPollutionEntity) { 
-        emit(AirPollutionSuccess(airPollutionEntity: airPollutionEntity));
+      (AirPollutionEntity airPollutionEntity) async {
+        List<Placemark> placemarks =
+          await placemarkFromCoordinates(lat, long);
+
+      final first = placemarks.first;
+
+        emit(AirPollutionSuccess(airPollutionEntity: airPollutionEntity, address: Address(country: first.country ?? '', pronvice: first.administrativeArea ?? '')));
       },
     );
   }

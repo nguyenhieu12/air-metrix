@@ -23,7 +23,4 @@ class UserLocation {
     return true;
   }
 
-  // Future<Position> getCurrentUserLocation() async {
-  //   return Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
-  // }
 }

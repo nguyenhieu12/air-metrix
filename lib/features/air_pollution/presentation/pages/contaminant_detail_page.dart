@@ -131,4 +131,6 @@ class ContaminantDetail extends StatelessWidget {
         return AirPollutionThresholds.so2Threshold;
     }
   }
+
+  
 }

@@ -3,6 +3,7 @@ import 'package:envi_metrix/utils/global_variables.dart';
 import 'package:envi_metrix/core/themes/app_colors.dart';
 import 'package:envi_metrix/core/themes/filter_app_colors.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/pages/contaminant_detail_page.dart';
+import 'package:envi_metrix/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -21,7 +22,7 @@ class ContaminantInfo extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          color: getBackgroundColor(contamunantName, concentration),
+          color: Utils.getBackgroundColor(contamunantName, concentration),
         ),
         width: 165.w,
         child: GestureDetector(
@@ -32,8 +33,8 @@ class ContaminantInfo extends StatelessWidget {
                       tagName: contamunantName,
                       cotaminantName: contamunantName,
                       pollutantValue: concentration,
-                      mainColor: getBackgroundColor(contamunantName, concentration)),
-                  transitionDuration: const Duration(seconds: 1))),
+                      mainColor: Utils.getBackgroundColor(contamunantName, concentration)),
+                  transitionDuration: const Duration(milliseconds: 750))),
           child: Padding(
             padding: EdgeInsets.only(left: 10.w, right: 10.w),
             child: SingleChildScrollView(
@@ -48,20 +49,21 @@ class ContaminantInfo extends StatelessWidget {
                     contamunantName,
                     style: TextStyle(
                         color: AppColors.textWhite,
-                        fontSize: 24.w,
+                        fontSize: 20.w,
                         fontWeight: FontWeight.w700),
                   ),
-                  Gap(12.h),
+                  Gap(6.h),
                   Text('$concentration ${AppUnits.contamitantUnit}',
                       style: TextStyle(
                           color: AppColors.textWhite,
-                          fontSize: 20.w,
+                          fontSize: 17.w,
                           fontWeight: FontWeight.w500)),
-                  Text(getPollutionMessage(contamunantName, concentration),
+                  Text(Utils.getPollutionMessage(contamunantName, concentration),
                       style: TextStyle(
                           color: AppColors.textWhite,
-                          fontSize: 20.w,
-                          fontWeight: FontWeight.w500))
+                          fontSize: 17.w,
+                          fontWeight: FontWeight.w500)),
+                  Gap(8.h)
                 ],
               ),
             ),
@@ -71,47 +73,5 @@ class ContaminantInfo extends StatelessWidget {
     );
   }
 
-  Color getBackgroundColor(String name, double pollutantValue) {
-    switch (name) {
-      case PollutantName.so2:
-        return FilterAppColors.getAQIColor(
-            AirPollutionThresholds.getSO2Threshold(pollutantValue));
-      case PollutantName.no2:
-        return FilterAppColors.getAQIColor(
-            AirPollutionThresholds.getNO2Threshold(pollutantValue));
-      case PollutantName.pm10:
-        return FilterAppColors.getAQIColor(
-            AirPollutionThresholds.getPM10Threshold(pollutantValue));
-      case PollutantName.pm25:
-        return FilterAppColors.getAQIColor(
-            AirPollutionThresholds.getPM25Threshold(pollutantValue));
-      case PollutantName.o3:
-        return FilterAppColors.getAQIColor(
-            AirPollutionThresholds.getO3Threshold(pollutantValue));
-      case PollutantName.co:
-        return FilterAppColors.getAQIColor(
-            AirPollutionThresholds.getCOThreshold(pollutantValue));
-      default:
-        return AppColors.goodAQI;
-    }
-  }
-
-  String getPollutionMessage(String name, double pollutantValue) {
-    switch (name) {
-      case PollutantName.so2:
-        return AirPollutionThresholds.getSO2Message(pollutantValue);
-      case PollutantName.no2:
-        return AirPollutionThresholds.getNO2Message(pollutantValue);
-      case PollutantName.pm10:
-        return AirPollutionThresholds.getPM10Message(pollutantValue);
-      case PollutantName.pm25:
-        return AirPollutionThresholds.getPM25Message(pollutantValue);
-      case PollutantName.o3:
-        return AirPollutionThresholds.getO3Message(pollutantValue);
-      case PollutantName.co:
-        return AirPollutionThresholds.getCOMessage(pollutantValue);
-      default:
-        return AirPollutionThresholds.getSO2Message(pollutantValue);
-    }
-  }
+  
 }

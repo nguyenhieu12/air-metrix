@@ -1,5 +1,6 @@
 class GlobalVariables {
   static int airQualityIndex = 0;
+  static int yesterdayAQI = 0;
 }
 
 class AppUnits {

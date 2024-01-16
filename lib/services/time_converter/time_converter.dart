@@ -10,4 +10,14 @@ class TimeConverter {
 
     return currentHour.millisecondsSinceEpoch ~/ 1000;
   }
+
+  static int getUnixTimestamp(DateTime date) {
+    DateTime unixTime = date.subtract(Duration(
+      minutes: date.minute,
+      seconds: date.second,
+      microseconds: date.microsecond,
+    ));
+
+    return unixTime.millisecondsSinceEpoch ~/ 1000;
+  }
 }

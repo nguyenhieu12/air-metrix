@@ -1,6 +1,7 @@
 import 'package:envi_metrix/core/connection/internet_cubit.dart';
 import 'package:envi_metrix/core/themes/app_colors.dart';
 import 'package:envi_metrix/widgets/internet_snackbar.dart';
+import 'package:envi_metrix/widgets/location_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -30,10 +31,9 @@ class _DashboardPageState extends State<DashboardPage> {
                   child: Text(
                     state is InternetConnected ? 'Connected' : 'Disconnected',
                     style: const TextStyle(
-                      fontSize: 20,
-                      color: Colors.red,
-                      fontWeight: FontWeight.w500
-                    ),
+                        fontSize: 20,
+                        color: Colors.red,
+                        fontWeight: FontWeight.w500),
                   ),
                 ),
                 Center(
@@ -59,7 +59,7 @@ class _DashboardPageState extends State<DashboardPage> {
           backgroundColor: Colors.red,
           duration: const Duration(days: 365),
           displayCloseIcon: true);
-    } else {
+    } else if (internetState is InternetConnected) {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       InternetSnackbar.showInternetNotifiSnackbar(
           context: context,
@@ -68,6 +68,8 @@ class _DashboardPageState extends State<DashboardPage> {
           backgroundColor: Colors.green,
           duration: const Duration(seconds: 2),
           displayCloseIcon: false);
+    } else {
+      return;
     }
   }
 }
