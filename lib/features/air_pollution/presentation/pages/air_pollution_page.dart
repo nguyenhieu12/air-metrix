@@ -6,7 +6,7 @@ import 'package:envi_metrix/core/themes/filter_app_colors.dart';
 import 'package:envi_metrix/features/air_pollution/data/data_sources/air_pollution_remote_data_source.dart';
 import 'package:envi_metrix/features/air_pollution/data/repositories/air_pollution_repository_impl.dart';
 import 'package:envi_metrix/features/air_pollution/domain/use_cases/get_current_air_pollution.dart';
-import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_pollution/air_pollution_cubit.dart';
+import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_pollution_cubit.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/widgets/contaminant_info.dart';
 import 'package:envi_metrix/services/location/default_location.dart';
 import 'package:envi_metrix/services/location/user_location.dart';
@@ -57,7 +57,8 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
       currentLat = currentPosition.latitude;
       currentLong = currentPosition.longitude;
 
-      airPollutionCubit.fetchAirPollutionData(DefaultLocation.lat, DefaultLocation.long);
+      airPollutionCubit.fetchAirPollutionData(
+          DefaultLocation.lat, DefaultLocation.long);
     } else {
       airPollutionCubit.fetchAirPollutionData(
           DefaultLocation.lat, DefaultLocation.long);
@@ -72,7 +73,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
         body: BlocBuilder<AirPollutionCubit, AirPollutionState>(
           builder: (context, state) {
             if (state is AirPollutionLoading) {
-              return _getLoading();
+              return _buildLoading();
             } else if (state is AirPollutionSuccess) {
               return _buildAirPollutionContent(state);
             } else {
@@ -132,9 +133,12 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
           size: 25.w,
         ),
         Gap(6.w),
-        Text(
-          '${state.address.pronvice}, ${state.address.country}',
-          style: TextStyle(fontSize: 22.w, fontWeight: FontWeight.w400),
+        Flexible(
+          child: Text(
+            '${state.address.pronvice}, ${state.address.country}',
+            style: TextStyle(fontSize: 22.w, fontWeight: FontWeight.w400),
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
         const Spacer(),
         Padding(
@@ -168,7 +172,6 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
               children: [
                 Container(
                   width: double.infinity,
-                  // height: 100.h,
                   decoration: BoxDecoration(
                       color: AppColors.whiteIcon,
                       borderRadius: BorderRadius.circular(15),
@@ -199,20 +202,10 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
                             thickness: 0.75,
                           ),
                         ),
-                        Gap(6.h),
+                        Gap(12.h),
                         Row(
-                          // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Text(
-                              PollutantMessage.getPollutantMessage(
-                                  GlobalVariables.airQualityIndex),
-                              style: TextStyle(
-                                  fontSize: 24.w,
-                                  color: FilterAppColors.getAQIColor(
-                                      GlobalVariables.airQualityIndex),
-                                  fontWeight: FontWeight.w600),
-                            ),
-                            const Spacer(),
                             Container(
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
@@ -227,25 +220,19 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
                                         'Air quality',
                                         style: TextStyle(
                                           color: AppColors.textWhite,
-                                          fontSize: 18.w,
+                                          fontSize: 21.w,
                                           fontWeight: FontWeight.w500,
                                         ),
                                       ),
                                       Gap(8.h),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            'Today:',
-                                            style: TextStyle(
-                                              color: AppColors.textWhite,
-                                              fontSize: 18.w,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                          Gap(4.w),
-                                          _getCompareIcon(),
-                                        ],
-                                      )
+                                      Text(
+                                        PollutantMessage.getPollutantMessage(
+                                            GlobalVariables.airQualityIndex),
+                                        style: TextStyle(
+                                            fontSize: 20.w,
+                                            color: AppColors.textWhite,
+                                            fontWeight: FontWeight.w500),
+                                      ),
                                     ]),
                               ),
                             ),
@@ -263,10 +250,10 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
-                                          'Pollutant',
+                                          'Main pollutant',
                                           style: TextStyle(
                                             color: AppColors.textWhite,
-                                            fontSize: 18.w,
+                                            fontSize: 21.w,
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
@@ -279,7 +266,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
                                               state),
                                           style: TextStyle(
                                             color: AppColors.textWhite,
-                                            fontSize: 18.w,
+                                            fontSize: 20.w,
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
@@ -353,7 +340,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
     );
   }
 
-  Widget _getLoading() {
+  Widget _buildLoading() {
     return Center(
         child: Platform.isAndroid
             ? CircularProgressIndicator(

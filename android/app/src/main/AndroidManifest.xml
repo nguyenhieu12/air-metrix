@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
@@ -7,6 +8,10 @@
         android:label="envi_metrix"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        android:enableOnBackInvokedCallback="true"
+        android:usesCleartextTraffic="true"
+        <meta-data android:name="com.mapbox.token" android:value="sk.eyJ1IjoiaGlldW5tMTIxMiIsImEiOiJjbHJsdWFvZWowcDl1MmptcDR3Z3J5cGJpIn0.230gcF7xFnDgA3rFT6mJ7w"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

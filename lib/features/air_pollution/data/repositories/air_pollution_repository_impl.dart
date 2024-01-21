@@ -15,31 +15,38 @@ class AirPollutionRepositoryImpl implements AirPollutionRepository {
   });
 
   @override
-  Future<Either<Failure, AirPollutionEntity>> getCurrentAirPollution(double lat, double long) async {
+  Future<Either<Failure, AirPollutionEntity>> getCurrentAirPollution(
+      double lat, double long) async {
     try {
-      final remoteAirPollution = await remoteDataSource.getCurrentAirPollution(lat, long);
+      final remoteAirPollution =
+          await remoteDataSource.getCurrentAirPollution(lat, long);
 
       return Right(remoteAirPollution);
     } on ApiException {
       return Left(ApiFailure(errorMessage: 'Cannot call air pollution API'));
     }
   }
-  
+
   @override
-  Future<Either<Failure, List<AirPollutionEntity>>> getAirPollutionForecast(double lat, double long) async {
+  Future<Either<Failure, List<AirPollutionEntity>>> getAirPollutionForecast(
+      double lat, double long) async {
     try {
-      final remoteAirPollutionForecast = await remoteDataSource.getAirPollutionForecast(lat, long);
+      final remoteAirPollutionForecast =
+          await remoteDataSource.getAirPollutionForecast(lat, long);
 
       return Right(remoteAirPollutionForecast);
     } on ApiException {
-      return Left(ApiFailure(errorMessage: 'Cannot get air pollution forecast'));
+      return Left(
+          ApiFailure(errorMessage: 'Cannot get air pollution forecast'));
     }
   }
-  
+
   @override
-  Future<Either<Failure, List<AirPollutionEntity>>> getAirPollutionHistory(double lat, double long, int unixStartDate, int unixEndDate) async {
-   try {
-      final remoteAirPollutionForecast = await remoteDataSource.getAirPollutionHistory(lat, long, unixStartDate, unixEndDate);
+  Future<Either<Failure, List<AirPollutionEntity>>> getAirPollutionHistory(
+      double lat, double long, int unixStartDate, int unixEndDate) async {
+    try {
+      final remoteAirPollutionForecast = await remoteDataSource
+          .getAirPollutionHistory(lat, long, unixStartDate, unixEndDate);
 
       return Right(remoteAirPollutionForecast);
     } on ApiException {

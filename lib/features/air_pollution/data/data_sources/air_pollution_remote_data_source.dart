@@ -34,7 +34,7 @@ class AirPollutionRemoteDataSourceImpl implements AirPollutionRemoteDataSource {
         'http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${long}&appid=${AppKeys.openWeatherMapKey}');
 
     final yesterday = await dio.get(
-        'http://api.openweathermap.org/data/2.5/air_pollution/history?lat=${lat}&lon=${long}&start=${yesterdayUnixTime}&end=${currentUnixTime}&appid=${AppKeys.openWeatherMapKey}');
+        'http://api.openweathermap.org/data/2.5/air_pollution/history?lat=${lat}&lon=${long}&start=${yesterdayUnixTime}&end=$currentUnixTime&appid=${AppKeys.openWeatherMapKey}');
 
     if (respone.statusCode == 200 && yesterday.statusCode == 200) {
       GlobalVariables.yesterdayAQI = yesterday.data['list'][0]['main']['aqi'];
@@ -55,15 +55,20 @@ class AirPollutionRemoteDataSourceImpl implements AirPollutionRemoteDataSource {
       AQI.airQualityIndex.clear();
 
       List<dynamic> listResponeModel = respone.data['list'];
-      List<AirPollutionModel> airPollutionModels = [];
+      // List<AirPollutionModel> airPollutionModels = [];
 
-      for (int i = 0; i < listResponeModel.length; i++) {
-        airPollutionModels
-            .add(AirPollutionModel.fromJson(listResponeModel[i]['components']));
-        AQI.airQualityIndex.add(listResponeModel[i]['main']['aqi']);
-      }
+      // for (int i = 0; i < listResponeModel.length; i++) {
+      //   airPollutionModels
+      //       .add(AirPollutionModel.fromJson(listResponeModel[i]['components']));
+      //   AQI.airQualityIndex.add(listResponeModel[i]['main']['aqi']);
+      // }
 
-      return airPollutionModels;
+      // return airPollutionModels;
+
+      return listResponeModel
+          .map((airPollution) =>
+              AirPollutionModel.fromJson(airPollution['components']))
+          .toList();
     } else {
       throw ApiException();
     }

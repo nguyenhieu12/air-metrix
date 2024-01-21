@@ -25,6 +25,7 @@ dependencies:
   flutter_screenutil: ^5.9.0
   gap: ^3.0.1
   rive: ^0.12.4
+  mapbox_gl: ^0.16.0
 
 dev_dependencies:
   flutter_test:

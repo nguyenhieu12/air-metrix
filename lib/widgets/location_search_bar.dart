@@ -1,5 +1,5 @@
 import 'package:envi_metrix/core/themes/app_colors.dart';
-import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_pollution/air_pollution_cubit.dart';
+import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_pollution_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -109,9 +109,11 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
             contentPadding: EdgeInsets.only(left: 15.w, right: 15.w),
             content: Container(
               width: 450.w,
+              height: 200.h,
               decoration: const BoxDecoration(borderRadius: BorderRadius.zero),
               child: Stack(
                 children: [
+                  _buildCloseIcon(context),
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -150,6 +152,18 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
             ),
           );
         });
+  }
+
+  Widget _buildCloseIcon(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(top: 12.h),
+      child: Align(
+        alignment: Alignment.topRight,
+        child: GestureDetector(
+          onTap: () => Navigator.pop(context, [lat, long]),
+          child: Icon(Icons.clear_rounded, size: 24.w, color: Colors.black,)),
+      ),
+    );
   }
 
   Widget _buildInputSection(
@@ -236,7 +250,7 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
     if (lat != null && long != null) {
       await widget.airPollutionCubit.fetchAirPollutionData(lat!, long!);
       _searchBarFocus.unfocus();
-      Navigator.pop(context);
+      Navigator.pop(context, [lat, long]);
     }
   }
 }

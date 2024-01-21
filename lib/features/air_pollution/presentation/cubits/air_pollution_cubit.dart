@@ -16,14 +16,14 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
   final GetAirPollutionInformation getCurrentAirPollution;
 
   AirPollutionCubit({required this.getCurrentAirPollution})
-      : super(AirPollutionLoading());
+      : super(AirPollutionInitial());
 
   Future<void> fetchAirPollutionData(double lat, double long) async {
     emit(AirPollutionLoading());
 
     final connect = await Connectivity().checkConnectivity();
 
-    if(connect == ConnectivityResult.none) {
+    if (connect == ConnectivityResult.none) {
       emit(const AirPollutionFailed(errorMessage: 'Lost Internet connection'));
       return;
     }
@@ -31,19 +31,20 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
     final Either<Failure, AirPollutionEntity> airPollutionData =
         await getCurrentAirPollution.getCurrentAirPollution(lat, long);
 
-    
-
     airPollutionData.fold(
       (Failure failure) {
         throw ApiException();
       },
       (AirPollutionEntity airPollutionEntity) async {
-        List<Placemark> placemarks =
-          await placemarkFromCoordinates(lat, long);
+        List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
 
-      final first = placemarks.first;
+        final first = placemarks.first;
 
-        emit(AirPollutionSuccess(airPollutionEntity: airPollutionEntity, address: Address(country: first.country ?? '', pronvice: first.administrativeArea ?? '')));
+        emit(AirPollutionSuccess(
+            airPollutionEntity: airPollutionEntity,
+            address: Address(
+                country: first.country ?? '',
+                pronvice: first.administrativeArea ?? '')));
       },
     );
   }
@@ -63,10 +64,12 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
     );
   }
 
-  Future<void> fetchAirPollutionHistory(double lat, double long, int unixStartDate, int unixEndDate) async {
+  Future<void> fetchAirPollutionHistory(
+      double lat, double long, int unixStartDate, int unixEndDate) async {
     emit(AirPollutionLoading());
     final Either<Failure, List<AirPollutionEntity>> airPollutionHistory =
-        await getCurrentAirPollution.getAirPollutionHistory(lat, long, unixStartDate, unixEndDate);
+        await getCurrentAirPollution.getAirPollutionHistory(
+            lat, long, unixStartDate, unixEndDate);
 
     airPollutionHistory.fold(
       (Failure failure) {

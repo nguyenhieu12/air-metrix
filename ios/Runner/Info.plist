@@ -3,6 +3,8 @@
 <plist version="1.0">
 <dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>sk.eyJ1IjoiaGlldW5tMTIxMiIsImEiOiJjbHJsdWFvZWowcDl1MmptcDR3Z3J5cGJpIn0.230gcF7xFnDgA3rFT6mJ7w</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs access to location when open.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This app needs access to location when in the background.</string>
