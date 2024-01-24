@@ -20,14 +20,26 @@ class DisasterRemoteDatasourceImpl implements DisasterRemoteDatasource {
     if (response.statusCode == 200) {
       List<dynamic> listResult = response.data['events'];
 
-      // print(listResult);
+      List<DisasterModel> returnedListModel = [];
 
-      return listResult
-          .map((disaster) => DisasterModel(
-              categories: (disaster['categories'] as List).map((category) => CategoriesModel.fromJson(category)).toList(),
-              geometry: (disaster['geometry'] as List).map((geometry) => GeometryModel.fromJson(geometry)).toList(),
-              title: disaster['title']))
-          .toList();
+      for (int i = 0; i < listResult.length; i++) {
+        List<dynamic> geometries = listResult[i]['geometry'];
+
+        returnedListModel.add(DisasterModel(
+            categories: CategoriesModel.fromJson(listResult[i]['categories'][0]),
+            geometry: GeometryModel.fromJson(geometries[geometries.length - 1]),
+            title: listResult[i]['title']));
+      }
+
+      return returnedListModel;
+
+      // return listResult
+      //     .map((disaster) => DisasterModel(
+      //         categories: CategoriesModel.fromJson(disaster['categories'][0]),
+      //         geometry: (disaster['geometry']).map((geometry) =>
+      //             GeometryModel.fromJson(geometry['coordinates'])),
+      //         title: disaster['title']))
+      //     .toList();
     } else {
       throw ApiException();
     }

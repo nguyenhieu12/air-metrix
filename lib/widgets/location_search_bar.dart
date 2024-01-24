@@ -46,29 +46,43 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
   Widget build(BuildContext context) {
     return Material(
       child: Padding(
-        padding: EdgeInsets.only(left: 10.w, right: 10.w),
-        child: TextFormField(
-          controller: _searchController,
-          focusNode: _searchBarFocus,
-          cursorColor: AppColors.searchBarCursor,
-          style: TextStyle(fontSize: 20.w),
-          cursorHeight: 22.h,
-          decoration: InputDecoration(
-              contentPadding: EdgeInsets.zero,
-              hintText: 'Search',
-              hintStyle: TextStyle(
-                fontSize: 19.w,
+        padding: EdgeInsets.only(left: 10.w, right: 15.w),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 15,
+              child: TextFormField(
+                controller: _searchController,
+                focusNode: _searchBarFocus,
+                cursorColor: AppColors.searchBarCursor,
+                style: TextStyle(fontSize: 20.w),
+                cursorHeight: 22.h,
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.zero,
+                    hintText: 'Search',
+                    hintStyle: TextStyle(
+                      fontSize: 19.w,
+                    ),
+                    prefixIcon: Padding(
+                      padding: EdgeInsets.only(left: 5.w),
+                      child: Icon(
+                        Icons.search,
+                        size: 25.w,
+                      ),
+                    ),
+                    suffixIcon: _buildSuffixIcon(context),
+                    enabledBorder: _getBorder(AppColors.searchBarBorder, 20),
+                    focusedBorder: _getBorder(AppColors.searchBarBorder, 20)),
               ),
-              prefixIcon: Padding(
-                padding: EdgeInsets.only(left: 5.w),
-                child: Icon(
-                  Icons.search,
-                  size: 25.w,
-                ),
+            ),
+            Gap(8.w),
+            Expanded(
+              flex: 1,
+              child: GestureDetector(
+                child: Icon(Icons.my_location_outlined, size: 26.w),
               ),
-              suffixIcon: _buildSuffixIcon(context),
-              enabledBorder: _getBorder(AppColors.searchBarBorder, 20),
-              focusedBorder: _getBorder(AppColors.searchBarBorder, 20)),
+            )
+          ],
         ),
       ),
     );
@@ -160,8 +174,12 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
       child: Align(
         alignment: Alignment.topRight,
         child: GestureDetector(
-          onTap: () => Navigator.pop(context, [lat, long]),
-          child: Icon(Icons.clear_rounded, size: 24.w, color: Colors.black,)),
+            onTap: () => Navigator.pop(context, [lat, long]),
+            child: Icon(
+              Icons.clear_rounded,
+              size: 24.w,
+              color: Colors.black,
+            )),
       ),
     );
   }

@@ -7,10 +7,12 @@ import 'package:envi_metrix/features/air_pollution/data/data_sources/air_polluti
 import 'package:envi_metrix/features/air_pollution/data/repositories/air_pollution_repository_impl.dart';
 import 'package:envi_metrix/features/air_pollution/domain/use_cases/get_current_air_pollution.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_pollution_cubit.dart';
+import 'package:envi_metrix/features/air_pollution/presentation/pages/map_pollution_page.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/widgets/contaminant_info.dart';
 import 'package:envi_metrix/services/location/default_location.dart';
 import 'package:envi_metrix/services/location/user_location.dart';
 import 'package:envi_metrix/utils/global_variables.dart';
+import 'package:envi_metrix/utils/page_transition.dart';
 import 'package:envi_metrix/utils/pollutant_message.dart';
 import 'package:envi_metrix/utils/utils.dart';
 import 'package:envi_metrix/widgets/location_search_bar.dart';
@@ -159,12 +161,25 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Overview',
-            style: TextStyle(
-              fontSize: 19.w,
-              fontWeight: FontWeight.w500,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Overview',
+                style: TextStyle(
+                  fontSize: 19.w,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              GestureDetector(
+                onTap: () => Navigator.push(context,
+                    PageTransition.slideTransition(const MapPollutionPage())),
+                child: Icon(
+                  Icons.map_outlined,
+                  size: 24.w,
+                ),
+              )
+            ],
           ),
           Gap(8.h),
           Center(

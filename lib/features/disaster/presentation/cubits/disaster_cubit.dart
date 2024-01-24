@@ -35,6 +35,11 @@ class DisasterCubit extends Cubit<DisasterState> {
       },
       (List<DisasterEntity> listDisasterResponse) async {
         disasterEnitites = listDisasterResponse;
+
+        for(int i = 0;i < disasterEnitites.length;i++) {
+          print('DIS: ${disasterEnitites[i].title}');
+        }
+
         emit(DisasterSuccess());
       },
     );
