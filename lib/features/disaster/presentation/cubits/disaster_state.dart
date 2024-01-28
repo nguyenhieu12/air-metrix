@@ -11,7 +11,11 @@ final class DisasterInitial extends DisasterState {}
 
 final class DisasterLoading extends DisasterState {}
 
-final class DisasterSuccess extends DisasterState {}
+final class DisasterSuccess extends DisasterState {
+  final List<DisasterEntity> entities;
+
+  const DisasterSuccess({required this.entities});
+}
 
 final class DisasterFailed extends DisasterState {
   final String errorMessage;

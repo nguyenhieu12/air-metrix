@@ -4,16 +4,18 @@ import 'package:dio/dio.dart';
 import 'package:envi_metrix/core/themes/app_colors.dart';
 import 'package:envi_metrix/features/disaster/data/data_sources/disaster_remote_datasource.dart';
 import 'package:envi_metrix/features/disaster/data/repositories/disaster_repository_impl.dart';
-import 'package:envi_metrix/features/disaster/domain/entities/disaster_entity.dart';
 import 'package:envi_metrix/features/disaster/domain/use_cases/get_current_disaster.dart';
 import 'package:envi_metrix/features/disaster/presentation/cubits/disaster_cubit.dart';
 import 'package:envi_metrix/services/location/default_location.dart';
+import 'package:envi_metrix/services/location/user_location.dart';
+import 'package:envi_metrix/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
 class DisasterPage extends StatefulWidget {
@@ -28,15 +30,27 @@ class _DisasterPageState extends State<DisasterPage> {
 
   MapController mapController = MapController();
 
-  late List<DisasterEntity> entities;
+  UserLocation userLocation = UserLocation();
+
+  Map<String, String> listSymbol = {
+    'drought': 'Drought',
+    'dustHaze': 'Dust and haze',
+    'earthquakes': 'Earthquake',
+    'floods': 'Flood',
+    'landslides': 'Landslide',
+    'seaLakeIce': 'Sea and Lake Ice',
+    'severeStorms': 'Severe Storm',
+    'snow': 'Snow',
+    'tempExtremes': 'Temperature Extreme',
+    'volcanoes': 'Volcano',
+    'wildfires': 'Wildfire'
+  };
 
   @override
   void initState() {
     super.initState();
 
     initDisasterData();
-
-    entities = disasterCubit.disasterEnitites;
   }
 
   @override
@@ -64,7 +78,7 @@ class _DisasterPageState extends State<DisasterPage> {
           if (state is DisasterLoading) {
             return _buildLoading();
           } else if (state is DisasterSuccess) {
-            return _buildDisasterMap();
+            return _buildDisasterMap(state);
           } else {
             return Container();
           }
@@ -81,7 +95,7 @@ class _DisasterPageState extends State<DisasterPage> {
             : CupertinoActivityIndicator(color: AppColors.loading));
   }
 
-  Widget _buildDisasterMap() {
+  Widget _buildDisasterMap(DisasterSuccess state) {
     return Stack(children: [
       FlutterMap(
         mapController: mapController,
@@ -89,11 +103,11 @@ class _DisasterPageState extends State<DisasterPage> {
             initialCenter: LatLng(DefaultLocation.lat, DefaultLocation.long),
             initialZoom: 4,
             minZoom: 3,
-            maxZoom: 15),
+            maxZoom: 20),
         children: [
           TileLayer(
               urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'),
-          MarkerLayer(markers: [..._buildMapMarker()])
+          MarkerLayer(markers: [..._buildMapMarker(state)]),
         ],
       ),
       Positioned(
@@ -123,7 +137,7 @@ class _DisasterPageState extends State<DisasterPage> {
                 child: Padding(
                   padding: const EdgeInsets.all(3),
                   child: IconButton(
-                      onPressed: () => _showListDisaster(),
+                      onPressed: () => _showListDisaster(context: context),
                       icon: Icon(
                         Icons.list,
                         color: AppColors.whiteIcon,
@@ -136,95 +150,153 @@ class _DisasterPageState extends State<DisasterPage> {
     ]);
   }
 
-  List<Marker> _buildMapMarker() {
+  List<Marker> _buildMapMarker(DisasterSuccess state) {
     List<Marker> markers = [];
 
-    for (int i = 0; i < entities.length; i++) {
-      if (entities[i].categories.id == 'manmade' ||
-          entities[i].categories.id == 'waterColor') {
+    for (int i = 0; i < state.entities.length; i++) {
+      if (state.entities[i].categories.id == 'manmade' ||
+          state.entities[i].categories.id == 'waterColor') {
         continue;
       }
+
+      double lat = getMarkerLatLng(state.entities[i].geometry.coordinates[1]);
+      double long = getMarkerLatLng(state.entities[i].geometry.coordinates[0]);
+
       markers.add(Marker(
-          point: LatLng(entities[i].geometry.coordinates[1],
-              entities[i].geometry.coordinates[0]),
-          child: Image.asset(
-            './assets/icons/${entities[i].categories.id}_icon.png',
-            width: 25.w,
-            height: 25.w,
+          width: 40.w,
+          height: 40.w,
+          point: LatLng(lat, long),
+          child: GestureDetector(
+            onTap: () {
+              mapController.move(LatLng(lat, long), 14);
+            },
+            child: Image.asset(
+              './assets/icons/${state.entities[i].categories.id}_icon.png',
+            ),
           )));
     }
 
     return markers;
   }
 
-  Future<void> _handleUserLocation() async {}
+  double getMarkerLatLng(dynamic value) {
+    if (value is int) {
+      return value.toDouble();
+    } else {
+      return value;
+    }
+  }
 
-  void _showListDisaster() {
-    print('Disaster length: ${entities.length}');
+  void _handleShowDisasterInfo(
+      {required double lat,
+      required double long,
+      required String id,
+      required String category,
+      required String name}) {
+    // showGeneralDialog(context: context, pageBuilder: pageBuilder)
+  }
 
-    showGeneralDialog(
-      context: context,
-      barrierColor: Colors.grey.withOpacity(0.25),
-      barrierDismissible: true,
-      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        const beginOffset = Offset(1.0, 0.0);
-        const endOffset = Offset(0.0, 0.0);
-        const curve = Curves.easeInOut;
+  Future<void> _handleUserLocation() async {
+    if (await userLocation.isAccepted()) {
+      Position currentPosition = await Utils.getUserLocation();
 
-        return SlideTransition(
-            position: Tween<Offset>(begin: beginOffset, end: endOffset)
-                .animate(CurvedAnimation(
-              parent: animation,
-              curve: curve,
-            )),
-            child: child);
-      },
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          contentPadding: EdgeInsets.zero,
-          insetPadding: EdgeInsets.zero,
-          content: Container(
-            color: Colors.white,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
+      mapController.move(
+          LatLng(currentPosition.latitude, currentPosition.longitude), 18);
+    }
+  }
+
+  void _showListDisaster({required BuildContext context}) {
+    Utils.showAnimationDialog(
+        context: context,
+        begin: const Offset(1.0, 0.0),
+        end: const Offset(0.0, 0.0),
+        child: _buildDisasterListSymbol());
+  }
+
+  Widget _buildDisasterListSymbol() {
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.white, borderRadius: BorderRadius.circular(10)),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Gap(10.h),
+          Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: 50.w),
+                child: Text(
                   'Disaster symbols',
                   style: TextStyle(
-                      fontSize: 18.w,
-                      fontWeight: FontWeight.w500,
+                      fontSize: 20.w,
+                      fontWeight: FontWeight.w400,
                       color: AppColors.textDefault),
                 ),
-
-                for (int i = 0; i < entities.length; i++)
-                  Row(
-                    children: [
-                      Text(entities[i].categories.id),
-                      Text(entities[i].categories.title)
-                    ],
-                  )
-                // SizedBox(
-                //   width: 100.w,
-                //   child: ListView.builder(
-                //     itemCount: entities.length,
-                //     itemBuilder: (context, index) {
-                //       return Row(
-                //         children: [
-                //           Text(entities[index].categories.id),
-                //           Text(entities[index].categories.title)
-                //         ],
-                //       );
-                //     }
-
-                //   ),
-                // )
-              ],
-            ),
+              ),
+              Gap(10.w),
+              GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Icon(
+                  Icons.clear_outlined,
+                  color: Colors.black,
+                  size: 22.w,
+                ),
+              )
+            ],
           ),
-        );
-      },
+          Gap(20.h),
+          Padding(
+            padding: EdgeInsets.only(left: 20.w, right: 20.w),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [_buildListSymbol(), Gap(15.w), _buildListName()],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildListSymbol() {
+    List<Widget> symbols = [];
+
+    for (var symbol in listSymbol.keys) {
+      symbols.add(
+        Image.asset(
+          './assets/icons/${symbol}_icon.png',
+          width: 33.w,
+          height: 33.w,
+        ),
+      );
+
+      symbols.add(Gap(16.5.h));
+    }
+
+    return Column(
+      children: [...symbols],
+    );
+  }
+
+  Widget _buildListName() {
+    List<Widget> names = [];
+
+    for (var name in listSymbol.values) {
+      name == 'Drought' ? names.add(Gap(8.h)) : names.add(const SizedBox());
+      names.add(Text(
+        name,
+        style: TextStyle(
+            color: AppColors.textDefault,
+            fontSize: 16.2.w,
+            fontWeight: FontWeight.w400),
+      ));
+      names.add(
+        Gap(25.5.h),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [...names],
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:envi_metrix/core/themes/app_colors.dart';
 import 'package:envi_metrix/core/themes/filter_app_colors.dart';
 import 'package:envi_metrix/utils/global_variables.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 
 class Utils {
   static Color getBackgroundColor(String name, double pollutantValue) {
@@ -47,5 +48,44 @@ class Utils {
       default:
         return AirPollutionThresholds.getSO2Message(pollutantValue);
     }
+  }
+
+  static Future<Position> getUserLocation() async {
+    return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+  }
+
+  static void showAnimationDialog(
+      {required BuildContext context,
+      required Offset begin,
+      required Offset end,
+      required Widget child}) {
+    showGeneralDialog(
+      context: context,
+      barrierColor: Colors.grey.withOpacity(0.25),
+      barrierDismissible: true,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        const beginOffset = Offset(1.0, 0.0);
+        const endOffset = Offset(0.0, 0.0);
+        const curve = Curves.easeInOut;
+
+        return SlideTransition(
+            position: Tween<Offset>(begin: beginOffset, end: endOffset)
+                .animate(CurvedAnimation(
+              parent: animation,
+              curve: curve,
+            )),
+            child: child);
+      },
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          contentPadding: EdgeInsets.zero,
+          insetPadding: EdgeInsets.zero,
+          content: child,
+        );
+      },
+    );
   }
 }

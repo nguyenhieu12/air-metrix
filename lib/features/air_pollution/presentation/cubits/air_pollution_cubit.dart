@@ -33,6 +33,8 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
 
     airPollutionData.fold(
       (Failure failure) {
+        emit(
+            const AirPollutionFailed(errorMessage: 'Lost Internet connection'));
         throw ApiException();
       },
       (AirPollutionEntity airPollutionEntity) async {

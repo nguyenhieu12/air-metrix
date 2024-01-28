@@ -12,8 +12,6 @@ part 'disaster_state.dart';
 class DisasterCubit extends Cubit<DisasterState> {
   final GetCurrentDisaster getCurrentDisaster;
 
-  List<DisasterEntity> disasterEnitites = [];
-
   DisasterCubit({required this.getCurrentDisaster}) : super(DisasterInitial());
 
   Future<void> getDisaster() async {
@@ -31,16 +29,12 @@ class DisasterCubit extends Cubit<DisasterState> {
 
     listDisaster.fold(
       (Failure failure) {
+        emit(const DisasterFailed(errorMessage: 'Cannot get NASA EONET API!'));
+
         throw ApiException();
       },
       (List<DisasterEntity> listDisasterResponse) async {
-        disasterEnitites = listDisasterResponse;
-
-        for(int i = 0;i < disasterEnitites.length;i++) {
-          print('DIS: ${disasterEnitites[i].title}');
-        }
-
-        emit(DisasterSuccess());
+        emit(DisasterSuccess(entities: listDisasterResponse));
       },
     );
   }

@@ -53,8 +53,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
     );
 
     if (await userLocation.isAccepted()) {
-      Position currentPosition = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
+      Position currentPosition = await Utils.getUserLocation();
 
       currentLat = currentPosition.latitude;
       currentLong = currentPosition.longitude;
