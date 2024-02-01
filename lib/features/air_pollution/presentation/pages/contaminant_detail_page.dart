@@ -4,6 +4,7 @@ import 'package:envi_metrix/core/themes/app_colors.dart';
 import 'package:envi_metrix/utils/global_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gap/gap.dart';
 
 class ContaminantDetail extends StatelessWidget {
   final String tagName;
@@ -12,7 +13,8 @@ class ContaminantDetail extends StatelessWidget {
   final Color mainColor;
 
   const ContaminantDetail(
-      {required this.tagName,
+      {super.key,
+      required this.tagName,
       required this.cotaminantName,
       required this.pollutantValue,
       required this.mainColor});
@@ -50,10 +52,108 @@ class ContaminantDetail extends StatelessWidget {
               centerTitle: true,
             ),
           ),
-          body: Center(
-            child: _buildColorBarSection(),
-          ),
+          body: Column(children: [
+            _buildOverviewSection(),
+            // Padding(
+            //   padding: EdgeInsets.only(left: 10.w, right: 10.w),
+            //   child: Container(
+            //     decoration: BoxDecoration(
+            //       color: mainColor,
+            //       borderRadius: BorderRadius.circular(5)
+            //     ),
+            //     child: IntrinsicHeight(
+            //       child: Row(
+            //         children: [
+            //           Text(cotaminantName,
+            //             style: TextStyle(
+            //               color: Colors.white,
+            //               fontWeight: FontWeight.w500,
+            //               fontSize: 30.w
+            //             ),
+            //           ),
+            //           const VerticalDivider(
+            //             // width: 5,
+            //             thickness: 1,
+            //             color: Colors.white,
+            //           )
+            //         ],
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            Center(
+              child: _buildColorBarSection(),
+            ),
+          ]),
         ),
+      ),
+    );
+  }
+
+  Widget _buildOverviewSection() {
+    return Padding(
+      padding: EdgeInsets.only(left: 10.w, right: 15.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Gap(6.h),
+          Text(
+            'Overview',
+            style: TextStyle(
+              fontSize: 19.w,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Gap(6.h),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(5),
+              border: Border.all(
+                color: Colors.black,
+                width: 0.75
+              )
+            ),
+            child: IntrinsicHeight(
+              child: Row(
+                children: [
+                  Gap(10.w),
+                  Center(
+                    child: Text(
+                      cotaminantName,
+                      style: TextStyle(
+                          fontSize: 30.w,
+                          fontWeight: FontWeight.w500,
+                          color: mainColor),
+                    ),
+                  ),
+                  Gap(10.w),
+                  const VerticalDivider(
+                    color: Colors.grey,
+                    thickness: 0.75,
+                  ),
+                  Column(
+                    children: [
+                      
+                      Text('\u2022 Concentration: $pollutantValue',
+                        style: TextStyle(
+                          fontSize: 18.w,
+                          fontWeight: FontWeight.w500,
+                          color: mainColor)
+                      ),
+                      Text('Pollution level: }',
+                        style: TextStyle(
+                          fontSize: 18.w,
+                          fontWeight: FontWeight.w500,
+                          color: mainColor)
+                      )
+                    ],
+                  )
+                ],
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
@@ -105,9 +205,12 @@ class ContaminantDetail extends StatelessWidget {
       child: Row(
         children: [
           for (int i = 0; i < pointValue.length; i++)
-            Expanded(flex: 1, child: Text(pointValue[i].toString(), style: TextStyle(
-              fontSize: 15.w
-            ),))
+            Expanded(
+                flex: 1,
+                child: Text(
+                  pointValue[i].toString(),
+                  style: TextStyle(fontSize: 15.w),
+                ))
         ],
       ),
     );
@@ -131,6 +234,4 @@ class ContaminantDetail extends StatelessWidget {
         return AirPollutionThresholds.so2Threshold;
     }
   }
-
-  
 }

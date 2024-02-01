@@ -16,7 +16,7 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
   final GetAirPollutionInformation getCurrentAirPollution;
 
   AirPollutionCubit({required this.getCurrentAirPollution})
-      : super(AirPollutionInitial());
+      : super(AirPollutionLoading());
 
   Future<void> fetchAirPollutionData(double lat, double long) async {
     emit(AirPollutionLoading());
@@ -46,7 +46,13 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
             airPollutionEntity: airPollutionEntity,
             address: Address(
                 country: first.country ?? '',
-                pronvice: first.administrativeArea ?? '')));
+                pronvice: first.administrativeArea ?? '',
+                district: first.subAdministrativeArea ?? '',
+                street: first.street ?? '')));
+
+        // address: Address(
+        //     country: first.country ?? '',
+        //     pronvice: first.administrativeArea ?? '')));
       },
     );
   }

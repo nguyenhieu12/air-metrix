@@ -9,7 +9,7 @@ class LandingPage extends StatelessWidget {
   LandingPage({super.key});
 
   List<Widget> pages = const [
-    DashboardPage(),
+    // DashboardPage(),
     AirPollutionPage(),
     DisasterPage()
   ];
@@ -17,19 +17,23 @@ class LandingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<TabChangeCubit>(
-      create: (context) => TabChangeCubit(), 
-      child: Scaffold(
-        body: pages[context.watch<TabChangeCubit>().state],
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: context.watch<TabChangeCubit>().state,
-          onTap: (value) => context.read<TabChangeCubit>().changeTab(value),
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: 'Dashboard'),
-            BottomNavigationBarItem(icon: Icon(Icons.air), label: 'Air Pollution'),
-            BottomNavigationBarItem(icon: Icon(Icons.sync_lock), label: 'Disaster'),
-          ],
-        ),
-      )
-    );
+        create: (context) => TabChangeCubit(),
+        child: Scaffold(
+          body: IndexedStack(
+            index: context.watch<TabChangeCubit>().state,
+            children: [...pages],
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: context.watch<TabChangeCubit>().state,
+            onTap: (value) => context.read<TabChangeCubit>().changeTab(value),
+            items: const [
+              // BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: 'Dashboard'),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.air), label: 'Air Pollution'),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.sync_lock), label: 'Disaster'),
+            ],
+          ),
+        ));
   }
 }

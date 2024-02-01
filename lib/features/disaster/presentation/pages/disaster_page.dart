@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:envi_metrix/core/themes/app_colors.dart';
 import 'package:envi_metrix/features/disaster/data/data_sources/disaster_remote_datasource.dart';
 import 'package:envi_metrix/features/disaster/data/repositories/disaster_repository_impl.dart';
+import 'package:envi_metrix/features/disaster/domain/entities/disaster_entity.dart';
 import 'package:envi_metrix/features/disaster/domain/use_cases/get_current_disaster.dart';
 import 'package:envi_metrix/features/disaster/presentation/cubits/disaster_cubit.dart';
 import 'package:envi_metrix/services/location/default_location.dart';
@@ -31,6 +32,10 @@ class _DisasterPageState extends State<DisasterPage> {
   MapController mapController = MapController();
 
   UserLocation userLocation = UserLocation();
+
+  late DisasterEntity selectedDisaster;
+
+  bool hasDisasterSelected = false;
 
   Map<String, String> listSymbol = {
     'drought': 'Drought',
@@ -146,8 +151,109 @@ class _DisasterPageState extends State<DisasterPage> {
                 )),
           ],
         ),
-      )
+      ),
+      hasDisasterSelected ? _buildDisasterCardInfo() : const SizedBox()
     ]);
+  }
+
+  Widget _buildDisasterCardInfo() {
+    return Positioned(
+      left: 20.w,
+      right: 80.w,
+      bottom: 20.h,
+      child: Container(
+        width: 320.w,
+        height: 85.h,
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: const [
+              BoxShadow(
+                  color: Colors.black54,
+                  offset: Offset(0.5, 0),
+                  blurRadius: 0.2)
+            ]),
+        child: Padding(
+          padding: EdgeInsets.only(left: 10.w, right: 10.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Gap(4.h),
+              Row(
+                children: [
+                  Tooltip(
+                    message: selectedDisaster.title,
+                    triggerMode: TooltipTriggerMode.tap,
+                    showDuration: const Duration(milliseconds: 2500),
+                    child: Icon(
+                      Icons.info_outline,
+                      color: Colors.black,
+                      size: 21.5.w,
+                    ),
+                  ),
+                  Gap(6.w),
+                  Flexible(
+                    child: Text(
+                      selectedDisaster.title,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16.w,
+                          fontWeight: FontWeight.w400),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        hasDisasterSelected = false;
+                      });
+                    },
+                    child: Icon(
+                      Icons.clear_rounded,
+                      size: 20.w,
+                      color: Colors.black,
+                    ),
+                  )
+                ],
+              ),
+              const Divider(
+                color: Colors.grey,
+                thickness: 0.6,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                          'Latitude: ${selectedDisaster.geometry.coordinates[1]}',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14.5.w,
+                              fontWeight: FontWeight.w400)),
+                      Gap(2.h),
+                      Text(
+                          'Longitude: ${selectedDisaster.geometry.coordinates[0]}',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14.5.w,
+                              fontWeight: FontWeight.w400))
+                    ],
+                  ),
+                  Image.asset(
+                    './assets/icons/${selectedDisaster.categories.id}_icon.png',
+                    width: 30.w,
+                    height: 30.w,
+                  )
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   List<Marker> _buildMapMarker(DisasterSuccess state) {
@@ -168,7 +274,10 @@ class _DisasterPageState extends State<DisasterPage> {
           point: LatLng(lat, long),
           child: GestureDetector(
             onTap: () {
-              mapController.move(LatLng(lat, long), 14);
+              setState(() {
+                hasDisasterSelected = true;
+                selectedDisaster = state.entities[i];
+              });
             },
             child: Image.asset(
               './assets/icons/${state.entities[i].categories.id}_icon.png',
@@ -185,15 +294,6 @@ class _DisasterPageState extends State<DisasterPage> {
     } else {
       return value;
     }
-  }
-
-  void _handleShowDisasterInfo(
-      {required double lat,
-      required double long,
-      required String id,
-      required String category,
-      required String name}) {
-    // showGeneralDialog(context: context, pageBuilder: pageBuilder)
   }
 
   Future<void> _handleUserLocation() async {

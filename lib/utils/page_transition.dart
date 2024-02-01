@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class PageTransition {
   static PageRouteBuilder slideTransition(Widget page) {
     return PageRouteBuilder(
-      transitionDuration: const Duration(microseconds: 1200),
-      reverseTransitionDuration: const Duration(microseconds: 1200),
+      transitionDuration: const Duration(milliseconds: 1000),
+      reverseTransitionDuration: const Duration(milliseconds: 750),
       pageBuilder: (context, animation, secondaryAnimation) => page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = const Offset(1.0, 0.0);

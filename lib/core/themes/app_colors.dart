@@ -24,6 +24,7 @@ class AppColors {
 
   // Search bar colors
   static Color searchBarBorder =  const Color.fromARGB(255, 108, 108, 108);
+  static Color searchBarBorderFocused =  const Color.fromARGB(255, 21, 28, 255);
   static Color searchCoordinatesBorder =  const Color.fromARGB(255, 51, 146, 255);
   static Color searchCoordinatesUnfocus =  const Color.fromARGB(255, 108, 108, 108);
   static Color searchBarCursor =  const Color.fromARGB(255, 0, 0, 0);

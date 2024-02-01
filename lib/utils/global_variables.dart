@@ -1,6 +1,7 @@
-class GlobalVariables {
+class AirPollutionVariables {
   static int airQualityIndex = 0;
   static int yesterdayAQI = 0;
+  static List<int> listForecastAQI = [];
 }
 
 class AppUnits {
@@ -23,3 +24,4 @@ class PollutionMessage {
   static const String veryUnhealthy = 'Very unhealthy';
   static const String hazardous = 'Hazardous';
 }
+

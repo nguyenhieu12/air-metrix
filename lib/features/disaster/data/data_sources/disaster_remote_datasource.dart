@@ -32,14 +32,6 @@ class DisasterRemoteDatasourceImpl implements DisasterRemoteDatasource {
       }
 
       return returnedListModel;
-
-      // return listResult
-      //     .map((disaster) => DisasterModel(
-      //         categories: CategoriesModel.fromJson(disaster['categories'][0]),
-      //         geometry: (disaster['geometry']).map((geometry) =>
-      //             GeometryModel.fromJson(geometry['coordinates'])),
-      //         title: disaster['title']))
-      //     .toList();
     } else {
       throw ApiException();
     }

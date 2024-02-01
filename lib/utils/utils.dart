@@ -1,8 +1,11 @@
+import 'package:envi_metrix/core/connection/internet_cubit.dart';
 import 'package:envi_metrix/core/constraints/air_pollution_thresholds.dart';
 import 'package:envi_metrix/core/themes/app_colors.dart';
 import 'package:envi_metrix/core/themes/filter_app_colors.dart';
 import 'package:envi_metrix/utils/global_variables.dart';
+import 'package:envi_metrix/widgets/internet_snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 
 class Utils {
@@ -87,5 +90,29 @@ class Utils {
         );
       },
     );
+  }
+
+  static void ShowInternetNotifySnackbar(
+      BuildContext context, InternetState internetState) {
+    if (internetState is InternetDisconnected) {
+      InternetSnackbar.showInternetNotifiSnackbar(
+          context: context,
+          message: 'Lost Internet connection',
+          icon: Icon(Icons.wifi_off, size: 24.w, color: AppColors.snackbarIcon),
+          backgroundColor: Colors.red,
+          duration: const Duration(days: 365),
+          displayCloseIcon: true);
+    } else if (internetState is InternetConnected) {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      InternetSnackbar.showInternetNotifiSnackbar(
+          context: context,
+          message: 'Internet connection restored',
+          icon: Icon(Icons.wifi, size: 24.w, color: AppColors.snackbarIcon),
+          backgroundColor: Colors.green,
+          duration: const Duration(seconds: 2),
+          displayCloseIcon: false);
+    } else {
+      return;
+    }
   }
 }

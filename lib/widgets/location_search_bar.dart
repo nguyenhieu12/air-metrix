@@ -1,9 +1,12 @@
 import 'package:envi_metrix/core/themes/app_colors.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_pollution_cubit.dart';
+import 'package:envi_metrix/services/location/user_location.dart';
+import 'package:envi_metrix/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:geolocator/geolocator.dart';
 
 class LocationSearchBar extends StatefulWidget {
   const LocationSearchBar({super.key, required this.airPollutionCubit});
@@ -18,6 +21,7 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
   final TextEditingController _searchController = TextEditingController();
   final TextEditingController _latController = TextEditingController();
   final TextEditingController _longController = TextEditingController();
+  final UserLocation userLocation = UserLocation();
 
   final FocusNode _searchBarFocus = FocusNode();
 
@@ -45,12 +49,13 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
   @override
   Widget build(BuildContext context) {
     return Material(
+      color: Colors.transparent,
       child: Padding(
         padding: EdgeInsets.only(left: 10.w, right: 15.w),
         child: Row(
           children: [
-            Expanded(
-              flex: 15,
+            SizedBox(
+              width: 285.w,
               child: TextFormField(
                 controller: _searchController,
                 focusNode: _searchBarFocus,
@@ -72,14 +77,24 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
                     ),
                     suffixIcon: _buildSuffixIcon(context),
                     enabledBorder: _getBorder(AppColors.searchBarBorder, 20),
-                    focusedBorder: _getBorder(AppColors.searchBarBorder, 20)),
+                    focusedBorder:
+                        _getBorder(AppColors.searchBarBorderFocused, 20)),
               ),
             ),
-            Gap(8.w),
-            Expanded(
-              flex: 1,
+            Gap(10.w),
+            Container(
+              width: 38.w,
+              height: 38.w,
+              decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 0, 110, 255),
+                  borderRadius: BorderRadius.circular(40)),
               child: GestureDetector(
-                child: Icon(Icons.my_location_outlined, size: 26.w),
+                onTap: () => _handleGetUserLocation(),
+                child: Icon(
+                  Icons.my_location,
+                  size: 24.w,
+                  color: Colors.white,
+                ),
               ),
             )
           ],
@@ -268,7 +283,17 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
     if (lat != null && long != null) {
       await widget.airPollutionCubit.fetchAirPollutionData(lat!, long!);
       _searchBarFocus.unfocus();
+      // ignore: use_build_context_synchronously
       Navigator.pop(context, [lat, long]);
+    }
+  }
+
+  Future<void> _handleGetUserLocation() async {
+    if (await userLocation.isAccepted()) {
+      Position currentPosition = await Utils.getUserLocation();
+
+      widget.airPollutionCubit.fetchAirPollutionData(
+          currentPosition.latitude, currentPosition.longitude);
     }
   }
 }
