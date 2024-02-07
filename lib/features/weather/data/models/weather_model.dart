@@ -1,4 +1,4 @@
-import 'package:envi_metrix/features/air_pollution/domain/entities/weather_entity.dart';
+import 'package:envi_metrix/features/weather/domain/entities/weather_entity.dart';
 
 class WeatherModel extends WeatherEntity {
   const WeatherModel(

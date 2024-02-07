@@ -1,4 +1,4 @@
-import 'package:envi_metrix/features/air_pollution/domain/entities/sub_entities.dart';
+import 'package:envi_metrix/features/weather/domain/entities/sub_entities.dart';
 import 'package:equatable/equatable.dart';
 
 class WeatherEntity extends Equatable {

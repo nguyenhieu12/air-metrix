@@ -10,6 +10,7 @@ import 'package:envi_metrix/features/air_pollution/domain/use_cases/get_current_
 import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_pollution_cubit.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/pages/map_pollution_page.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/widgets/contaminant_info.dart';
+import 'package:envi_metrix/injector/injector.dart';
 import 'package:envi_metrix/services/location/default_location.dart';
 import 'package:envi_metrix/services/location/user_location.dart';
 import 'package:envi_metrix/utils/global_variables.dart';
@@ -56,13 +57,15 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
   }
 
   Future<void> initializeAirPollution() async {
-    airPollutionCubit = AirPollutionCubit(
-      getCurrentAirPollution: GetAirPollutionInformation(
-        airPollutionRepository: AirPollutionRepositoryImpl(
-          remoteDataSource: AirPollutionRemoteDataSourceImpl(Dio()),
-        ),
-      ),
-    );
+    // airPollutionCubit = AirPollutionCubit(
+    //   getCurrentAirPollution: GetAirPollutionInformation(
+    //     airPollutionRepository: AirPollutionRepositoryImpl(
+    //       remoteDataSource: AirPollutionRemoteDataSourceImpl(Dio()),
+    //     ),
+    //   ),
+    // );
+
+    airPollutionCubit = Injector.instance();
 
     airPollutionCubit.fetchAirPollutionData(
         DefaultLocation.lat, DefaultLocation.long);
@@ -102,7 +105,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
         ),
       );
     }), listener: ((context, state) {
-      Utils.ShowInternetNotifySnackbar(context, state);
+      Utils.showInternetNotifySnackbar(context, state);
     }));
   }
 
@@ -353,7 +356,6 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
               )
             ],
           ),
-          
           Column(
             children: [
               Column(
@@ -533,20 +535,20 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
   String _getMainPollutantName(Color AQIColor, AirPollutionSuccess state) {
     if (AQIColor ==
         Utils.getBackgroundColor(
-            PollutantName.so2, state.airPollutionEntity.so2)) {
-      return PollutantName.so2;
-    } else if (AQIColor ==
-        Utils.getBackgroundColor(
-            PollutantName.no2, state.airPollutionEntity.no2)) {
-      return PollutantName.no2;
-    } else if (AQIColor ==
-        Utils.getBackgroundColor(
             PollutantName.pm10, state.airPollutionEntity.pm10)) {
       return PollutantName.pm10;
     } else if (AQIColor ==
         Utils.getBackgroundColor(
             PollutantName.pm25, state.airPollutionEntity.pm2_5)) {
       return PollutantName.pm25;
+    } else if (AQIColor ==
+        Utils.getBackgroundColor(
+            PollutantName.so2, state.airPollutionEntity.so2)) {
+      return PollutantName.so2;
+    } else if (AQIColor ==
+        Utils.getBackgroundColor(
+            PollutantName.no2, state.airPollutionEntity.no2)) {
+      return PollutantName.no2;
     } else if (AQIColor ==
         Utils.getBackgroundColor(
             PollutantName.o3, state.airPollutionEntity.o3)) {

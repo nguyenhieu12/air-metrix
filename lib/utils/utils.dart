@@ -92,7 +92,7 @@ class Utils {
     );
   }
 
-  static void ShowInternetNotifySnackbar(
+  static void showInternetNotifySnackbar(
       BuildContext context, InternetState internetState) {
     if (internetState is InternetDisconnected) {
       InternetSnackbar.showInternetNotifiSnackbar(
