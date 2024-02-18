@@ -10,7 +10,6 @@
         android:icon="@mipmap/ic_launcher">
         android:enableOnBackInvokedCallback="true"
         android:usesCleartextTraffic="true"
-        <meta-data android:name="com.mapbox.token" android:value="sk.eyJ1IjoiaGlldW5tMTIxMiIsImEiOiJjbHJsdWFvZWowcDl1MmptcDR3Z3J5cGJpIn0.230gcF7xFnDgA3rFT6mJ7w"/>
 
         <activity
             android:name=".MainActivity"

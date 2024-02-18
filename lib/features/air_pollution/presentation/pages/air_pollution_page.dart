@@ -1,12 +1,8 @@
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:envi_metrix/core/connection/internet_cubit.dart';
 import 'package:envi_metrix/core/themes/app_colors.dart';
 import 'package:envi_metrix/core/themes/filter_app_colors.dart';
-import 'package:envi_metrix/features/air_pollution/data/data_sources/air_pollution_remote_data_source.dart';
-import 'package:envi_metrix/features/air_pollution/data/repositories/air_pollution_repository_impl.dart';
-import 'package:envi_metrix/features/air_pollution/domain/use_cases/get_current_air_pollution.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_pollution_cubit.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/pages/map_pollution_page.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/widgets/contaminant_info.dart';

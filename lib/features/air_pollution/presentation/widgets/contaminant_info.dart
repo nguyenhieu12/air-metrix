@@ -24,7 +24,7 @@ class ContaminantInfo extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
           color: Utils.getBackgroundColor(contamunantName, concentration),
         ),
-        width: 165.w,
+        width: 160.w,
         child: GestureDetector(
           onTap: () => Navigator.push(
               context,
