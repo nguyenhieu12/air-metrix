@@ -31,6 +31,7 @@ dependencies:
   flutter_gemini: ^2.0.3
   floating_draggable_widget: ^2.1.5
   flutter_markdown: ^0.6.19
+  google_nav_bar: ^5.0.6
 
 dev_dependencies:
   flutter_test:

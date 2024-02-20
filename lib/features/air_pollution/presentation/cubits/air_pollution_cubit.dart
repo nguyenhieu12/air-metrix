@@ -15,6 +15,9 @@ part 'air_pollution_state.dart';
 class AirPollutionCubit extends Cubit<AirPollutionState> {
   final GetAirPollutionInformation getCurrentAirPollution;
 
+  int airQualityIndex = 0;
+  List<int> listForecastAQI = [];
+
   AirPollutionCubit({required this.getCurrentAirPollution})
       : super(AirPollutionLoading());
 
@@ -49,10 +52,6 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
                 pronvice: first.administrativeArea ?? '',
                 district: first.subAdministrativeArea ?? '',
                 street: first.street ?? '')));
-
-        // address: Address(
-        //     country: first.country ?? '',
-        //     pronvice: first.administrativeArea ?? '')));
       },
     );
   }

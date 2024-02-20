@@ -1,9 +1,15 @@
+import 'dart:io';
+
 import 'package:envi_metrix/core/connection/internet_cubit.dart';
+import 'package:envi_metrix/core/themes/app_colors.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_pollution_cubit.dart';
+import 'package:envi_metrix/features/dashboard/presentation/cubits/dashboard_cubit.dart';
 import 'package:envi_metrix/features/disaster/presentation/cubits/disaster_cubit.dart';
 import 'package:envi_metrix/injector/injector.dart';
+import 'package:envi_metrix/utils/styles.dart';
 import 'package:envi_metrix/utils/utils.dart';
 import 'package:envi_metrix/widgets/location_search_bar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,6 +26,8 @@ class _DashboardPageState extends State<DashboardPage> {
   late AirPollutionCubit airPollutionCubit;
   late DisasterCubit disasterCubit;
 
+  final DashboardCubit dashboardCubit = DashboardCubit();
+
   @override
   void initState() {
     super.initState();
@@ -27,6 +35,7 @@ class _DashboardPageState extends State<DashboardPage> {
     airPollutionCubit = Injector.instance();
     disasterCubit = Injector.instance();
 
+    dashboardCubit.getData();
   }
 
   @override
@@ -37,32 +46,59 @@ class _DashboardPageState extends State<DashboardPage> {
           Utils.showInternetNotifySnackbar(context, state);
         },
         builder: (context, state) {
-          return Container(
-            decoration: const BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage(
-                      './assets/images/air_pollution_background.png',
-                    ),
-                    fit: BoxFit.fitHeight,
-                    opacity: 0.5)),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Gap(40.h),
-                  LocationSearchBar(airPollutionCubit: airPollutionCubit),
-                  // Gap(15.h),
-                  // _buildLocationName(state),
-                  // Gap(10.h),
-                  // _buildAirQualityIndex(state),
-                  // _buildContaminantInfo(state),
-                  // Gap(5.h),
-                  // _buildForecaseSection(),
-                  // Gap(20.h),
-                ],
-              ),
-            ),
-          );
+          return BlocBuilder(
+              bloc: dashboardCubit,
+              builder: (context, state) {
+                if (state is DashboardLoading) {
+                  return _buildDashboardLoading();
+                } else if (state is DashboardSuccess) {
+                  return _buildDashboardContent();
+                } else {
+                  return Container();
+                }
+              });
         },
+      ),
+    );
+  }
+
+  Widget _buildDashboardLoading() {
+    return Center(
+        child: Platform.isAndroid
+            ? CircularProgressIndicator(
+                color: AppColors.loading, strokeWidth: 2.0)
+            : CupertinoActivityIndicator(color: AppColors.loading));
+  }
+
+  Widget _buildDashboardContent() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Gap(40.h),
+          LocationSearchBar(airPollutionCubit: airPollutionCubit),
+          Gap(15.h),
+          _buildLocalInformation(),
+          _buildGlobalInformation()
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLocalInformation() {
+    return Padding(
+      padding: EdgeInsets.only(left: 10.w, right: 10.w),
+      child: Column(
+        children: [Text('Information by local', style: headerTextStyle)],
+      ),
+    );
+  }
+
+  Widget _buildGlobalInformation() {
+    return Padding(
+      padding: EdgeInsets.only(left: 10.w, right: 10.w),
+      child: Column(
+        children: [Text('Information by global', style: headerTextStyle)],
       ),
     );
   }

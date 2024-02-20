@@ -12,6 +12,7 @@ import 'package:envi_metrix/services/location/user_location.dart';
 import 'package:envi_metrix/utils/global_variables.dart';
 import 'package:envi_metrix/utils/page_transition.dart';
 import 'package:envi_metrix/utils/pollutant_message.dart';
+import 'package:envi_metrix/utils/styles.dart';
 import 'package:envi_metrix/utils/utils.dart';
 import 'package:envi_metrix/widgets/location_search_bar.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -53,14 +54,6 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
   }
 
   Future<void> initializeAirPollution() async {
-    // airPollutionCubit = AirPollutionCubit(
-    //   getCurrentAirPollution: GetAirPollutionInformation(
-    //     airPollutionRepository: AirPollutionRepositoryImpl(
-    //       remoteDataSource: AirPollutionRemoteDataSourceImpl(Dio()),
-    //     ),
-    //   ),
-    // );
-
     airPollutionCubit = Injector.instance();
 
     airPollutionCubit.fetchAirPollutionData(
@@ -161,17 +154,14 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
   }
 
   Widget _buildForecaseSection() {
-    final List<int> data = AirPollutionVariables.listForecastAQI;
+    final List<int> data = airPollutionCubit.listForecastAQI;
 
     return Padding(
       padding: EdgeInsets.only(left: 10.w, right: 10.w),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(
           'Forecast chart',
-          style: TextStyle(
-            fontSize: 20.w,
-            fontWeight: FontWeight.w500,
-          ),
+          style: headerTextStyle,
         ),
         Gap(12.h),
         Container(
@@ -336,10 +326,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
             children: [
               Text(
                 'Overview',
-                style: TextStyle(
-                  fontSize: 20.w,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: headerTextStyle,
               ),
               Gap(10.w),
               GestureDetector(
@@ -392,7 +379,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: FilterAppColors.getAQIColor(
-                  AirPollutionVariables.airQualityIndex)),
+                  airPollutionCubit.airQualityIndex)),
           child: Padding(
             padding: EdgeInsets.only(top: 4.h, bottom: 4.h),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -407,7 +394,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
               Gap(2.h),
               Text(
                 PollutantMessage.getPollutantMessage(
-                    AirPollutionVariables.airQualityIndex),
+                    airPollutionCubit.airQualityIndex),
                 style: TextStyle(
                     fontSize: 18.w,
                     color: AppColors.textWhite,
@@ -424,7 +411,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: FilterAppColors.getAQIColor(
-                    AirPollutionVariables.airQualityIndex)),
+                    airPollutionCubit.airQualityIndex)),
             child: Padding(
               padding: EdgeInsets.only(top: 4.h, bottom: 4.h),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -440,7 +427,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
                 Text(
                   _getMainPollutantName(
                       FilterAppColors.getAQIColor(
-                          AirPollutionVariables.airQualityIndex),
+                          airPollutionCubit.airQualityIndex),
                       state),
                   style: TextStyle(
                     color: AppColors.textWhite,
@@ -465,10 +452,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
           Gap(6.h),
           Text(
             'Pollutant concentration',
-            style: TextStyle(
-              fontSize: 20.w,
-              fontWeight: FontWeight.w500,
-            ),
+            style: headerTextStyle,
           ),
           Gap(12.h),
           Center(
@@ -555,7 +539,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
   }
 
   String getQualityImagePath() {
-    switch (AirPollutionVariables.airQualityIndex) {
+    switch (airPollutionCubit.airQualityIndex) {
       case 1:
         return './assets/images/good_aqi.png';
       case 2:

@@ -1,8 +1,6 @@
-import 'package:envi_metrix/core/constraints/air_pollution_thresholds.dart';
-import 'package:envi_metrix/utils/global_variables.dart';
 import 'package:envi_metrix/core/themes/app_colors.dart';
-import 'package:envi_metrix/core/themes/filter_app_colors.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/pages/contaminant_detail_page.dart';
+import 'package:envi_metrix/utils/global_variables.dart';
 import 'package:envi_metrix/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

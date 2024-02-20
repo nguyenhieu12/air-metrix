@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:envi_metrix/core/connection/internet_cubit.dart';
 import 'package:envi_metrix/core/keys/app_keys.dart';
-import 'package:envi_metrix/features/landing/pages/landing_page.dart';
+import 'package:envi_metrix/features/landing/views/landing_page.dart';
 import 'package:envi_metrix/injector/injector.dart';
 import 'package:envi_metrix/services/tab_change/tab_change_cubit.dart';
 import 'package:flutter/foundation.dart';
@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
                   BlocProvider<TabChangeCubit>(
                       create: (context) => TabChangeCubit()),
                 ],
-                child: LandingPage(),
+                child: const LandingPage(),
               ),
             ));
   }

@@ -1,9 +1,3 @@
-class AirPollutionVariables {
-  static int airQualityIndex = 0;
-  static int yesterdayAQI = 0;
-  static List<int> listForecastAQI = [];
-}
-
 class AppUnits {
   static const String contamitantUnit = "μg/m\u00b3";
 }
@@ -14,7 +8,7 @@ class PollutantName {
   static const String pm10 = 'PM10';
   static const String pm25 = 'PM2.5';
   static const String o3 = 'O3';
-  static const String co = 'CO'; 
+  static const String co = 'CO';
 }
 
 class PollutionMessage {
@@ -24,4 +18,3 @@ class PollutionMessage {
   static const String veryUnhealthy = 'Very unhealthy';
   static const String hazardous = 'Hazardous';
 }
-

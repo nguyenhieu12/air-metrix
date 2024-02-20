@@ -3,6 +3,7 @@ import 'package:envi_metrix/features/air_pollution/data/data_sources/air_polluti
 import 'package:envi_metrix/features/air_pollution/data/repositories/air_pollution_repository_impl.dart';
 import 'package:envi_metrix/features/air_pollution/domain/use_cases/get_current_air_pollution.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_pollution_cubit.dart';
+import 'package:envi_metrix/features/dashboard/presentation/cubits/dashboard_cubit.dart';
 import 'package:envi_metrix/features/disaster/data/data_sources/disaster_remote_datasource.dart';
 import 'package:envi_metrix/features/disaster/data/repositories/disaster_repository_impl.dart';
 import 'package:envi_metrix/features/disaster/domain/use_cases/get_current_disaster.dart';
@@ -24,6 +25,14 @@ class BlocModule {
           getCurrentDisaster: GetCurrentDisaster(
               disasterRepository: DisasterRepositoryImpl(
                   disasterRemoteDatasource:
-                      DisasterRemoteDatasourceImpl(dio: Dio())))));
+                      DisasterRemoteDatasourceImpl(dio: Dio())))))
+      ..registerSingleton(DashboardCubit());
+    // ..registerSingleton<DashboardCubit>(DashboardCubit(
+    //     getDashboardData: GetDashboardData(
+    //         airPollutionRepository: AirPollutionRepositoryImpl(
+    //             remoteDataSource: AirPollutionRemoteDataSourceImpl(Dio())),
+    //         disasterRepository: DisasterRepositoryImpl(
+    //             disasterRemoteDatasource:
+    //                 DisasterRemoteDatasourceImpl(dio: Dio())))));
   }
 }

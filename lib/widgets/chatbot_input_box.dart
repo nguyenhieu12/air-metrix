@@ -1,56 +1,91 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ChatbotInputBox extends StatelessWidget {
-  final TextEditingController? controller;
-  final VoidCallback? onSend, onClickCamera;
+  final VoidCallback? onSend;
+  final FocusNode focusNode = FocusNode();
+  final TextEditingController controller = TextEditingController();
 
-  const ChatbotInputBox({
+  ChatbotInputBox({
     super.key,
-    this.controller,
     this.onSend,
-    this.onClickCamera,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.all(8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          if (onClickCamera != null)
-            Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: IconButton(
-                  onPressed: onClickCamera,
-                  color: Theme.of(context).colorScheme.onSecondary,
-                  icon: const Icon(Icons.file_copy_rounded)),
-            ),
-          Expanded(
-              child: TextField(
+    return Padding(
+      padding: EdgeInsets.only(left: 8.w, right: 8.w, bottom: 8.h),
+      child: Container(
+          decoration: BoxDecoration(
+              color: Colors.white, borderRadius: BorderRadius.circular(10)),
+          width: MediaQuery.of(context).size.width,
+          height: 40.h,
+          child: TextField(
             controller: controller,
             minLines: 1,
             maxLines: 6,
             cursorColor: Theme.of(context).colorScheme.inversePrimary,
             textInputAction: TextInputAction.newline,
             keyboardType: TextInputType.multiline,
-            decoration: const InputDecoration(
-              contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 4),
-              hintText: 'Message',
-              border: InputBorder.none,
-            ),
-            onTapOutside: (event) =>
-                FocusManager.instance.primaryFocus?.unfocus(),
+            decoration: InputDecoration(
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
+                hintText: 'Message',
+                border: InputBorder.none,
+                suffixIcon: GestureDetector(
+                  onTap: () {
+                    if (controller.text == '') {
+                      focusNode.unfocus();
+                    } else {
+                      onSend?.call();
+                    }
+                  },
+                  child: const Icon(
+                    Icons.send_rounded,
+                    color: Colors.blue,
+                  ),
+                )),
+            onTapOutside: (event) => focusNode.unfocus(),
+            onSubmitted: (searchedText) {
+              if (searchedText == '') {
+                focusNode.unfocus();
+              } else {
+                onSend?.call();
+              }
+            },
           )),
-          Padding(
-            padding: const EdgeInsets.all(4),
-            child: FloatingActionButton.small(
-              onPressed: onSend,
-              child: const Icon(Icons.send_rounded),
-            ),
-          )
-        ],
-      ),
     );
+
+    // return Card(
+    //   margin: const EdgeInsets.all(8),
+    //   child: Row(
+    //     crossAxisAlignment: CrossAxisAlignment.end,
+    //     children: [
+    //       Expanded(
+    //           child: TextField(
+    //         controller: controller,
+    //         minLines: 1,
+    //         maxLines: 6,
+    //         cursorColor: Theme.of(context).colorScheme.inversePrimary,
+    //         textInputAction: TextInputAction.newline,
+    //         keyboardType: TextInputType.multiline,
+    //         decoration: const InputDecoration(
+    //           contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 4),
+    //           hintText: 'Message',
+    //           border: InputBorder.none,
+    //         ),
+    //         onTapOutside: (event) =>
+    //             FocusManager.instance.primaryFocus?.unfocus(),
+    //       )),
+    //       Padding(
+    //         padding: const EdgeInsets.all(4),
+    //         child: GestureDetector(
+    //           onTap: onSend,
+    //           child: Icon(Icons.send, color: Colors.blue),
+    //         ),
+    //       )
+    //     ],
+    //   ),
+    // );
   }
 }
