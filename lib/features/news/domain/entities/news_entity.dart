@@ -1,10 +1,10 @@
 class NewsEntity {
-  final String content;
-  final String description;
-  final String publishedAt;
-  final String title;
-  final String url;
-  final String urlToImage;
+  final String? content;
+  final String? description;
+  final String? publishedAt;
+  final String? title;
+  final String? url;
+  final String? urlToImage;
 
   NewsEntity(
       {required this.content,

@@ -7,7 +7,6 @@ import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_pollu
 import 'package:envi_metrix/features/air_pollution/presentation/pages/map_pollution_page.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/widgets/contaminant_info.dart';
 import 'package:envi_metrix/injector/injector.dart';
-import 'package:envi_metrix/services/location/default_location.dart';
 import 'package:envi_metrix/services/location/user_location.dart';
 import 'package:envi_metrix/utils/global_variables.dart';
 import 'package:envi_metrix/utils/page_transition.dart';

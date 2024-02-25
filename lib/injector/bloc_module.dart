@@ -9,6 +9,10 @@ import 'package:envi_metrix/features/disaster/data/data_sources/disaster_remote_
 import 'package:envi_metrix/features/disaster/data/repositories/disaster_repository_impl.dart';
 import 'package:envi_metrix/features/disaster/domain/use_cases/get_current_disaster.dart';
 import 'package:envi_metrix/features/disaster/presentation/cubits/disaster_cubit.dart';
+import 'package:envi_metrix/features/news/data/data_sources/news_remote_data_source.dart';
+import 'package:envi_metrix/features/news/data/repositories/news_repository_impl.dart';
+import 'package:envi_metrix/features/news/domain/use_cases/get_news.dart';
+import 'package:envi_metrix/features/news/presentation/cubits/news_cubit.dart';
 import 'package:envi_metrix/injector/injector.dart';
 
 class BlocModule {
@@ -28,7 +32,10 @@ class BlocModule {
                   disasterRemoteDatasource:
                       DisasterRemoteDatasourceImpl(dio: Dio())))))
       ..registerSingleton<DashboardCubit>(DashboardCubit())
-      ..registerSingleton<AppCubit>(AppCubit());
-   
+      ..registerSingleton<AppCubit>(AppCubit())
+      ..registerSingleton<NewsCubit>(NewsCubit(
+          getNews: GetNews(
+              newsRepository: NewsRepositoryImpl(
+                  newsRemoteDataSource: NewsRemoteDataSourceImpl(Dio())))));
   }
 }

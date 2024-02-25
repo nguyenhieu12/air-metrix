@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_pollution_cubit.dart';
 import 'package:envi_metrix/injector/injector.dart';
 import 'package:envi_metrix/services/time_converter/time_converter.dart';
-import 'package:envi_metrix/utils/global_variables.dart';
 import 'package:envi_metrix/core/errors/exceptions.dart';
 import 'package:envi_metrix/core/keys/app_keys.dart';
 import 'package:envi_metrix/features/air_pollution/data/models/air_pollution_model.dart';

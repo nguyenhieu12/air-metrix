@@ -2,6 +2,7 @@ import 'package:envi_metrix/features/air_pollution/presentation/pages/air_pollut
 import 'package:envi_metrix/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:envi_metrix/features/disaster/presentation/pages/disaster_page.dart';
 import 'package:envi_metrix/features/app/views/chatbot_page.dart';
+import 'package:envi_metrix/features/news/presentation/pages/news_page.dart';
 import 'package:envi_metrix/services/tab_change/tab_change_cubit.dart';
 import 'package:envi_metrix/utils/page_transition.dart';
 import 'package:floating_draggable_widget/floating_draggable_widget.dart';
@@ -21,7 +22,7 @@ class _LandingPageState extends State<LandingPage> {
   List<Widget> pages = const [
     DashboardPage(),
     AirPollutionPage(),
-    DisasterPage(),
+    NewsPage(),
     DisasterPage()
   ];
 

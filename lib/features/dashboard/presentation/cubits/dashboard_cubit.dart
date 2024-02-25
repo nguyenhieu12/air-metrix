@@ -1,17 +1,11 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:dartz/dartz.dart';
-import 'package:envi_metrix/core/errors/exceptions.dart';
-import 'package:envi_metrix/core/errors/failures.dart';
 import 'package:envi_metrix/core/models/address_model.dart';
 import 'package:envi_metrix/features/air_pollution/domain/entities/air_pollution_entity.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_pollution_cubit.dart';
 import 'package:envi_metrix/features/disaster/domain/entities/disaster_entity.dart';
 import 'package:envi_metrix/features/disaster/presentation/cubits/disaster_cubit.dart';
 import 'package:envi_metrix/injector/injector.dart';
-import 'package:envi_metrix/services/location/default_location.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geocoding/geocoding.dart';
 
 part 'dashboard_state.dart';
 

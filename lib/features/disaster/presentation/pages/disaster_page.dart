@@ -1,12 +1,9 @@
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:envi_metrix/core/themes/app_colors.dart';
-import 'package:envi_metrix/features/disaster/data/data_sources/disaster_remote_datasource.dart';
-import 'package:envi_metrix/features/disaster/data/repositories/disaster_repository_impl.dart';
 import 'package:envi_metrix/features/disaster/domain/entities/disaster_entity.dart';
-import 'package:envi_metrix/features/disaster/domain/use_cases/get_current_disaster.dart';
 import 'package:envi_metrix/features/disaster/presentation/cubits/disaster_cubit.dart';
+import 'package:envi_metrix/injector/injector.dart';
 import 'package:envi_metrix/services/location/default_location.dart';
 import 'package:envi_metrix/services/location/user_location.dart';
 import 'package:envi_metrix/utils/utils.dart';
@@ -65,11 +62,7 @@ class _DisasterPageState extends State<DisasterPage> {
   }
 
   Future<void> initDisasterData() async {
-    disasterCubit = DisasterCubit(
-        getCurrentDisaster: GetCurrentDisaster(
-            disasterRepository: DisasterRepositoryImpl(
-                disasterRemoteDatasource:
-                    DisasterRemoteDatasourceImpl(dio: Dio()))));
+    disasterCubit = Injector.instance();
 
     disasterCubit.getDisaster();
   }
