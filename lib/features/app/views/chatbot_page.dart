@@ -27,65 +27,68 @@ class _ChatbotPageState extends State<ChatbotPage> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         leading: GestureDetector(
-          onTap: () => Navigator.of(context).pop(),
-          child: Icon(Icons.arrow_back, color: Colors.white, size: 25.w,)),
+            onTap: () => Navigator.of(context).pop(),
+            child: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+              size: 25.w,
+            )),
         centerTitle: true,
-        title: const Text('Chat with Gemini',
-          style: TextStyle(
-            color: Colors.white
-          ),
+        title: const Text(
+          'Chat with Gemini',
+          style: TextStyle(color: Colors.white),
         ),
       ),
       body: DecoratedBox(
-        decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.93)
-        ),
+        decoration: BoxDecoration(color: Colors.black.withOpacity(0.93)),
         child: Column(
-        children: [
-          Expanded(
-              child: chats.isNotEmpty
-                  ? Align(
-                      alignment: Alignment.bottomCenter,
-                      child: SingleChildScrollView(
-                        reverse: true,
-                        child: ListView.builder(
-                          itemBuilder: chatItem,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: chats.length,
-                          reverse: false,
+          children: [
+            Expanded(
+                child: chats.isNotEmpty
+                    ? Align(
+                        alignment: Alignment.bottomCenter,
+                        child: SingleChildScrollView(
+                          reverse: true,
+                          child: ListView.builder(
+                            itemBuilder: chatItem,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: chats.length,
+                            reverse: false,
+                          ),
                         ),
-                      ),
-                    )
-                  : const Center(child: Text('Search something!'))),
-          if (loading) const CircularProgressIndicator(),
-          ChatbotInputBox(
-            onSend: () {
-              if (controller.text.isNotEmpty) {
-                final searchedText = controller.text;
-                chats.add(
-                    Content(role: 'user', parts: [Parts(text: searchedText)]));
-                controller.clear();
-                loading = true;
-        
-                gemini.streamChat(chats).listen((value) {
-                  loading = false;
-                  setState(() {
-                    if (chats.isNotEmpty &&
-                        chats.last.role == value.content?.role) {
-                      chats.last.parts!.last.text =
-                          '${chats.last.parts!.last.text}${value.output}';
-                    } else {
-                      chats.add(Content(
-                          role: 'model', parts: [Parts(text: value.output)]));
-                    }
+                      )
+                    : const Center(child: Text('Search something!'))),
+            if (loading) const CircularProgressIndicator(),
+            ChatbotInputBox(
+              onSend: () {
+                if (controller.text.isNotEmpty) {
+                  final searchedText = controller.text;
+                  chats.add(Content(
+                      role: 'user', parts: [Parts(text: searchedText)]));
+                  controller.clear();
+                  loading = true;
+
+                  gemini.streamChat(chats).listen((value) {
+                    loading = false;
+                    setState(() {
+                      if (chats.isNotEmpty &&
+                          chats.last.role == value.content?.role) {
+                        chats.last.parts!.last.text =
+                            '${chats.last.parts!.last.text}${value.output}';
+                      } else {
+                        chats.add(Content(
+                            role: 'model', parts: [Parts(text: value.output)]));
+                      }
+                    });
                   });
-                });
-              }
-            },
-          ),
-        ],
+                } else {
+                  FocusManager.instance.rootScope.unfocus();
+                }
+              },
             ),
+          ],
+        ),
       ),
     );
   }
@@ -125,7 +128,6 @@ class _ChatbotPageState extends State<ChatbotPage> {
                         content.role == 'model' ? Colors.white : Colors.black,
                   ),
                   listBullet: TextStyle(
-                      // fontSize: 12.w,
                       color: content.role == 'model'
                           ? Colors.white
                           : Colors.black),

@@ -57,7 +57,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
     airPollutionCubit = Injector.instance();
 
     airPollutionCubit.fetchAirPollutionData(
-        DefaultLocation.lat, DefaultLocation.long);
+        airPollutionCubit.currentLat, airPollutionCubit.currentLong);
 
     // if (await userLocation.isAccepted()) {
     //   Position currentPosition = await Utils.getUserLocation();
@@ -80,8 +80,10 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
       return BlocProvider(
         create: (context) => airPollutionCubit,
         child: Scaffold(
-          body: BlocBuilder<AirPollutionCubit, AirPollutionState>(
-            builder: (context, state) {
+          body: BlocProvider.value(
+            value: Injector.instance<AirPollutionCubit>(),
+            child: BlocBuilder<AirPollutionCubit, AirPollutionState>(
+                builder: (context, state) {
               if (state is AirPollutionLoading) {
                 return _buildLoading();
               } else if (state is AirPollutionSuccess) {
@@ -89,7 +91,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
               } else {
                 return _buildErrorContent();
               }
-            },
+            }),
           ),
         ),
       );
@@ -359,7 +361,6 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
                       _buildMainQualityInfo(state),
                     ],
                   ),
-                  Gap(8.h)
                 ],
               ),
               Gap(10.w),
@@ -449,7 +450,6 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Gap(6.h),
           Text(
             'Pollutant concentration',
             style: headerTextStyle,
@@ -487,7 +487,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
               ],
             ),
           ),
-          Gap(15.h)
+          Gap(10.h)
         ],
       ),
     );

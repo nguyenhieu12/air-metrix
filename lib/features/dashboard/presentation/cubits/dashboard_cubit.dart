@@ -24,52 +24,81 @@ class DashboardCubit extends Cubit<DashboardState> {
   late AirPollutionCubit airPollutionCubit;
   late DisasterCubit disasterCubit;
 
-  String mostFrequentDisaster = '';
+  Map<String, int> disasterQuantity = {};
+  String maxDisaster = '';
 
-  // final GetDashboardData getDashboardData;
+  int totalDisasters = 0;
 
-  Future<void> getData() async {
-    emit(DashboardLoading());
+  // Future<void> getData() async {
+  //   emit(DashboardLoading());
 
-    final connect = await Connectivity().checkConnectivity();
+  //   final connect = await Connectivity().checkConnectivity();
 
-    if (connect == ConnectivityResult.none) {
-      emit(const DashboardFailed(errorMessage: 'Lost Internet connection'));
-      return;
-    }
+  //   if (connect == ConnectivityResult.none) {
+  //     emit(const DashboardFailed(errorMessage: 'Lost Internet connection'));
+  //     return;
+  //   }
 
-    final Either<Failure, AirPollutionEntity> airPollutionData =
-        await airPollutionCubit.getCurrentAirPollution
-            .getCurrentAirPollution(DefaultLocation.lat, DefaultLocation.long);
+  //   final Either<Failure, AirPollutionEntity> airPollutionData =
+  //       await airPollutionCubit.getCurrentAirPollution
+  //           .getCurrentAirPollution(DefaultLocation.lat, DefaultLocation.long);
 
-    final Either<Failure, List<DisasterEntity>> disasterData =
-        await disasterCubit.getCurrentDisaster.getDisaster();
+  //   final Either<Failure, List<DisasterEntity>> disasterData =
+  //       await disasterCubit.getCurrentDisaster.getDisaster();
 
-    airPollutionData.fold(
-      (Failure failure) {
-        emit(const DashboardFailed(errorMessage: 'Lost Internet connection'));
-        throw ApiException();
-      },
-      (AirPollutionEntity airPollutionEntity) async {
-        List<Placemark> placemarks = await placemarkFromCoordinates(
-            DefaultLocation.lat, DefaultLocation.long);
+  //   airPollutionData.fold(
+  //     (Failure failure) {
+  //       emit(const DashboardFailed(errorMessage: 'Lost Internet connection'));
+  //       throw ApiException();
+  //     },
+  //     (AirPollutionEntity airPollutionEntity) async {
+  //       List<Placemark> placemarks = await placemarkFromCoordinates(
+  //           DefaultLocation.lat, DefaultLocation.long);
 
-        final first = placemarks.first;
+  //       final first = placemarks.first;
 
-        disasterData.fold((Failure failure) {
-          emit(const DashboardFailed(errorMessage: 'Lost Internet connection'));
-          throw ApiException();
-        }, (List<DisasterEntity> listDisasterEntity) {
-          emit(DashboardSuccess(
-              airPollutionEntity: airPollutionEntity,
-              listDisasterEntity: listDisasterEntity,
-              address: Address(
-                  country: first.country ?? '',
-                  pronvice: first.administrativeArea ?? '',
-                  district: first.subAdministrativeArea ?? '',
-                  street: first.street ?? '')));
-        });
-      },
-    );
+  //       disasterData.fold((Failure failure) {
+  //         emit(const DashboardFailed(errorMessage: 'Lost Internet connection'));
+  //         throw ApiException();
+  //       }, (List<DisasterEntity> listDisasterEntity) {
+  //         List<String> disasterId =
+  //             listDisasterEntity.map((e) => e.categories.id).toList();
+
+  //         disasterQuantity = createMap(disasterId);
+
+  //         getMaxDisasterInfo(disasterQuantity);
+
+  //         disasterQuantity.forEach((key, value) => totalDisasters += value);
+
+  //         emit(DashboardSuccess(
+  //             airPollutionEntity: airPollutionEntity,
+  //             listDisasterEntity: listDisasterEntity,
+  //             address: Address(
+  //                 country: first.country ?? '',
+  //                 pronvice: first.administrativeArea ?? '',
+  //                 district: first.subAdministrativeArea ?? '',
+  //                 street: first.street ?? '')));
+  //       });
+  //     },
+  //   );
+  // }
+
+  void getDashboardInitData(double lat, double long) {
+    getAirData(lat, long);
+    getDisastersData();
   }
+
+  void getDataWithLatLong(double lat, double long) {
+    getAirData(lat, long);
+  }
+
+  void getAirData(double lat, double long) {
+    airPollutionCubit.fetchAirPollutionData(lat, long);
+  }
+
+  void getDisastersData() {
+    disasterCubit.getDisaster();
+  }
+
+  
 }

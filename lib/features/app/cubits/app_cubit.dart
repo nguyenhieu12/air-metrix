@@ -18,7 +18,8 @@ class AppCubit extends Cubit<AppState> {
 
     for (int i = 0; i < cities.length; i++) {
       cityData.add({
-        cities[i]['name']: {'lat': cities[i]['lat'], 'long': cities[i]['lon']}
+        'name': cities[i]['name'],
+        'coordinates': {'lat': cities[i]['lat'], 'long': cities[i]['lon']}
       });
     }
   }

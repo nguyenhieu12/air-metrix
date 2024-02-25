@@ -46,7 +46,7 @@ class _DisasterPageState extends State<DisasterPage> {
     'seaLakeIce': 'Sea and Lake Ice',
     'severeStorms': 'Severe Storm',
     'snow': 'Snow',
-    'tempExtremes': 'Temperature Extreme',
+    'tempExtremes': 'High Temperature',
     'volcanoes': 'Volcano',
     'wildfires': 'Wildfire'
   };

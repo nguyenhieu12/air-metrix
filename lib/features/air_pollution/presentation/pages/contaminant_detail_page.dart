@@ -42,7 +42,7 @@ class ContaminantDetail extends StatelessWidget {
               title: Padding(
                 padding: EdgeInsets.only(top: 10.h),
                 child: Text(
-                  'Thông tin chi tiết',
+                  'Detail information',
                   style: TextStyle(
                       fontSize: 22.w,
                       fontWeight: FontWeight.w500,

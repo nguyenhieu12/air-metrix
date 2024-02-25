@@ -1,5 +1,7 @@
 import 'package:envi_metrix/core/themes/app_colors.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_pollution_cubit.dart';
+import 'package:envi_metrix/features/app/cubits/app_cubit.dart';
+import 'package:envi_metrix/injector/injector.dart';
 import 'package:envi_metrix/services/location/user_location.dart';
 import 'package:envi_metrix/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +20,8 @@ class LocationSearchBar extends StatefulWidget {
 }
 
 class _LocationSearchBarState extends State<LocationSearchBar> {
+  late AppCubit _cubit;
+
   final TextEditingController _searchController = TextEditingController();
   final TextEditingController _latController = TextEditingController();
   final TextEditingController _longController = TextEditingController();
@@ -38,6 +42,8 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
         isFocused = !isFocused;
       });
     });
+
+    _cubit = Injector.instance();
   }
 
   @override
@@ -56,6 +62,18 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
           children: [
             SizedBox(
               width: 285.w,
+              // child: Autocomplete<Map<String, dynamic>>(
+              //     optionsBuilder: (TextEditingValue textEditingValue) {
+              //   if (textEditingValue.text == '') {
+              //     return const Iterable<Map<String, dynamic>>.empty();
+              //   }
+
+              //   return _cubit.cityData.where((element) {
+              //     return element
+              //         .containsKey(textEditingValue.text.toUpperCase());
+              //   });
+              // })),
+
               child: TextFormField(
                 controller: _searchController,
                 focusNode: _searchBarFocus,

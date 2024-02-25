@@ -4,6 +4,7 @@ import 'package:envi_metrix/core/errors/exceptions.dart';
 import 'package:envi_metrix/core/models/address_model.dart';
 import 'package:envi_metrix/features/air_pollution/domain/entities/air_pollution_entity.dart';
 import 'package:envi_metrix/features/air_pollution/domain/use_cases/get_current_air_pollution.dart';
+import 'package:envi_metrix/services/location/default_location.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
@@ -17,6 +18,9 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
 
   int airQualityIndex = 0;
   List<int> listForecastAQI = [];
+
+  double currentLat = DefaultLocation.lat;
+  double currentLong = DefaultLocation.long;
 
   AirPollutionCubit({required this.getCurrentAirPollution})
       : super(AirPollutionLoading());
@@ -90,5 +94,10 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
 
   void handleReloadCurrentAirPollution(double lat, double long) {
     fetchAirPollutionData(lat, long);
+  }
+
+  void setNewLatLong(double lat, double long) {
+    currentLat = lat;
+    currentLat = long;
   }
 }

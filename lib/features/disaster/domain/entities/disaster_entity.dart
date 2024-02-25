@@ -7,7 +7,5 @@ class DisasterEntity {
   final String title;
 
   DisasterEntity(
-      {required this.categories,
-      required this.geometry,
-      required this.title});
+      {required this.categories, required this.geometry, required this.title});
 }

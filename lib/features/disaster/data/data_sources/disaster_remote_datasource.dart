@@ -26,7 +26,8 @@ class DisasterRemoteDatasourceImpl implements DisasterRemoteDatasource {
         List<dynamic> geometries = listResult[i]['geometry'];
 
         returnedListModel.add(DisasterModel(
-            categories: CategoriesModel.fromJson(listResult[i]['categories'][0]),
+            categories:
+                CategoriesModel.fromJson(listResult[i]['categories'][0]),
             geometry: GeometryModel.fromJson(geometries[geometries.length - 1]),
             title: listResult[i]['title']));
       }
