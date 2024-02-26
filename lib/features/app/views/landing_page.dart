@@ -40,10 +40,10 @@ class _LandingPageState extends State<LandingPage> {
           bottomNavigationBar: Container(
             decoration: BoxDecoration(boxShadow: [
               BoxShadow(
-                  color: Colors.black.withOpacity(0.5),
+                  color: Colors.black.withOpacity(0.75),
                   offset: const Offset(0, 0),
-                  spreadRadius: 0.75,
-                  blurRadius: 0)
+                  // spreadRadius: 0.75,
+                  blurRadius: 1)
             ]),
             child: GNav(
               backgroundColor: Colors.white,

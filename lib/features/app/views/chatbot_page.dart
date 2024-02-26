@@ -62,8 +62,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
             if (loading) const CircularProgressIndicator(),
             ChatbotInputBox(
               onSend: () {
-                if (controller.text.isNotEmpty) {
-                  final searchedText = controller.text;
+                final searchedText = controller.text;
                   chats.add(Content(
                       role: 'user', parts: [Parts(text: searchedText)]));
                   controller.clear();
@@ -82,9 +81,29 @@ class _ChatbotPageState extends State<ChatbotPage> {
                       }
                     });
                   });
-                } else {
-                  FocusManager.instance.rootScope.unfocus();
-                }
+                // if (controller.text.isNotEmpty) {
+                //   final searchedText = controller.text;
+                //   chats.add(Content(
+                //       role: 'user', parts: [Parts(text: searchedText)]));
+                //   controller.clear();
+                //   loading = true;
+
+                //   gemini.streamChat(chats).listen((value) {
+                //     loading = false;
+                //     setState(() {
+                //       if (chats.isNotEmpty &&
+                //           chats.last.role == value.content?.role) {
+                //         chats.last.parts!.last.text =
+                //             '${chats.last.parts!.last.text}${value.output}';
+                //       } else {
+                //         chats.add(Content(
+                //             role: 'model', parts: [Parts(text: value.output)]));
+                //       }
+                //     });
+                //   });
+                // } else {
+                //   FocusManager.instance.rootScope.unfocus();
+                // }
               },
             ),
           ],

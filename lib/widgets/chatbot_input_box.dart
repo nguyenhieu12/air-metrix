@@ -55,37 +55,5 @@ class ChatbotInputBox extends StatelessWidget {
             },
           )),
     );
-
-    // return Card(
-    //   margin: const EdgeInsets.all(8),
-    //   child: Row(
-    //     crossAxisAlignment: CrossAxisAlignment.end,
-    //     children: [
-    //       Expanded(
-    //           child: TextField(
-    //         controller: controller,
-    //         minLines: 1,
-    //         maxLines: 6,
-    //         cursorColor: Theme.of(context).colorScheme.inversePrimary,
-    //         textInputAction: TextInputAction.newline,
-    //         keyboardType: TextInputType.multiline,
-    //         decoration: const InputDecoration(
-    //           contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 4),
-    //           hintText: 'Message',
-    //           border: InputBorder.none,
-    //         ),
-    //         onTapOutside: (event) =>
-    //             FocusManager.instance.primaryFocus?.unfocus(),
-    //       )),
-    //       Padding(
-    //         padding: const EdgeInsets.all(4),
-    //         child: GestureDetector(
-    //           onTap: onSend,
-    //           child: Icon(Icons.send, color: Colors.blue),
-    //         ),
-    //       )
-    //     ],
-    //   ),
-    // );
   }
 }

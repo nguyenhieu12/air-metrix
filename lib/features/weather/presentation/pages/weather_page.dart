@@ -11,10 +11,8 @@ class WeatherPage extends StatefulWidget {
 class _WeatherPageState extends State<WeatherPage> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Text(TimeConverter.getCurrentHourTimestamp().toString()),
-      ),
+    return Center(
+      child: Text(TimeConverter.getCurrentHourTimestamp().toString()),
     );
   }
 }

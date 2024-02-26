@@ -61,7 +61,7 @@ class AirPollutionRemoteDataSourceImpl implements AirPollutionRemoteDataSource {
   Future<List<AirPollutionModel>> getAirPollutionForecast(
       double lat, double long) async {
     final respone = await dio.get(
-        'http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${lat}&lon=${long}&appid=${AppKeys.openWeatherMapKey}');
+        'http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=$lat&lon=$long&appid=${AppKeys.openWeatherMapKey}');
 
     if (respone.statusCode == 200) {
       AQI.airQualityIndex.clear();
@@ -90,7 +90,7 @@ class AirPollutionRemoteDataSourceImpl implements AirPollutionRemoteDataSource {
   Future<List<AirPollutionModel>> getAirPollutionHistory(
       double lat, double long, int unixStartDate, int unixEndDate) async {
     final respone = await dio.get(
-        'http://api.openweathermap.org/data/2.5/air_pollution/history?lat=${lat}&lon=${long}&start=${unixStartDate}&end=${unixEndDate}&appid=${AppKeys.openWeatherMapKey}');
+        'http://api.openweathermap.org/data/2.5/air_pollution/history?lat=$lat&lon=$long&start=$unixStartDate&end=$unixEndDate&appid=${AppKeys.openWeatherMapKey}');
 
     if (respone.statusCode == 200) {
       List<dynamic> listResponeModel = respone.data['list'];
