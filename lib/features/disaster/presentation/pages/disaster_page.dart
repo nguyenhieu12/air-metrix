@@ -115,21 +115,6 @@ class _DisasterPageState extends State<DisasterPage> {
           children: [
             Container(
                 decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 0, 140, 255),
-                    borderRadius: BorderRadius.circular(30)),
-                child: Padding(
-                  padding: const EdgeInsets.all(3),
-                  child: IconButton(
-                      onPressed: () => _handleUserLocation(),
-                      icon: Icon(
-                        Icons.my_location_outlined,
-                        color: AppColors.whiteIcon,
-                        size: 25.5.w,
-                      )),
-                )),
-            Gap(10.h),
-            Container(
-                decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 255, 89, 0),
                     borderRadius: BorderRadius.circular(30)),
                 child: Padding(
@@ -140,6 +125,21 @@ class _DisasterPageState extends State<DisasterPage> {
                         Icons.list,
                         color: AppColors.whiteIcon,
                         size: 28.w,
+                      )),
+                )),
+            Gap(10.h),
+            Container(
+                decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 0, 140, 255),
+                    borderRadius: BorderRadius.circular(30)),
+                child: Padding(
+                  padding: const EdgeInsets.all(3),
+                  child: IconButton(
+                      onPressed: () => _handleUserLocation(),
+                      icon: Icon(
+                        Icons.my_location_outlined,
+                        color: AppColors.whiteIcon,
+                        size: 25.5.w,
                       )),
                 )),
           ],

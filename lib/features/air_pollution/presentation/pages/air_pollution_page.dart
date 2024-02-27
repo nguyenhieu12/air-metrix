@@ -513,24 +513,24 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
   // ignore: non_constant_identifier_names
   String _getMainPollutantName(Color AQIColor, AirPollutionSuccess state) {
     if (AQIColor ==
-        Utils.getBackgroundColor(
-            PollutantName.pm10, state.airPollutionEntity.pm10)) {
+        Utils.getBackgroundColor(PollutantName.pm10,
+            convertConcentrationToDouble(state.airPollutionEntity.pm10))) {
       return PollutantName.pm10;
     } else if (AQIColor ==
-        Utils.getBackgroundColor(
-            PollutantName.pm25, state.airPollutionEntity.pm2_5)) {
+        Utils.getBackgroundColor(PollutantName.pm25,
+            convertConcentrationToDouble(state.airPollutionEntity.pm2_5))) {
       return PollutantName.pm25;
     } else if (AQIColor ==
-        Utils.getBackgroundColor(
-            PollutantName.so2, state.airPollutionEntity.so2)) {
+        Utils.getBackgroundColor(PollutantName.so2,
+            convertConcentrationToDouble(state.airPollutionEntity.so2))) {
       return PollutantName.so2;
     } else if (AQIColor ==
-        Utils.getBackgroundColor(
-            PollutantName.no2, state.airPollutionEntity.no2)) {
+        Utils.getBackgroundColor(PollutantName.no2,
+            convertConcentrationToDouble(state.airPollutionEntity.no2))) {
       return PollutantName.no2;
     } else if (AQIColor ==
-        Utils.getBackgroundColor(
-            PollutantName.o3, state.airPollutionEntity.o3)) {
+        Utils.getBackgroundColor(PollutantName.o3,
+            convertConcentrationToDouble(state.airPollutionEntity.o3))) {
       return PollutantName.o3;
     } else {
       return PollutantName.co;

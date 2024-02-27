@@ -52,6 +52,8 @@ class DisasterCubit extends Cubit<DisasterState> {
 
         disasterQuantity.forEach((key, value) => totalDisasters += value);
 
+        disastersChartColor.clear();
+
         disasterQuantity.forEach((key, value) => disastersChartColor.add(
             Color((math.Random().nextDouble() * 0xFFFFFF).toInt())
                 .withOpacity(1.0)));

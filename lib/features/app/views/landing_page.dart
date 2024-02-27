@@ -42,7 +42,6 @@ class _LandingPageState extends State<LandingPage> {
               BoxShadow(
                   color: Colors.black.withOpacity(0.75),
                   offset: const Offset(0, 0),
-                  // spreadRadius: 0.75,
                   blurRadius: 1)
             ]),
             child: GNav(
@@ -53,6 +52,7 @@ class _LandingPageState extends State<LandingPage> {
               padding: EdgeInsets.only(top: 15.w, bottom: 15.w),
               tabs: [
                 GButton(
+                  iconActiveColor: Colors.blue,
                   icon: Icons.dashboard,
                   text: 'Dashboard',
                   textStyle: TextStyle(
@@ -61,26 +61,29 @@ class _LandingPageState extends State<LandingPage> {
                       fontSize: 14.w),
                 ),
                 GButton(
+                  iconActiveColor: Colors.green,
                   icon: Icons.air,
                   text: 'Air quality',
                   textStyle: TextStyle(
-                      color: Colors.blue,
+                      color: Colors.green,
                       fontWeight: FontWeight.w500,
                       fontSize: 14.w),
                 ),
                 GButton(
+                  iconActiveColor: Colors.deepPurple,
                   icon: Icons.article_outlined,
                   text: 'News',
                   textStyle: TextStyle(
-                      color: Colors.blue,
+                      color: Colors.deepPurple,
                       fontWeight: FontWeight.w500,
                       fontSize: 14.w),
                 ),
                 GButton(
+                  iconActiveColor: Colors.deepOrange,
                   icon: Icons.map,
                   text: 'Map',
                   textStyle: TextStyle(
-                      color: Colors.blue,
+                      color: Colors.deepOrange,
                       fontWeight: FontWeight.w500,
                       fontSize: 14.w),
                 ),

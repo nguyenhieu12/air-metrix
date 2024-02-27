@@ -1,17 +1,17 @@
 import 'package:envi_metrix/utils/global_variables.dart';
 
 class AirPollutionThresholds {
-  static List<int> so2Threshold = [0, 20, 80, 250, 350];
+  static List<double> so2Threshold = [0, 20, 80, 250, 350];
 
-  static List<int> no2Threshold = [0, 40, 70, 150, 200];
+  static List<double> no2Threshold = [0, 40, 70, 150, 200];
 
-  static List<int> pm10Threshold = [0, 20, 50, 100, 200];
+  static List<double> pm10Threshold = [0, 20, 50, 100, 200];
 
-  static List<int> pm25Threshold = [0, 10, 25, 50, 75];
+  static List<double> pm25Threshold = [0, 10, 25, 50, 75];
 
-  static List<int> o3Threshold = [0, 60, 100, 140, 180];
+  static List<double> o3Threshold = [0, 60, 100, 140, 180];
 
-  static List<int> coThreshold = [0, 4400, 9400, 12400, 15400];
+  static List<double> coThreshold = [0, 4400, 9400, 12400, 15400];
 
   static int getSO2Threshold(double concentration) {
     if (concentration >= 0 && concentration < 20) {

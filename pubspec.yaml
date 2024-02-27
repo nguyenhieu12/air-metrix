@@ -33,6 +33,7 @@ dependencies:
   flutter_markdown: ^0.6.19
   google_nav_bar: ^5.0.6
   flutter_svg: ^2.0.10+1
+  gauge_indicator: ^0.4.3
 
 dev_dependencies:
   flutter_test:
