@@ -34,6 +34,8 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
   double? lat;
   double? long;
 
+  List<String> suggestions = ["Hi", "Lals", "kKkkk"];
+
   @override
   void initState() {
     super.initState();
@@ -61,44 +63,81 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
         child: Row(
           children: [
             SizedBox(
-              width: 285.w,
-              // child: Autocomplete<Map<String, dynamic>>(
-              //     optionsBuilder: (TextEditingValue textEditingValue) {
-              //   if (textEditingValue.text == '') {
-              //     return const Iterable<Map<String, dynamic>>.empty();
-              //   }
+                width: 285.w,
+                child: Autocomplete<String>(
+                  optionsBuilder: (TextEditingValue textEditingValue) {
+                    if (textEditingValue.text == '') {
+                      return const Iterable<String>.empty();
+                    }
 
-              //   return _cubit.cityData.where((element) {
-              //     return element
-              //         .containsKey(textEditingValue.text.toUpperCase());
-              //   });
-              // })),
+                    return suggestions.where((element) {
+                      return element
+                          .contains(textEditingValue.text.toUpperCase());
+                    });
+                  },
+                  onSelected: (selectedText) {
+                    
+                  },
+                  // optionsViewBuilder: ((context, onSelected, options) {
+                  //   retur
+                  // }),
+                  fieldViewBuilder:
+                      (context, controller, focusNode, onEditingComplete) {
+                    return TextFormField(
+                      controller: controller,
+                      focusNode: focusNode,
+                      cursorColor: AppColors.searchBarCursor,
+                      style: TextStyle(fontSize: 20.w),
+                      cursorHeight: 22.h,
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.zero,
+                          hintText: 'Search',
+                          hintStyle: TextStyle(
+                            fontSize: 19.w,
+                          ),
+                          prefixIcon: Padding(
+                            padding: EdgeInsets.only(left: 5.w),
+                            child: Icon(
+                              Icons.search,
+                              size: 25.w,
+                            ),
+                          ),
+                          suffixIcon: _buildSuffixIcon(context),
+                          enabledBorder:
+                              _getBorder(AppColors.searchBarBorder, 20),
+                          focusedBorder:
+                              _getBorder(AppColors.searchBarBorderFocused, 20)),
+                      onTapOutside: (event) => focusNode.unfocus(),
+                      onEditingComplete: onEditingComplete,
+                    );
+                  },
+                )),
 
-              child: TextFormField(
-                controller: _searchController,
-                focusNode: _searchBarFocus,
-                cursorColor: AppColors.searchBarCursor,
-                style: TextStyle(fontSize: 20.w),
-                cursorHeight: 22.h,
-                decoration: InputDecoration(
-                    contentPadding: EdgeInsets.zero,
-                    hintText: 'Search',
-                    hintStyle: TextStyle(
-                      fontSize: 19.w,
-                    ),
-                    prefixIcon: Padding(
-                      padding: EdgeInsets.only(left: 5.w),
-                      child: Icon(
-                        Icons.search,
-                        size: 25.w,
-                      ),
-                    ),
-                    suffixIcon: _buildSuffixIcon(context),
-                    enabledBorder: _getBorder(AppColors.searchBarBorder, 20),
-                    focusedBorder:
-                        _getBorder(AppColors.searchBarBorderFocused, 20)),
-              ),
-            ),
+            // child: TextFormField(
+            //   controller: _searchController,
+            //   focusNode: _searchBarFocus,
+            //   cursorColor: AppColors.searchBarCursor,
+            //   style: TextStyle(fontSize: 20.w),
+            //   cursorHeight: 22.h,
+            //   decoration: InputDecoration(
+            //       contentPadding: EdgeInsets.zero,
+            //       hintText: 'Search',
+            //       hintStyle: TextStyle(
+            //         fontSize: 19.w,
+            //       ),
+            //       prefixIcon: Padding(
+            //         padding: EdgeInsets.only(left: 5.w),
+            //         child: Icon(
+            //           Icons.search,
+            //           size: 25.w,
+            //         ),
+            //       ),
+            //       suffixIcon: _buildSuffixIcon(context),
+            //       enabledBorder: _getBorder(AppColors.searchBarBorder, 20),
+            //       focusedBorder:
+            //           _getBorder(AppColors.searchBarBorderFocused, 20)),
+            // ),
+            // ),
             Gap(10.w),
             Container(
               width: 38.w,

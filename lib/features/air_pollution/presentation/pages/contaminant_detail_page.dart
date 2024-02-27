@@ -35,6 +35,7 @@ class ContaminantDetail extends StatefulWidget {
 class _ContaminantDetailState extends State<ContaminantDetail> {
   late List<double> pointValue;
   late List<Color> colorBar;
+  late String markdownDetailData;
   final ContaminantDetailCubit _cubit = ContaminantDetailCubit();
 
   @override
@@ -50,49 +51,48 @@ class _ContaminantDetailState extends State<ContaminantDetail> {
   Widget build(BuildContext context) {
     return Hero(
       tag: widget.tagName,
-      child: SafeArea(
-        child: Scaffold(
-          appBar: PreferredSize(
-            preferredSize: Size(double.infinity, 50.h),
-            child: AppBar(
-              elevation: 0.5,
-              shadowColor: Colors.black,
-              backgroundColor: Colors.white,
-              leading: Padding(
-                padding: EdgeInsets.only(top: 10.h),
-                child: IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: Colors.black,
-                      size: 26.w,
-                    )),
-              ),
-              title: Padding(
-                padding: EdgeInsets.only(top: 10.h),
-                child: Text(
-                  widget.cotaminantName,
-                  style: TextStyle(
-                      fontSize: 22.w,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.black),
-                ),
-              ),
-              centerTitle: true,
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: Size(double.infinity, 50.h),
+          child: AppBar(
+            elevation: 0.5,
+            shadowColor: Colors.black,
+            backgroundColor: Colors.white,
+            leading: Padding(
+              padding: EdgeInsets.only(top: 10.h),
+              child: IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: Colors.black,
+                    size: 26.w,
+                  )),
             ),
-          ),
-          body: SingleChildScrollView(
-            child: Column(children: [
-              // _buildOverviewSection(),
-
-              Center(
-                child: _buildColorBarSection(),
+            title: Padding(
+              padding: EdgeInsets.only(top: 10.h),
+              child: Text(
+                widget.cotaminantName,
+                style: TextStyle(
+                    fontSize: 22.w,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black),
               ),
-              Gap(10.h),
-
-              _buildRadialGaugeSection()
-            ]),
+            ),
+            centerTitle: true,
           ),
+        ),
+        body: SingleChildScrollView(
+          child: Column(children: [
+            _buildOverviewSection(),
+            Gap(12.h),
+            Center(
+              child: _buildColorBarSection(),
+            ),
+            Gap(12.h),
+            _buildRadialGaugeSection(),
+            Gap(30.h),
+            _buildDetailInformation()
+          ]),
         ),
       ),
     );
@@ -116,10 +116,34 @@ class _ContaminantDetailState extends State<ContaminantDetail> {
   }
 
   Widget _buildDetailInformationData(String data) {
-    return Markdown(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        data: data);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(left: 10.w),
+          child: Text(
+            'Harmful effects & prevention',
+            style: headerTextStyle,
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 10.w, right: 10.w, bottom: 10.h),
+          child: Card(
+            elevation: 1,
+            shadowColor: Colors.grey,
+            child: Markdown(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                styleSheet: MarkdownStyleSheet(
+                    textAlign: WrapAlignment.spaceEvenly,
+                    p: TextStyle(
+                      fontSize: 16.5.w,
+                    )),
+                data: data),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildDetailInformationLoading() {
@@ -187,8 +211,9 @@ class _ContaminantDetailState extends State<ContaminantDetail> {
 
   Widget _buildOverviewSection() {
     return Padding(
-      padding: EdgeInsets.only(left: 10.w),
+      padding: EdgeInsets.only(left: 10.w, right: 10.w),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Gap(6.h),
@@ -196,88 +221,71 @@ class _ContaminantDetailState extends State<ContaminantDetail> {
             'Overview',
             style: headerTextStyle,
           ),
-
+          Gap(6.h),
           Row(
             children: [
-              Container(
-                width: MediaQuery.of(context).size.width * 0.5,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color: widget.mainColor),
-                child: Column(
-                  children: [
-                    Gap(6.h),
-                    Text(
-                      'Name: ${widget.cotaminantName}',
-                      style: TextStyle(
-                          fontSize: 17.w,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500),
-                    ),
-                    Gap(6.h),
-                    Text(
-                      'Value: ${widget.pollutantValue} ${AppUnits.contamitantUnit}',
-                      style: TextStyle(
-                          fontSize: 17.w,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500),
-                    ),
-                    Gap(6.h),
-                    Text(
-                      'Quality: ${Utils.getPollutionMessage(widget.cotaminantName, widget.pollutantValue)}',
-                      style: TextStyle(
-                          fontSize: 17.w,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500),
-                    ),
-                    Gap(6.h),
-                  ],
+              Expanded(
+                flex: 1,
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: widget.mainColor,
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Column(
+                    children: [
+                      Gap(6.h),
+                      Text(
+                        'Concentration',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18.5.w,
+                            fontWeight: FontWeight.w700),
+                      ),
+                      Gap(6.h),
+                      Text(
+                        '${widget.pollutantValue} ${AppUnits.contamitantUnit}',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 17.w,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      Gap(6.h),
+                    ],
+                  ),
                 ),
               ),
               Gap(15.w),
-              // _buildRadialGaugeSection()
+              Expanded(
+                flex: 1,
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: widget.mainColor,
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Column(
+                    children: [
+                      Gap(6.h),
+                      Text(
+                        'Quality',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18.5.w,
+                            fontWeight: FontWeight.w700),
+                      ),
+                      Gap(6.h),
+                      Text(
+                        Utils.getPollutionMessage(
+                            widget.cotaminantName, widget.pollutantValue),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 17.w,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      Gap(6.h),
+                    ],
+                  ),
+                ),
+              )
             ],
           )
-          // Container(
-          //   width: MediaQuery.of(context).size.width * 0.95,
-          //   decoration: BoxDecoration(
-          //     color: widget.mainColor,
-          //     borderRadius: BorderRadius.circular(5),
-          //   ),
-          //   child: Row(
-          //     children: [
-          //       // Gap(10.w),
-          //       Center(
-          //         child: Text(
-          //           widget.cotaminantName,
-          //           style: TextStyle(
-          //               fontSize: 28.w,
-          //               fontWeight: FontWeight.w500,
-          //               color: Colors.white),
-          //         ),
-          //       ),
-          //       Gap(10.w),
-          //       const VerticalDivider(
-          //         color: Colors.grey,
-          //         thickness: 0.75,
-          //       ),
-          //       Column(
-          //         children: [
-          //           Text('\u2022 Concentration: ${widget.pollutantValue}',
-          //               style: TextStyle(
-          //                   fontSize: 18.w,
-          //                   fontWeight: FontWeight.w500,
-          //                   color: Colors.white)),
-          //           Text('Pollution level: }',
-          //               style: TextStyle(
-          //                   fontSize: 18.w,
-          //                   fontWeight: FontWeight.w500,
-          //                   color: Colors.white))
-          //         ],
-          //       )
-          //     ],
-          //   ),
-          // )
         ],
       ),
     );
@@ -291,7 +299,7 @@ class _ContaminantDetailState extends State<ContaminantDetail> {
           padding: EdgeInsets.only(left: 10.w),
           child: Text(
             'Pollution level',
-            style: headerTextStyle.copyWith(fontSize: 18.w),
+            style: headerTextStyle,
           ),
         ),
         Gap(8.h),

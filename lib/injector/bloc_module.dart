@@ -33,7 +33,7 @@ class BlocModule {
                       DisasterRemoteDatasourceImpl(dio: Dio())))))
       ..registerSingleton<DashboardCubit>(DashboardCubit())
       ..registerSingleton<AppCubit>(AppCubit())
-      ..registerSingleton<NewsCubit>(NewsCubit(
+      ..registerLazySingleton<NewsCubit>(() => NewsCubit(
           getNews: GetNews(
               newsRepository: NewsRepositoryImpl(
                   newsRemoteDataSource: NewsRemoteDataSourceImpl(Dio())))));
