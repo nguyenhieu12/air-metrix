@@ -46,6 +46,8 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
     });
 
     _cubit = Injector.instance();
+
+    _cubit.initCityData();
   }
 
   @override
@@ -70,14 +72,14 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
                       return const Iterable<String>.empty();
                     }
 
-                    return suggestions.where((element) {
-                      return element
-                          .contains(textEditingValue.text.toUpperCase());
+                    return _cubit.cityNames.where((element) {
+                      return element.contains(textEditingValue.text);
                     });
                   },
                   onSelected: (selectedText) {
-                    
+                    _handleSearchByName(selectedText);
                   },
+
                   // optionsViewBuilder: ((context, onSelected, options) {
                   //   retur
                   // }),
@@ -352,5 +354,13 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
       widget.airPollutionCubit.fetchAirPollutionData(
           currentPosition.latitude, currentPosition.longitude);
     }
+  }
+
+  void _handleSearchByName(String selectedText) {
+    Map<String, dynamic> coordinatesData = _cubit.cityData[selectedText];
+
+    widget.airPollutionCubit.fetchAirPollutionData(
+        double.parse(coordinatesData['lat']),
+        double.parse(coordinatesData['lon']));
   }
 }

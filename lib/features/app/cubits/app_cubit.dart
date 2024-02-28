@@ -9,7 +9,9 @@ part 'app_state.dart';
 class AppCubit extends Cubit<AppState> {
   AppCubit() : super(AppInitial());
 
-  List<Map<String, dynamic>> cityData = [];
+  Map<String, dynamic> cityData = {};
+
+  List<String> cityNames = [];
 
   Future<void> initCityData() async {
     String data = await rootBundle.loadString('./assets/data/cities500.json');
@@ -17,10 +19,11 @@ class AppCubit extends Cubit<AppState> {
     List<dynamic> cities = json.decode(data);
 
     for (int i = 0; i < cities.length; i++) {
-      cityData.add({
-        'name': cities[i]['name'],
-        'coordinates': {'lat': cities[i]['lat'], 'long': cities[i]['lon']}
-      });
+      cityNames.add(cities[i]['name']);
+      cityData[cities[i]['name']] = {
+        'lat': cities[i]['lat'],
+        'lon': cities[i]['lon']
+      };
     }
   }
 }
