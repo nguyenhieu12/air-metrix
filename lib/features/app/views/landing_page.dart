@@ -1,3 +1,4 @@
+import 'package:envi_metrix/core/models/nav_model.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/pages/air_pollution_page.dart';
 import 'package:envi_metrix/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:envi_metrix/features/disaster/presentation/pages/disaster_page.dart';
@@ -5,6 +6,7 @@ import 'package:envi_metrix/features/app/views/chatbot_page.dart';
 import 'package:envi_metrix/features/news/presentation/pages/news_page.dart';
 import 'package:envi_metrix/services/tab_change/tab_change_cubit.dart';
 import 'package:envi_metrix/utils/page_transition.dart';
+import 'package:envi_metrix/widgets/custom_navbar.dart';
 import 'package:floating_draggable_widget/floating_draggable_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,6 +21,24 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
+  final dashboardNavKey = GlobalKey<NavigatorState>();
+  final airNavKey = GlobalKey<NavigatorState>();
+  final newsNavKey = GlobalKey<NavigatorState>();
+  final mapNavKey = GlobalKey<NavigatorState>();
+  int selectedTab = 0;
+  List<NavModel> items = [];
+
+  @override
+  void initState() {
+    super.initState();
+    items = [
+      NavModel(page: const DashboardPage(), navKey: dashboardNavKey),
+      NavModel(page: const AirPollutionPage(), navKey: airNavKey),
+      NavModel(page: const NewsPage(), navKey: newsNavKey),
+      NavModel(page: const DisasterPage(), navKey: mapNavKey),
+    ];
+  }
+
   List<Widget> pages = const [
     DashboardPage(),
     AirPollutionPage(),
@@ -34,70 +54,62 @@ class _LandingPageState extends State<LandingPage> {
         autoAlign: true,
         mainScreenWidget: Scaffold(
           body: IndexedStack(
-            index: context.watch<TabChangeCubit>().state,
-            children: [...pages],
+            index: selectedTab,
+            children: items
+                .map((page) => Navigator(
+                      key: page.navKey,
+                      onGenerateInitialRoutes: (navigator, initialRoute) {
+                        return [
+                          MaterialPageRoute(builder: (context) => page.page)
+                        ];
+                      },
+                    ))
+                .toList(),
           ),
-          bottomNavigationBar: Container(
-            decoration: BoxDecoration(boxShadow: [
-              BoxShadow(
-                  color: Colors.black.withOpacity(0.75),
-                  offset: const Offset(0, 0),
-                  blurRadius: 1)
-            ]),
-            child: GNav(
-              backgroundColor: Colors.white,
-              tabBorderRadius: 30,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              gap: 10,
-              padding: EdgeInsets.only(top: 15.w, bottom: 15.w),
-              tabs: [
-                GButton(
-                  iconActiveColor: Colors.blue,
-                  icon: Icons.dashboard,
-                  text: 'Dashboard',
-                  textStyle: TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14.w),
-                ),
-                GButton(
-                  iconActiveColor: Colors.green,
-                  icon: Icons.air,
-                  text: 'Air quality',
-                  textStyle: TextStyle(
-                      color: Colors.green,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14.w),
-                ),
-                GButton(
-                  iconActiveColor: Colors.deepPurple,
-                  icon: Icons.article_outlined,
-                  text: 'News',
-                  textStyle: TextStyle(
-                      color: Colors.deepPurple,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14.w),
-                ),
-                GButton(
-                  iconActiveColor: Colors.deepOrange,
-                  icon: Icons.map,
-                  text: 'Map',
-                  textStyle: TextStyle(
-                      color: Colors.deepOrange,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14.w),
-                ),
-              ],
-              onTabChange: (index) =>
-                  context.read<TabChangeCubit>().changeTab(index),
-            ),
-          ),
+          bottomNavigationBar: CustomNavbar(
+              index: selectedTab,
+              onTap: (index) {
+                if (index == selectedTab) {
+                  items[index]
+                      .navKey
+                      .currentState
+                      ?.popUntil((route) => route.isFirst);
+                } else {
+                  setState(() {
+                    selectedTab = index;
+                  });
+                }
+              }),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: _buildFloatingActionButton(),
         ),
         floatingWidget: _buildChatbotButton(),
         floatingWidgetWidth: 54.w,
         floatingWidgetHeight: 54.w,
         dx: 10.w,
         dy: 580.h,
+      ),
+    );
+  }
+
+  Widget _buildFloatingActionButton() {
+    return Container(
+      margin: const EdgeInsets.only(top: 10),
+      width: 64,
+      height: 64,
+      child: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: Colors.white,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+            side: const BorderSide(width: 3, color: Colors.green),
+            borderRadius: BorderRadius.circular(100)),
+        child: const Icon(
+          Icons.upload,
+          color: Colors.green,
+          size: 40,
+        ),
       ),
     );
   }
