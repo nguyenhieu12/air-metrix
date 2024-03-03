@@ -406,7 +406,14 @@ class _DashboardPageState extends State<DashboardPage> {
     for (int i = 0; i < listUnitDisasters.length; i++) {
       sectionData.add(PieChartSectionData(
           value: listUnitDisasters[i].quantity.toDouble(),
-          color: chartColors[i]));
+          color: chartColors[i],
+          title: listUnitDisasters[i].quantity.toString(),
+          titleStyle: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 14.5.w
+          )
+          ));
     }
 
     return Center(
@@ -415,7 +422,9 @@ class _DashboardPageState extends State<DashboardPage> {
           SizedBox(
               width: 230.w,
               height: 230.w,
-              child: PieChart(PieChartData(sections: sectionData))),
+              child: PieChart(PieChartData(
+                centerSpaceColor: Colors.transparent,
+                sections: sectionData))),
           Gap(20.h),
           _buildChartNote()
         ],

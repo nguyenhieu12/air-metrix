@@ -11,6 +11,7 @@ class CustomNavbar extends StatelessWidget {
     return SizedBox(
       height: 55,
       child: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
         notchMargin: 0,
         color: Colors.green,
         padding: EdgeInsets.zero,

@@ -7,11 +7,14 @@ import 'package:envi_metrix/features/news/presentation/pages/news_page.dart';
 import 'package:envi_metrix/services/tab_change/tab_change_cubit.dart';
 import 'package:envi_metrix/utils/page_transition.dart';
 import 'package:envi_metrix/widgets/custom_navbar.dart';
+import 'package:facebook_messenger_share/facebook_messenger_share.dart';
 import 'package:floating_draggable_widget/floating_draggable_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:share_plus/share_plus.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -94,24 +97,57 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   Widget _buildFloatingActionButton() {
-    return Container(
-      margin: const EdgeInsets.only(top: 10),
-      width: 64,
-      height: 64,
-      child: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Colors.white,
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-            side: const BorderSide(width: 3, color: Colors.green),
-            borderRadius: BorderRadius.circular(100)),
-        child: const Icon(
-          Icons.upload,
-          color: Colors.green,
-          size: 40,
+    return Padding(
+      padding: const EdgeInsets.all(2.5),
+      child: SizedBox(
+        width: 55,
+        height: 55,
+        child: SpeedDial(
+          animationDuration: const Duration(milliseconds: 700),
+          gradientBoxShape: BoxShape.circle,
+          childrenButtonSize: Size(50.w, 50.w),
+          animatedIcon: AnimatedIcons.menu_close,
+          animatedIconTheme: const IconThemeData(color: Colors.white),
+          overlayColor: Colors.grey,
+          overlayOpacity: 0.5,
+          backgroundColor: Colors.green,
+          children: [
+            _buildSpeedDialChild(
+                path: './assets/icons/share_icon.png',
+                color: Colors.blue,
+                size: 25.w,
+                onTap: _onShareTap),
+            _buildSpeedDialChild(
+                path: './assets/icons/compare_icon.png',
+                color: Colors.orange,
+                size: 32.w,
+                onTap: _onCompareTap),
+            _buildSpeedDialChild(
+                path: './assets/icons/ar_icon.png',
+                color: Colors.red,
+                size: 30.w,
+                onTap: _onArTap),
+          ],
         ),
       ),
     );
+  }
+
+  SpeedDialChild _buildSpeedDialChild(
+      {required String path,
+      required Color color,
+      required double size,
+      required Function() onTap}) {
+    return SpeedDialChild(
+        onTap: () async => onTap,
+        backgroundColor: color,
+        elevation: 0,
+        child: Image.asset(
+          path,
+          width: size,
+          height: size,
+          color: Colors.white,
+        ));
   }
 
   Widget _buildChatbotButton() {
@@ -129,4 +165,10 @@ class _LandingPageState extends State<LandingPage> {
       ),
     );
   }
+
+  Future<void> _onShareTap() async {}
+
+  Future<void> _onCompareTap() async {}
+
+  Future<void> _onArTap() async {}
 }

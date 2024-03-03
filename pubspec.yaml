@@ -31,9 +31,13 @@ dependencies:
   flutter_gemini: ^2.0.3
   floating_draggable_widget: ^2.1.5
   flutter_markdown: ^0.6.19
-  google_nav_bar: ^5.0.6
   flutter_svg: ^2.0.10+1
   gauge_indicator: ^0.4.3
+  share_plus: ^7.2.2
+  facebook_messenger_share: ^0.0.3
+  fluttertoast: ^8.2.4
+  flutter_speed_dial: ^7.0.0
+  font_awesome_flutter: ^10.7.0
 
 dev_dependencies:
   flutter_test:
