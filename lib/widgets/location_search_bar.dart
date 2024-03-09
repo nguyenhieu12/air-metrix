@@ -11,9 +11,9 @@ import 'package:gap/gap.dart';
 import 'package:geolocator/geolocator.dart';
 
 class LocationSearchBar extends StatefulWidget {
-  const LocationSearchBar({super.key, required this.airPollutionCubit});
+  const LocationSearchBar({super.key, this.airPollutionCubit});
 
-  final AirPollutionCubit airPollutionCubit;
+  final AirPollutionCubit? airPollutionCubit;
 
   @override
   State<LocationSearchBar> createState() => _LocationSearchBarState();
@@ -34,7 +34,7 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
   double? lat;
   double? long;
 
-  List<String> suggestions = ["Hi", "Lals", "kKkkk"];
+  bool bookmarkSelected = false;
 
   @override
   void initState() {
@@ -61,11 +61,11 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
     return Material(
       color: Colors.transparent,
       child: Padding(
-        padding: EdgeInsets.only(left: 10.w, right: 15.w),
+        padding: EdgeInsets.only(left: 10.w),
         child: Row(
           children: [
             SizedBox(
-                width: 285.w,
+                width: 255.w,
                 child: Autocomplete<String>(
                   optionsBuilder: (TextEditingValue textEditingValue) {
                     if (textEditingValue.text == '') {
@@ -110,8 +110,35 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
                           focusedBorder:
                               _getBorder(AppColors.searchBarBorderFocused, 20)),
                       onTapOutside: (event) => focusNode.unfocus(),
-                      onEditingComplete: onEditingComplete,
                     );
+                    // )
+                    // return TextFormField(
+                    //   controller: controller,
+                    //   focusNode: focusNode,
+                    //   cursorColor: AppColors.searchBarCursor,
+                    //   style: TextStyle(fontSize: 20.w),
+                    //   cursorHeight: 22.h,
+                    //   decoration: InputDecoration(
+                    //       contentPadding: EdgeInsets.zero,
+                    //       hintText: 'Search',
+                    //       hintStyle: TextStyle(
+                    //         fontSize: 19.w,
+                    //       ),
+                    //       prefixIcon: Padding(
+                    //         padding: EdgeInsets.only(left: 5.w),
+                    //         child: Icon(
+                    //           Icons.search,
+                    //           size: 25.w,
+                    //         ),
+                    //       ),
+                    //       suffixIcon: _buildSuffixIcon(context),
+                    //       enabledBorder:
+                    //           _getBorder(AppColors.searchBarBorder, 20),
+                    //       focusedBorder:
+                    //           _getBorder(AppColors.searchBarBorderFocused, 20)),
+                    //   onTapOutside: (event) => focusNode.unfocus(),
+                    //   onEditingComplete: onEditingComplete,
+                    // );
                   },
                 )),
 
@@ -140,7 +167,32 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
             //           _getBorder(AppColors.searchBarBorderFocused, 20)),
             // ),
             // ),
-            Gap(10.w),
+            Gap(6.w),
+            Container(
+              width: 38.w,
+              height: 38.w,
+              decoration: BoxDecoration(
+                  color: bookmarkSelected ? Colors.red : Colors.transparent,
+                  borderRadius: BorderRadius.circular(40),
+                  border: Border.all(
+                    color: bookmarkSelected ? Colors.red : Colors.black,
+                    width: bookmarkSelected ? 0 : 1.5
+                  )
+                  ),
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    bookmarkSelected = !bookmarkSelected;
+                  });
+                },
+                child: Icon(
+                  Icons.bookmark_border_outlined,
+                  size: 24.w,
+                  color: bookmarkSelected ? Colors.white : Colors.black,
+                ),
+              ),
+            ),
+            Gap(6.w),
             Container(
               width: 38.w,
               height: 38.w,
@@ -155,7 +207,7 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
                   color: Colors.white,
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -340,7 +392,7 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
 
   void _handleSearchByCoordinates(BuildContext context) async {
     if (lat != null && long != null) {
-      await widget.airPollutionCubit.fetchAirPollutionData(lat!, long!);
+      await widget.airPollutionCubit?.fetchAirPollutionData(lat!, long!);
       _searchBarFocus.unfocus();
       // ignore: use_build_context_synchronously
       Navigator.pop(context, [lat, long]);
@@ -351,16 +403,20 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
     if (await userLocation.isAccepted()) {
       Position currentPosition = await Utils.getUserLocation();
 
-      widget.airPollutionCubit.fetchAirPollutionData(
+      widget.airPollutionCubit?.fetchAirPollutionData(
           currentPosition.latitude, currentPosition.longitude);
     }
   }
 
   void _handleSearchByName(String selectedText) {
+    widget.airPollutionCubit?.locationName = selectedText;
+
     Map<String, dynamic> coordinatesData = _cubit.cityData[selectedText];
 
-    widget.airPollutionCubit.fetchAirPollutionData(
+    widget.airPollutionCubit?.fetchAirPollutionData(
         double.parse(coordinatesData['lat']),
         double.parse(coordinatesData['lon']));
+
+    setState(() {});
   }
 }

@@ -37,7 +37,6 @@ dependencies:
   facebook_messenger_share: ^0.0.3
   fluttertoast: ^8.2.4
   flutter_speed_dial: ^7.0.0
-  font_awesome_flutter: ^10.7.0
 
 dev_dependencies:
   flutter_test:

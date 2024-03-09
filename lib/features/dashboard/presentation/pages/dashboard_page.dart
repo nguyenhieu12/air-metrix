@@ -8,6 +8,7 @@ import 'package:envi_metrix/features/dashboard/presentation/cubits/dashboard_cub
 import 'package:envi_metrix/features/disaster/presentation/cubits/disaster_cubit.dart';
 import 'package:envi_metrix/injector/injector.dart';
 import 'package:envi_metrix/services/location/default_location.dart';
+import 'package:envi_metrix/utils/pollutant_message.dart';
 import 'package:envi_metrix/utils/styles.dart';
 import 'package:envi_metrix/utils/utils.dart';
 import 'package:envi_metrix/widgets/location_search_bar.dart';
@@ -113,30 +114,43 @@ class _DashboardPageState extends State<DashboardPage> {
           if (state is AirPollutionLoading) {
             return _buildDashboardLoading();
           } else if (state is AirPollutionSuccess) {
-            return Padding(
-              padding: EdgeInsets.only(left: 10.w, right: 10.w),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Air pollution', style: headerTextStyle),
-                  Gap(6.h),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: FilterAppColors.getAQIColor(
-                            dashboardCubit.airPollutionCubit.airQualityIndex),
-                        borderRadius: BorderRadius.circular(5)),
-                    child: Column(
-                      children: [_buildLocationName(state)],
-                    ),
-                  )
-                ],
-              ),
-            );
+            return _buildAirInfo(state);
           } else {
             return _buildErrorContent();
           }
         });
+  }
+
+  Widget _buildAirInfo(AirPollutionSuccess state) {
+    return Padding(
+      padding: EdgeInsets.only(left: 10.w, right: 10.w),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Air pollution', style: headerTextStyle),
+          Gap(6.h),
+          Container(
+            decoration: BoxDecoration(
+                color: FilterAppColors.getAQIColor(
+                    dashboardCubit.airPollutionCubit.airQualityIndex),
+                borderRadius: BorderRadius.circular(5)),
+            child: Column(
+              children: [
+                Gap(4.h),
+                _buildLocationName(state),
+                Text(
+                  PollutantMessage.getPollutantMessage(
+                      airPollutionCubit.airQualityIndex),
+                  style: TextStyle(color: Colors.white, fontSize: 24.w),
+                ),
+                Gap(4.h)
+              ],
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   Widget _buildErrorContent() {
@@ -409,11 +423,9 @@ class _DashboardPageState extends State<DashboardPage> {
           color: chartColors[i],
           title: listUnitDisasters[i].quantity.toString(),
           titleStyle: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-            fontSize: 14.5.w
-          )
-          ));
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              fontSize: 14.5.w)));
     }
 
     return Center(
@@ -423,8 +435,8 @@ class _DashboardPageState extends State<DashboardPage> {
               width: 230.w,
               height: 230.w,
               child: PieChart(PieChartData(
-                centerSpaceColor: Colors.transparent,
-                sections: sectionData))),
+                  centerSpaceColor: Colors.transparent,
+                  sections: sectionData))),
           Gap(20.h),
           _buildChartNote()
         ],

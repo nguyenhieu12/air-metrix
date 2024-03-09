@@ -17,10 +17,12 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
   final GetAirPollutionInformation getCurrentAirPollution;
 
   int airQualityIndex = 0;
-  List<int> listForecastAQI = [];
+  List<int> list3DaysForecastAQI = [];
 
   double currentLat = DefaultLocation.lat;
   double currentLong = DefaultLocation.long;
+
+  String locationName = '';
 
   AirPollutionCubit({required this.getCurrentAirPollution})
       : super(AirPollutionLoading());

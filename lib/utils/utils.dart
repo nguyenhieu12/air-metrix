@@ -3,6 +3,7 @@ import 'package:envi_metrix/core/constraints/air_pollution_thresholds.dart';
 import 'package:envi_metrix/core/themes/app_colors.dart';
 import 'package:envi_metrix/core/themes/filter_app_colors.dart';
 import 'package:envi_metrix/utils/global_variables.dart';
+import 'package:envi_metrix/widgets/image_360_dialog.dart';
 import 'package:envi_metrix/widgets/internet_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -114,5 +115,25 @@ class Utils {
     } else {
       return;
     }
+  }
+
+  static void showArSelectionDialog(
+      {required BuildContext context, required Image360Dialog child}) {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (BuildContext buildContext, Animation<double> animation,
+          Animation<double> secondaryAnimation) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+    );
   }
 }

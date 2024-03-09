@@ -155,7 +155,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
   }
 
   Widget _buildForecaseSection() {
-    final List<int> data = airPollutionCubit.listForecastAQI;
+    final List<int> data = airPollutionCubit.list3DaysForecastAQI;
 
     return Padding(
       padding: EdgeInsets.only(left: 10.w, right: 10.w),

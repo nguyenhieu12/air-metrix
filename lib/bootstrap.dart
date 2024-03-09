@@ -3,14 +3,15 @@ import 'dart:async';
 import 'package:envi_metrix/core/connection/internet_cubit.dart';
 import 'package:envi_metrix/core/keys/app_keys.dart';
 import 'package:envi_metrix/features/app/cubits/app_cubit.dart';
-import 'package:envi_metrix/features/app/views/landing_page.dart';
+import 'package:envi_metrix/features/app/pages/landing_page.dart';
 import 'package:envi_metrix/injector/injector.dart';
+import 'package:envi_metrix/screens/image_360_screen.dart';
 import 'package:envi_metrix/services/tab_change/tab_change_cubit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 Future<void> bootstrap() async {
   await runZonedGuarded(() async {
@@ -50,6 +51,7 @@ class MyApp extends StatelessWidget {
                   BlocProvider<TabChangeCubit>(
                       create: (context) => TabChangeCubit()),
                 ],
+                // child: const Image360Screen(imagePath: './assets/images/air_fresh.png',),
                 child: const LandingPage(),
               ),
             ));
