@@ -13,6 +13,11 @@ class GetAirPollutionInformation {
     return await airPollutionRepository.getCurrentAirPollution(lat, long);
   }
 
+  Future<Either<Failure, AirPollutionEntity>> getCompareAirPollution(
+      double lat, double long) async {
+    return await airPollutionRepository.getCompareAirPollution(lat, long);
+  }
+
   Future<Either<Failure, List<AirPollutionEntity>>> getAirPollutionForecast(
       double lat, double long) async {
     return await airPollutionRepository.getAirPollutionForecast(lat, long);

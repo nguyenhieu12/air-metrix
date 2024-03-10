@@ -28,6 +28,19 @@ class AirPollutionRepositoryImpl implements AirPollutionRepository {
   }
 
   @override
+  Future<Either<Failure, AirPollutionEntity>> getCompareAirPollution(
+      double lat, double long) async {
+    try {
+      final remoteAirPollution =
+          await remoteDataSource.getCompareAirPollution(lat, long);
+
+      return Right(remoteAirPollution);
+    } on ApiException {
+      return Left(ApiFailure(errorMessage: 'Cannot call air pollution API'));
+    }
+  }
+
+  @override
   Future<Either<Failure, List<AirPollutionEntity>>> getAirPollutionForecast(
       double lat, double long) async {
     try {

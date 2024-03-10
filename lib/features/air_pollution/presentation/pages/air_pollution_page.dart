@@ -86,7 +86,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
               if (state is AirPollutionLoading) {
                 return _buildLoading();
               } else if (state is AirPollutionSuccess) {
-                return _buildAirPollutionContent(state);
+                return _buildAirPollutionContent();
               } else {
                 return _buildErrorContent();
               }
@@ -126,7 +126,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
     );
   }
 
-  Widget _buildAirPollutionContent(AirPollutionSuccess state) {
+  Widget _buildAirPollutionContent() {
     return Container(
       decoration: const BoxDecoration(
           image: DecorationImage(
@@ -141,10 +141,10 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
             Gap(40.h),
             LocationSearchBar(airPollutionCubit: airPollutionCubit),
             Gap(15.h),
-            _buildLocationName(state),
+            _buildLocationName(),
             Gap(10.h),
-            _buildAirQualityIndex(state),
-            _buildContaminantInfo(state),
+            _buildAirQualityIndex(),
+            _buildContaminantInfo(),
             Gap(5.h),
             _buildForecaseSection(),
             Gap(20.h),
@@ -291,7 +291,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
         },
       );
 
-  Widget _buildLocationName(AirPollutionSuccess state) {
+  Widget _buildLocationName() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -300,7 +300,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
           textStyle: TextStyle(fontSize: 14.w, color: Colors.white),
           triggerMode: TooltipTriggerMode.tap,
           message:
-              '${state.address.street}, ${state.address.district}, ${state.address.pronvice}, ${state.address.country}',
+              '${airPollutionCubit.address.street}, ${airPollutionCubit.address.district}, ${airPollutionCubit.address.pronvice}, ${airPollutionCubit.address.country}',
           height: 40.w,
           child: Icon(
             Icons.location_on_outlined,
@@ -309,7 +309,8 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
         ),
         Gap(6.w),
         Flexible(
-          child: Text('${state.address.pronvice}, ${state.address.country}',
+          child: Text(
+              '${airPollutionCubit.address.pronvice}, ${airPollutionCubit.address.country}',
               style: TextStyle(fontSize: 26.w, fontWeight: FontWeight.w400),
               overflow: TextOverflow.ellipsis),
         ),
@@ -317,7 +318,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
     );
   }
 
-  Widget _buildAirQualityIndex(AirPollutionSuccess state) {
+  Widget _buildAirQualityIndex() {
     return Padding(
       padding: EdgeInsets.only(left: 10.w, right: 10.w),
       child: Column(
@@ -357,7 +358,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
                           fit: BoxFit.cover,
                         ),
                       ),
-                      _buildMainQualityInfo(state),
+                      _buildMainQualityInfo(),
                     ],
                   ),
                 ],
@@ -370,7 +371,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
     );
   }
 
-  Widget _buildMainQualityInfo(AirPollutionSuccess state) {
+  Widget _buildMainQualityInfo() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -426,9 +427,9 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
                 Gap(2.h),
                 Text(
                   _getMainPollutantName(
-                      FilterAppColors.getAQIColor(
-                          airPollutionCubit.airQualityIndex),
-                      state),
+                    FilterAppColors.getAQIColor(
+                        airPollutionCubit.airQualityIndex),
+                  ),
                   style: TextStyle(
                     color: AppColors.textWhite,
                     fontSize: 18.w,
@@ -443,7 +444,7 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
     );
   }
 
-  Widget _buildContaminantInfo(AirPollutionSuccess state) {
+  Widget _buildContaminantInfo() {
     return Padding(
       padding: EdgeInsets.only(left: 10.w, right: 10.w),
       child: Column(
@@ -462,27 +463,27 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
                 ContaminantInfo(
                     contamunantName: PollutantName.so2,
                     concentration: convertConcentrationToDouble(
-                        state.airPollutionEntity.so2)),
+                        airPollutionCubit.airEntity.so2)),
                 ContaminantInfo(
                     contamunantName: PollutantName.no2,
                     concentration: convertConcentrationToDouble(
-                        state.airPollutionEntity.no2)),
+                        airPollutionCubit.airEntity.no2)),
                 ContaminantInfo(
                     contamunantName: PollutantName.pm10,
                     concentration: convertConcentrationToDouble(
-                        state.airPollutionEntity.pm10)),
+                        airPollutionCubit.airEntity.pm10)),
                 ContaminantInfo(
                     contamunantName: PollutantName.pm25,
                     concentration: convertConcentrationToDouble(
-                        state.airPollutionEntity.pm2_5)),
+                        airPollutionCubit.airEntity.pm2_5)),
                 ContaminantInfo(
                     contamunantName: PollutantName.o3,
                     concentration: convertConcentrationToDouble(
-                        state.airPollutionEntity.o3)),
+                        airPollutionCubit.airEntity.o3)),
                 ContaminantInfo(
                     contamunantName: PollutantName.co,
                     concentration: convertConcentrationToDouble(
-                        state.airPollutionEntity.co)),
+                        airPollutionCubit.airEntity.co)),
               ],
             ),
           ),
@@ -511,26 +512,26 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
   }
 
   // ignore: non_constant_identifier_names
-  String _getMainPollutantName(Color AQIColor, AirPollutionSuccess state) {
+  String _getMainPollutantName(Color AQIColor) {
     if (AQIColor ==
         Utils.getBackgroundColor(PollutantName.pm10,
-            convertConcentrationToDouble(state.airPollutionEntity.pm10))) {
+            convertConcentrationToDouble(airPollutionCubit.airEntity.pm10))) {
       return PollutantName.pm10;
     } else if (AQIColor ==
         Utils.getBackgroundColor(PollutantName.pm25,
-            convertConcentrationToDouble(state.airPollutionEntity.pm2_5))) {
+            convertConcentrationToDouble(airPollutionCubit.airEntity.pm2_5))) {
       return PollutantName.pm25;
     } else if (AQIColor ==
         Utils.getBackgroundColor(PollutantName.so2,
-            convertConcentrationToDouble(state.airPollutionEntity.so2))) {
+            convertConcentrationToDouble(airPollutionCubit.airEntity.so2))) {
       return PollutantName.so2;
     } else if (AQIColor ==
         Utils.getBackgroundColor(PollutantName.no2,
-            convertConcentrationToDouble(state.airPollutionEntity.no2))) {
+            convertConcentrationToDouble(airPollutionCubit.airEntity.no2))) {
       return PollutantName.no2;
     } else if (AQIColor ==
         Utils.getBackgroundColor(PollutantName.o3,
-            convertConcentrationToDouble(state.airPollutionEntity.o3))) {
+            convertConcentrationToDouble(airPollutionCubit.airEntity.o3))) {
       return PollutantName.o3;
     } else {
       return PollutantName.co;

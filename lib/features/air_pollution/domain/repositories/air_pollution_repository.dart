@@ -6,6 +6,9 @@ abstract class AirPollutionRepository {
   Future<Either<Failure, AirPollutionEntity>> getCurrentAirPollution(
       double lat, double long);
 
+  Future<Either<Failure, AirPollutionEntity>> getCompareAirPollution(
+      double lat, double long);
+
   Future<Either<Failure, List<AirPollutionEntity>>> getAirPollutionForecast(
       double lat, double long);
 

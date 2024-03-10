@@ -6,7 +6,7 @@ class Injector {
 
   static GetIt instance = GetIt.instance;
 
-  static void init() {
+  static Future<void> init() async {
     BlocModule.init();
   }
 }

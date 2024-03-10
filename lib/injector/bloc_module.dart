@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:envi_metrix/features/air_pollution/data/data_sources/air_pollution_remote_data_source.dart';
 import 'package:envi_metrix/features/air_pollution/data/repositories/air_pollution_repository_impl.dart';
 import 'package:envi_metrix/features/air_pollution/domain/use_cases/get_current_air_pollution.dart';
+import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_compare_cubit.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_pollution_cubit.dart';
 import 'package:envi_metrix/features/app/cubits/app_cubit.dart';
 import 'package:envi_metrix/features/dashboard/presentation/cubits/dashboard_cubit.dart';
@@ -22,7 +23,12 @@ class BlocModule {
     final injector = Injector.instance;
 
     injector
+      ..registerSingleton<AppCubit>(AppCubit())
       ..registerSingleton<AirPollutionCubit>(AirPollutionCubit(
+          getCurrentAirPollution: GetAirPollutionInformation(
+              airPollutionRepository: AirPollutionRepositoryImpl(
+                  remoteDataSource: AirPollutionRemoteDataSourceImpl(Dio())))))
+      ..registerSingleton<AirCompareCubit>(AirCompareCubit(
           getCurrentAirPollution: GetAirPollutionInformation(
               airPollutionRepository: AirPollutionRepositoryImpl(
                   remoteDataSource: AirPollutionRemoteDataSourceImpl(Dio())))))
@@ -32,7 +38,6 @@ class BlocModule {
                   disasterRemoteDatasource:
                       DisasterRemoteDatasourceImpl(dio: Dio())))))
       ..registerSingleton<DashboardCubit>(DashboardCubit())
-      ..registerSingleton<AppCubit>(AppCubit())
       ..registerLazySingleton<NewsCubit>(() => NewsCubit(
           getNews: GetNews(
               newsRepository: NewsRepositoryImpl(

@@ -189,7 +189,7 @@ class _DashboardPageState extends State<DashboardPage> {
           textStyle: TextStyle(fontSize: 14.w, color: Colors.white),
           triggerMode: TooltipTriggerMode.tap,
           message:
-              '${state.address.street}, ${state.address.district}, ${state.address.pronvice}, ${state.address.country}',
+              '${airPollutionCubit.address.street}, ${airPollutionCubit.address.district}, ${airPollutionCubit.address.pronvice}, ${airPollutionCubit.address.country}',
           height: 40.w,
           child: Icon(
             Icons.location_on_outlined,
@@ -199,7 +199,8 @@ class _DashboardPageState extends State<DashboardPage> {
         ),
         Gap(6.w),
         Flexible(
-          child: Text('${state.address.pronvice}, ${state.address.country}',
+          child: Text(
+              '${airPollutionCubit.address.pronvice}, ${airPollutionCubit.address.country}',
               style: TextStyle(
                   fontSize: 20.w,
                   fontWeight: FontWeight.w400,

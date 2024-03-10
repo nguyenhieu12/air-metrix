@@ -5,7 +5,6 @@ import 'package:envi_metrix/core/keys/app_keys.dart';
 import 'package:envi_metrix/features/app/cubits/app_cubit.dart';
 import 'package:envi_metrix/features/app/pages/landing_page.dart';
 import 'package:envi_metrix/injector/injector.dart';
-import 'package:envi_metrix/screens/image_360_screen.dart';
 import 'package:envi_metrix/services/tab_change/tab_change_cubit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +16,7 @@ Future<void> bootstrap() async {
   await runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
-    Injector.init();
+    await Injector.init();
 
     await Injector.instance.allReady();
 

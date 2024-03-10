@@ -24,6 +24,9 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
 
   String locationName = '';
 
+  late AirPollutionEntity airEntity;
+  late Address address;
+
   AirPollutionCubit({required this.getCurrentAirPollution})
       : super(AirPollutionLoading());
 
@@ -51,13 +54,14 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
 
         final first = placemarks.first;
 
-        emit(AirPollutionSuccess(
-            airPollutionEntity: airPollutionEntity,
-            address: Address(
-                country: first.country ?? '',
-                pronvice: first.administrativeArea ?? '',
-                district: first.subAdministrativeArea ?? '',
-                street: first.street ?? '')));
+        airEntity = airPollutionEntity;
+        address = Address(
+            country: first.country ?? '',
+            pronvice: first.administrativeArea ?? '',
+            district: first.subAdministrativeArea ?? '',
+            street: first.street ?? '');
+
+        emit(AirPollutionSuccess());
       },
     );
   }

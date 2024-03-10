@@ -111,104 +111,56 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
                               _getBorder(AppColors.searchBarBorderFocused, 20)),
                       onTapOutside: (event) => focusNode.unfocus(),
                     );
-                    // )
-                    // return TextFormField(
-                    //   controller: controller,
-                    //   focusNode: focusNode,
-                    //   cursorColor: AppColors.searchBarCursor,
-                    //   style: TextStyle(fontSize: 20.w),
-                    //   cursorHeight: 22.h,
-                    //   decoration: InputDecoration(
-                    //       contentPadding: EdgeInsets.zero,
-                    //       hintText: 'Search',
-                    //       hintStyle: TextStyle(
-                    //         fontSize: 19.w,
-                    //       ),
-                    //       prefixIcon: Padding(
-                    //         padding: EdgeInsets.only(left: 5.w),
-                    //         child: Icon(
-                    //           Icons.search,
-                    //           size: 25.w,
-                    //         ),
-                    //       ),
-                    //       suffixIcon: _buildSuffixIcon(context),
-                    //       enabledBorder:
-                    //           _getBorder(AppColors.searchBarBorder, 20),
-                    //       focusedBorder:
-                    //           _getBorder(AppColors.searchBarBorderFocused, 20)),
-                    //   onTapOutside: (event) => focusNode.unfocus(),
-                    //   onEditingComplete: onEditingComplete,
-                    // );
                   },
                 )),
-
-            // child: TextFormField(
-            //   controller: _searchController,
-            //   focusNode: _searchBarFocus,
-            //   cursorColor: AppColors.searchBarCursor,
-            //   style: TextStyle(fontSize: 20.w),
-            //   cursorHeight: 22.h,
-            //   decoration: InputDecoration(
-            //       contentPadding: EdgeInsets.zero,
-            //       hintText: 'Search',
-            //       hintStyle: TextStyle(
-            //         fontSize: 19.w,
-            //       ),
-            //       prefixIcon: Padding(
-            //         padding: EdgeInsets.only(left: 5.w),
-            //         child: Icon(
-            //           Icons.search,
-            //           size: 25.w,
-            //         ),
-            //       ),
-            //       suffixIcon: _buildSuffixIcon(context),
-            //       enabledBorder: _getBorder(AppColors.searchBarBorder, 20),
-            //       focusedBorder:
-            //           _getBorder(AppColors.searchBarBorderFocused, 20)),
-            // ),
-            // ),
             Gap(6.w),
-            Container(
-              width: 38.w,
-              height: 38.w,
-              decoration: BoxDecoration(
-                  color: bookmarkSelected ? Colors.red : Colors.transparent,
-                  borderRadius: BorderRadius.circular(40),
-                  border: Border.all(
-                    color: bookmarkSelected ? Colors.red : Colors.black,
-                    width: bookmarkSelected ? 0 : 1.5
-                  )
-                  ),
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    bookmarkSelected = !bookmarkSelected;
-                  });
-                },
-                child: Icon(
-                  Icons.bookmark_border_outlined,
-                  size: 24.w,
-                  color: bookmarkSelected ? Colors.white : Colors.black,
-                ),
-              ),
-            ),
+            _buildBookmarkIcon(),
             Gap(6.w),
-            Container(
-              width: 38.w,
-              height: 38.w,
-              decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 0, 110, 255),
-                  borderRadius: BorderRadius.circular(40)),
-              child: GestureDetector(
-                onTap: () => _handleGetUserLocation(),
-                child: Icon(
-                  Icons.my_location,
-                  size: 24.w,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+            _buildGetLocationIcon(),
           ],
+        ),
+      ),
+    );
+  }
+
+  Container _buildBookmarkIcon() {
+    return Container(
+      width: 38.w,
+      height: 38.w,
+      decoration: BoxDecoration(
+          color: bookmarkSelected ? Colors.red : Colors.transparent,
+          borderRadius: BorderRadius.circular(40),
+          border: Border.all(
+              color: bookmarkSelected ? Colors.red : Colors.black,
+              width: bookmarkSelected ? 0 : 1.5)),
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            bookmarkSelected = !bookmarkSelected;
+          });
+        },
+        child: Icon(
+          Icons.bookmark_border_outlined,
+          size: 24.w,
+          color: bookmarkSelected ? Colors.white : Colors.black,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGetLocationIcon() {
+    return Container(
+      width: 38.w,
+      height: 38.w,
+      decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 0, 110, 255),
+          borderRadius: BorderRadius.circular(40)),
+      child: GestureDetector(
+        onTap: () => _handleGetUserLocation(),
+        child: Icon(
+          Icons.my_location,
+          size: 24.w,
+          color: Colors.white,
         ),
       ),
     );

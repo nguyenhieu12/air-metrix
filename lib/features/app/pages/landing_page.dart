@@ -1,6 +1,5 @@
 import 'package:envi_metrix/core/models/nav_model.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/pages/air_pollution_page.dart';
-import 'package:envi_metrix/features/air_pollution/presentation/widgets/air_compare_dialog.dart';
 import 'package:envi_metrix/features/app/pages/chatbot_page.dart';
 import 'package:envi_metrix/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:envi_metrix/features/disaster/presentation/pages/disaster_page.dart';
@@ -8,6 +7,7 @@ import 'package:envi_metrix/features/news/presentation/pages/news_page.dart';
 import 'package:envi_metrix/services/tab_change/tab_change_cubit.dart';
 import 'package:envi_metrix/utils/page_transition.dart';
 import 'package:envi_metrix/utils/utils.dart';
+import 'package:envi_metrix/widgets/air_compare_dialog.dart';
 import 'package:envi_metrix/widgets/image_360_dialog.dart';
 import 'package:envi_metrix/widgets/custom_navbar.dart';
 import 'package:floating_draggable_widget/floating_draggable_widget.dart';
@@ -181,12 +181,13 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   Future<void> _onCompareTap() async {
-    showDialog(
-        context: context, builder: (context) => const AirCompareDialog());
+    Utils.showAirCompareDialog(
+        context: context, child: const AirCompareDialog());
   }
 
   Future<void> _onArTap() async {
-    Utils.showArSelectionDialog(context: context, child: const Image360Dialog());
+    Utils.showArSelectionDialog(
+        context: context, child: const Image360Dialog());
   }
 
   void _onWatchlistTap() {}

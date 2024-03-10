@@ -11,13 +11,7 @@ final class AirPollutionInitial extends AirPollutionState {}
 
 final class AirPollutionLoading extends AirPollutionState {}
 
-final class AirPollutionSuccess extends AirPollutionState {
-  final AirPollutionEntity airPollutionEntity;
-  final Address address;
-
-  const AirPollutionSuccess(
-      {required this.airPollutionEntity, required this.address});
-}
+final class AirPollutionSuccess extends AirPollutionState {}
 
 final class AirPollutionFailed extends AirPollutionState {
   final String errorMessage;
