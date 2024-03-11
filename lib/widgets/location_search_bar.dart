@@ -1,8 +1,11 @@
 import 'package:envi_metrix/core/themes/app_colors.dart';
+import 'package:envi_metrix/core/themes/filter_app_colors.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_pollution_cubit.dart';
 import 'package:envi_metrix/features/app/cubits/app_cubit.dart';
+import 'package:envi_metrix/features/watchlist/cubits/watchlist_cubit.dart';
 import 'package:envi_metrix/injector/injector.dart';
 import 'package:envi_metrix/services/location/user_location.dart';
+import 'package:envi_metrix/utils/pollutant_message.dart';
 import 'package:envi_metrix/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,9 +14,9 @@ import 'package:gap/gap.dart';
 import 'package:geolocator/geolocator.dart';
 
 class LocationSearchBar extends StatefulWidget {
-  const LocationSearchBar({super.key, this.airPollutionCubit});
+  const LocationSearchBar({super.key, required this.airPollutionCubit});
 
-  final AirPollutionCubit? airPollutionCubit;
+  final AirPollutionCubit airPollutionCubit;
 
   @override
   State<LocationSearchBar> createState() => _LocationSearchBarState();
@@ -21,6 +24,7 @@ class LocationSearchBar extends StatefulWidget {
 
 class _LocationSearchBarState extends State<LocationSearchBar> {
   late AppCubit _cubit;
+  late WatchlistCubit _watchlistCubit;
 
   final TextEditingController _searchController = TextEditingController();
   final TextEditingController _latController = TextEditingController();
@@ -46,6 +50,8 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
     });
 
     _cubit = Injector.instance();
+
+    _watchlistCubit = Injector.instance();
 
     _cubit.initCityData();
   }
@@ -134,11 +140,7 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
               color: bookmarkSelected ? Colors.red : Colors.black,
               width: bookmarkSelected ? 0 : 1.5)),
       child: GestureDetector(
-        onTap: () {
-          setState(() {
-            bookmarkSelected = !bookmarkSelected;
-          });
-        },
+        onTap: _handleAddToWatchlist,
         child: Icon(
           Icons.bookmark_border_outlined,
           size: 24.w,
@@ -146,6 +148,21 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
         ),
       ),
     );
+  }
+
+  void _handleAddToWatchlist() {
+    _watchlistCubit.addNewItem(
+        name:
+            '${widget.airPollutionCubit.address.pronvice}, ${widget.airPollutionCubit.address.country}',
+        quality: PollutantMessage.getPollutantMessage(
+            widget.airPollutionCubit.airQualityIndex),
+        color: FilterAppColors.getAQIColor(
+            widget.airPollutionCubit.airQualityIndex),
+        path: widget.airPollutionCubit.getQualityImagePath(
+            aqi: widget.airPollutionCubit.airQualityIndex));
+    setState(() {
+      bookmarkSelected = !bookmarkSelected;
+    });
   }
 
   Widget _buildGetLocationIcon() {
@@ -361,11 +378,11 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
   }
 
   void _handleSearchByName(String selectedText) {
-    widget.airPollutionCubit?.locationName = selectedText;
+    widget.airPollutionCubit.locationName = selectedText;
 
     Map<String, dynamic> coordinatesData = _cubit.cityData[selectedText];
 
-    widget.airPollutionCubit?.fetchAirPollutionData(
+    widget.airPollutionCubit.fetchAirPollutionData(
         double.parse(coordinatesData['lat']),
         double.parse(coordinatesData['lon']));
 

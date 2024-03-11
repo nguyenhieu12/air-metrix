@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -59,37 +60,63 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocConsumer<InternetCubit, InternetState>(
-        listenWhen: (previous, current) =>
-            current is InternetConnected || current is InternetDisconnected,
-        listener: (context, state) {
-          Utils.showInternetNotifySnackbar(context, state);
-        },
-        builder: (context, state) {
-          return _buildDashboardContent();
-          // return BlocBuilder(
-          //     bloc: dashboardCubit,
-          //     builder: (context, state) {
-          //       if (state is DashboardLoading) {
-          //         return _buildDashboardLoading();
-          //       } else if (state is DashboardSuccess) {
-          //         return _buildDashboardContent(state);
-          //       } else {
-          //         return Container();
-          //       }
-          //     });
-        },
+    return SafeArea(
+      child: Scaffold(
+        body: BlocConsumer<InternetCubit, InternetState>(
+          listenWhen: (previous, current) =>
+              current is InternetConnected || current is InternetDisconnected,
+          listener: (context, state) {
+            Utils.showInternetNotifySnackbar(context, state);
+          },
+          builder: (context, state) {
+            return _buildDashboardContent();
+          },
+        ),
       ),
     );
   }
 
-  Widget _buildDashboardLoading() {
+  Widget _buildAirLoading() {
     return Center(
-        child: Platform.isAndroid
-            ? CircularProgressIndicator(
-                color: AppColors.loading, strokeWidth: 2.0)
-            : CupertinoActivityIndicator(color: AppColors.loading));
+      child: SizedBox(
+        height: 350.h,
+        child: Column(
+          children: [
+            Text(
+              'Loading air data',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 22.w,
+                  fontWeight: FontWeight.w400),
+            ),
+            Gap(10.h),
+            LoadingAnimationWidget.fourRotatingDots(
+                color: Colors.green, size: 60.w)
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDisasterLoading() {
+    return Center(
+      child: SizedBox(
+        height: 350.h,
+        child: Column(
+          children: [
+            Text(
+              'Loading disasters data',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 22.w,
+                  fontWeight: FontWeight.w400),
+            ),
+            Gap(10.h),
+            LoadingAnimationWidget.threeArchedCircle(color: Colors.red, size: 60.w)
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildDashboardContent() {
@@ -97,7 +124,7 @@ class _DashboardPageState extends State<DashboardPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Gap(40.h),
+          Gap(20.h),
           LocationSearchBar(airPollutionCubit: airPollutionCubit),
           Gap(15.h),
           _buildLocalInformation(),
@@ -112,7 +139,7 @@ class _DashboardPageState extends State<DashboardPage> {
         bloc: dashboardCubit.airPollutionCubit,
         builder: (context, state) {
           if (state is AirPollutionLoading) {
-            return _buildDashboardLoading();
+            return _buildAirLoading();
           } else if (state is AirPollutionSuccess) {
             return _buildAirInfo(state);
           } else {
@@ -216,7 +243,7 @@ class _DashboardPageState extends State<DashboardPage> {
         bloc: dashboardCubit.disasterCubit,
         builder: ((context, state) {
           if (state is DisasterLoading) {
-            return _buildDashboardLoading();
+            return _buildDisasterLoading();
           } else if (state is DisasterSuccess) {
             return Padding(
               padding: EdgeInsets.only(left: 10.w, right: 10.w),
@@ -477,7 +504,8 @@ class _DashboardPageState extends State<DashboardPage> {
                   )
                 ],
               ),
-            )
+            ),
+          Gap(25.h),
         ],
       ),
     );

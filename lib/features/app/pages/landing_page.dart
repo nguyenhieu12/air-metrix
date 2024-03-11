@@ -100,11 +100,12 @@ class _LandingPageState extends State<LandingPage> {
 
   Widget _buildFloatingActionButton() {
     return Padding(
-      padding: const EdgeInsets.all(2.5),
+      padding: const EdgeInsets.all(1),
       child: SizedBox(
         width: 55,
         height: 55,
         child: SpeedDial(
+          elevation: 0,
           animationDuration: const Duration(milliseconds: 400),
           gradientBoxShape: BoxShape.circle,
           childrenButtonSize: Size(50.w, 50.w),
@@ -190,5 +191,7 @@ class _LandingPageState extends State<LandingPage> {
         context: context, child: const Image360Dialog());
   }
 
-  void _onWatchlistTap() {}
+  void _onWatchlistTap() {
+    Utils.showWatchlist(context: context);
+  }
 }

@@ -121,7 +121,7 @@ class _ArDialogState extends State<Image360Dialog> {
                               image: AssetImage(imagePath), fit: BoxFit.cover)),
                     ),
                     Gap(10.h),
-                    _buildTick(isSelected: isPollutionSelected)
+                    _buildTick(isSelected: selected)
                   ],
                 ),
               ),
@@ -132,16 +132,19 @@ class _ArDialogState extends State<Image360Dialog> {
     );
   }
 
-  Widget _buildTick({required isSelected}) {
-    return Container(
+  Widget _buildTick({required bool isSelected}) {
+    return isSelected ? Container(
       width: 30.w,
       height: 30.w,
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(100)),
-      child: Icon(
+      child: const Icon(
         Icons.check,
-        color: isSelected ? Colors.green : Colors.white,
+        color: Colors.green,
       ),
+    ) : SizedBox(
+      width: 30.w,
+      height: 30.w,
     );
   }
 

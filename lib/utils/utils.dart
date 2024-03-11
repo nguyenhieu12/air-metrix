@@ -2,7 +2,9 @@ import 'package:envi_metrix/core/connection/internet_cubit.dart';
 import 'package:envi_metrix/core/constraints/air_pollution_thresholds.dart';
 import 'package:envi_metrix/core/themes/app_colors.dart';
 import 'package:envi_metrix/core/themes/filter_app_colors.dart';
+import 'package:envi_metrix/features/watchlist/pages/watchlist_page.dart';
 import 'package:envi_metrix/utils/global_variables.dart';
+import 'package:envi_metrix/utils/page_transition.dart';
 import 'package:envi_metrix/widgets/air_compare_dialog.dart';
 import 'package:envi_metrix/widgets/image_360_dialog.dart';
 import 'package:envi_metrix/widgets/internet_snackbar.dart';
@@ -156,5 +158,10 @@ class Utils {
         );
       },
     );
+  }
+
+  static void showWatchlist({required BuildContext context}) {
+    Navigator.of(context)
+        .push(PageTransition.slideTransition(const WatchlistPage()));
   }
 }

@@ -354,7 +354,8 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
                         width: 155.w,
                         height: 150.w,
                         child: Image.asset(
-                          getQualityImagePath(),
+                          airPollutionCubit.getQualityImagePath(
+                              aqi: airPollutionCubit.airQualityIndex),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -535,24 +536,6 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
       return PollutantName.o3;
     } else {
       return PollutantName.co;
-    }
-  }
-
-  String getQualityImagePath() {
-    switch (airPollutionCubit.airQualityIndex) {
-      case 1:
-        return './assets/images/good_aqi.png';
-      case 2:
-        return './assets/images/moderate_aqi.png';
-      case 3:
-        return './assets/images/unhealthy_aqi.png';
-      case 4:
-        return './assets/images/very_unhealthy_aqi.png';
-      case 5:
-        return './assets/images/hazardous_aqi.png';
-
-      default:
-        return './assets/images/good_aqi.png';
     }
   }
 }

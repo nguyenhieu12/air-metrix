@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class AirCompareDialog extends StatefulWidget {
   const AirCompareDialog({super.key});
@@ -126,14 +127,12 @@ class _AirCompareDialogState extends State<AirCompareDialog> {
   }
 
   Widget _buildLoading() {
-    return Expanded(
+    return Center(
         child: SizedBox(
-      width: 40.w,
-      height: 40.w,
-      child: Platform.isAndroid
-          ? const CircularProgressIndicator(
-              color: Colors.green, strokeWidth: 1.5)
-          : const CupertinoActivityIndicator(),
+      width: 100.w,
+      height: 300.w,
+      child:
+          LoadingAnimationWidget.dotsTriangle(color: Colors.orange, size: 50.w),
     ));
   }
 

@@ -106,4 +106,22 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
     currentLat = lat;
     currentLat = long;
   }
+
+  String getQualityImagePath({required int aqi}) {
+    switch (aqi) {
+      case 1:
+        return './assets/images/good_aqi.png';
+      case 2:
+        return './assets/images/moderate_aqi.png';
+      case 3:
+        return './assets/images/unhealthy_aqi.png';
+      case 4:
+        return './assets/images/very_unhealthy_aqi.png';
+      case 5:
+        return './assets/images/hazardous_aqi.png';
+
+      default:
+        return './assets/images/good_aqi.png';
+    }
+  }
 }

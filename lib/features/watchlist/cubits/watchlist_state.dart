@@ -8,3 +8,9 @@ sealed class WatchlistState extends Equatable {
 }
 
 final class WatchlistInitial extends WatchlistState {}
+
+final class WatchlistLoading extends WatchlistState {}
+
+final class WatchlistSuccess extends WatchlistState {}
+
+final class WatchlistFailed extends WatchlistState {}

@@ -1,6 +1,7 @@
 import 'package:envi_metrix/core/themes/app_colors.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/pages/contaminant_detail_page.dart';
 import 'package:envi_metrix/utils/global_variables.dart';
+import 'package:envi_metrix/utils/page_transition.dart';
 import 'package:envi_metrix/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,15 +25,13 @@ class ContaminantInfo extends StatelessWidget {
         ),
         width: 160.w,
         child: GestureDetector(
-          onTap: () => Navigator.push(
-              context,
-              PageRouteBuilder(
-                  pageBuilder: (_, __, ___) => ContaminantDetail(
-                      tagName: contamunantName,
-                      cotaminantName: contamunantName,
-                      pollutantValue: concentration,
-                      mainColor: Utils.getBackgroundColor(contamunantName, concentration)),
-                  transitionDuration: const Duration(milliseconds: 750))),
+          onTap: () => Navigator.of(context, rootNavigator: true).push(
+              PageTransition.slideTransition(ContaminantDetail(
+                  tagName: contamunantName,
+                  cotaminantName: contamunantName,
+                  pollutantValue: concentration,
+                  mainColor: Utils.getBackgroundColor(
+                      contamunantName, concentration)))),
           child: Padding(
             padding: EdgeInsets.only(left: 10.w, right: 10.w),
             child: SingleChildScrollView(
@@ -56,7 +55,8 @@ class ContaminantInfo extends StatelessWidget {
                           color: AppColors.textWhite,
                           fontSize: 17.w,
                           fontWeight: FontWeight.w500)),
-                  Text(Utils.getPollutionMessage(contamunantName, concentration),
+                  Text(
+                      Utils.getPollutionMessage(contamunantName, concentration),
                       style: TextStyle(
                           color: AppColors.textWhite,
                           fontSize: 17.w,
@@ -70,6 +70,4 @@ class ContaminantInfo extends StatelessWidget {
       ),
     );
   }
-
-  
 }

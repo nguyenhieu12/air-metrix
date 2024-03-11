@@ -14,6 +14,7 @@ import 'package:envi_metrix/features/news/data/data_sources/news_remote_data_sou
 import 'package:envi_metrix/features/news/data/repositories/news_repository_impl.dart';
 import 'package:envi_metrix/features/news/domain/use_cases/get_news.dart';
 import 'package:envi_metrix/features/news/presentation/cubits/news_cubit.dart';
+import 'package:envi_metrix/features/watchlist/cubits/watchlist_cubit.dart';
 import 'package:envi_metrix/injector/injector.dart';
 
 class BlocModule {
@@ -24,6 +25,7 @@ class BlocModule {
 
     injector
       ..registerSingleton<AppCubit>(AppCubit())
+      ..registerSingleton<WatchlistCubit>(WatchlistCubit())
       ..registerSingleton<AirPollutionCubit>(AirPollutionCubit(
           getCurrentAirPollution: GetAirPollutionInformation(
               airPollutionRepository: AirPollutionRepositoryImpl(
