@@ -3,7 +3,9 @@ import 'package:dartz/dartz.dart';
 import 'package:envi_metrix/core/errors/exceptions.dart';
 import 'package:envi_metrix/core/models/address_model.dart';
 import 'package:envi_metrix/features/air_pollution/domain/entities/air_pollution_entity.dart';
+import 'package:envi_metrix/features/air_pollution/domain/entities/weather_entity.dart';
 import 'package:envi_metrix/features/air_pollution/domain/use_cases/get_current_air_pollution.dart';
+import 'package:envi_metrix/features/air_pollution/domain/use_cases/get_current_weather.dart';
 import 'package:envi_metrix/services/location/default_location.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +17,7 @@ part 'air_pollution_state.dart';
 
 class AirPollutionCubit extends Cubit<AirPollutionState> {
   final GetAirPollutionInformation getCurrentAirPollution;
+  final GetCurrentWeather getCurrentWeather;
 
   int airQualityIndex = 0;
   List<int> list3DaysForecastAQI = [];
@@ -26,8 +29,10 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
 
   late AirPollutionEntity airEntity;
   late Address address;
+  late WeatherEntity weatherEntity;
 
-  AirPollutionCubit({required this.getCurrentAirPollution})
+  AirPollutionCubit(
+      {required this.getCurrentAirPollution, required this.getCurrentWeather})
       : super(AirPollutionLoading());
 
   Future<void> fetchAirPollutionData(double lat, double long) async {
@@ -43,6 +48,9 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
     final Either<Failure, AirPollutionEntity> airPollutionData =
         await getCurrentAirPollution.getCurrentAirPollution(lat, long);
 
+    final Either<Failure, WeatherEntity> weatherData =
+        await getCurrentWeather.getCurrentWeather(lat, long);
+
     airPollutionData.fold(
       (Failure failure) {
         emit(
@@ -50,18 +58,27 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
         throw ApiException();
       },
       (AirPollutionEntity airPollutionEntity) async {
-        List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
+        weatherData.fold((Failure failure) {
+          emit(const AirPollutionFailed(
+              errorMessage: 'Lost Internet connection'));
+          throw ApiException();
+        }, (WeatherEntity weather) async {
+          List<Placemark> placemarks =
+              await placemarkFromCoordinates(lat, long);
 
-        final first = placemarks.first;
+          final first = placemarks.first;
 
-        airEntity = airPollutionEntity;
-        address = Address(
-            country: first.country ?? '',
-            pronvice: first.administrativeArea ?? '',
-            district: first.subAdministrativeArea ?? '',
-            street: first.street ?? '');
+          airEntity = airPollutionEntity;
+          weatherEntity = weather;
 
-        emit(AirPollutionSuccess());
+          address = Address(
+              country: first.country ?? '',
+              pronvice: first.administrativeArea ?? '',
+              district: first.subAdministrativeArea ?? '',
+              street: first.street ?? '');
+
+          emit(AirPollutionSuccess());
+        });
       },
     );
   }

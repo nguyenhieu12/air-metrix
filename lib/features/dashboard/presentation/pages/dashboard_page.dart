@@ -8,6 +8,7 @@ import 'package:envi_metrix/features/dashboard/presentation/cubits/dashboard_cub
 import 'package:envi_metrix/features/disaster/presentation/cubits/disaster_cubit.dart';
 import 'package:envi_metrix/injector/injector.dart';
 import 'package:envi_metrix/services/location/default_location.dart';
+import 'package:envi_metrix/utils/global_variables.dart';
 import 'package:envi_metrix/utils/pollutant_message.dart';
 import 'package:envi_metrix/utils/styles.dart';
 import 'package:envi_metrix/utils/utils.dart';
@@ -112,7 +113,8 @@ class _DashboardPageState extends State<DashboardPage> {
                   fontWeight: FontWeight.w400),
             ),
             Gap(10.h),
-            LoadingAnimationWidget.threeArchedCircle(color: Colors.red, size: 60.w)
+            LoadingAnimationWidget.threeArchedCircle(
+                color: Colors.red, size: 60.w)
           ],
         ),
       ),
@@ -171,11 +173,99 @@ class _DashboardPageState extends State<DashboardPage> {
                       airPollutionCubit.airQualityIndex),
                   style: TextStyle(color: Colors.white, fontSize: 24.w),
                 ),
-                Gap(4.h)
+                Gap(4.h),
+                ColoredBox(
+                  color: Colors.white,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildWeatherComponent(
+                          name: 'Temperature',
+                          value: airPollutionCubit.weatherEntity.temp,
+                          unit: AppUnits.tempUnit,
+                          iconPath: './assets/icons/temp_icon.png',
+                          iconSize: 45.w),
+                      _buildWeatherComponent(
+                          name: 'Humidity',
+                          value: airPollutionCubit.weatherEntity.humidity,
+                          unit: AppUnits.humidityUnit,
+                          iconPath: './assets/icons/humidity_icon.png',
+                          iconSize: 40.w),
+                    ],
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildWeatherComponent(
+                        name: 'Pressure',
+                        value: airPollutionCubit.weatherEntity.pressure,
+                        unit: AppUnits.pressureUnit,
+                        iconPath: './assets/icons/pressure_icon.png',
+                        iconSize: 45.w),
+                    _buildWeatherComponent(
+                        name: 'Wind',
+                        value: airPollutionCubit.weatherEntity.windSpeed,
+                        unit: AppUnits.windUnit,
+                        iconPath: './assets/icons/wind_icon.png',
+                        iconSize: 40.w),
+                  ],
+                )
               ],
             ),
           )
         ],
+      ),
+    );
+  }
+
+  Widget _buildWeatherComponent(
+      {required String name,
+      required dynamic value,
+      required String unit,
+      required String iconPath,
+      required double iconSize}) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.45,
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(5),
+          boxShadow: const [
+            BoxShadow(color: Colors.grey, offset: Offset(0, 0), spreadRadius: 2)
+          ]),
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Center(
+          child: Row(
+            children: [
+              SizedBox(
+                  width: iconSize,
+                  height: iconSize,
+                  child: Image.asset(iconPath)),
+              Gap(4.w),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16.w,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  Gap(6.h),
+                  Text(
+                    '${value.toString()} $unit',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15.w,
+                        fontWeight: FontWeight.w400),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -1,5 +1,10 @@
 class AppUnits {
   static const String contamitantUnit = "μg/m\u00b3";
+  static const String tempUnit = "\u2103";
+  static const String pressureUnit = "hPa";
+  static const String humidityUnit = "%";
+  static const String windUnit = "m/s";
+
 }
 
 class PollutantName {

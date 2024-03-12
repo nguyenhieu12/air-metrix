@@ -1,7 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:envi_metrix/features/air_pollution/data/data_sources/air_pollution_remote_data_source.dart';
+import 'package:envi_metrix/features/air_pollution/data/data_sources/weather_remote_data_source.dart';
 import 'package:envi_metrix/features/air_pollution/data/repositories/air_pollution_repository_impl.dart';
+import 'package:envi_metrix/features/air_pollution/data/repositories/weather_repository_impl.dart';
 import 'package:envi_metrix/features/air_pollution/domain/use_cases/get_current_air_pollution.dart';
+import 'package:envi_metrix/features/air_pollution/domain/use_cases/get_current_weather.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_compare_cubit.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_pollution_cubit.dart';
 import 'package:envi_metrix/features/app/cubits/app_cubit.dart';
@@ -27,6 +30,9 @@ class BlocModule {
       ..registerSingleton<AppCubit>(AppCubit())
       ..registerSingleton<WatchlistCubit>(WatchlistCubit())
       ..registerSingleton<AirPollutionCubit>(AirPollutionCubit(
+          getCurrentWeather: GetCurrentWeather(
+              weatherRepository: WeatherRepositoryImpl(
+                  remoteDataSource: WeatherRemoteDataSourceImpl(Dio()))),
           getCurrentAirPollution: GetAirPollutionInformation(
               airPollutionRepository: AirPollutionRepositoryImpl(
                   remoteDataSource: AirPollutionRemoteDataSourceImpl(Dio())))))
