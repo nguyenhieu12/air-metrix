@@ -14,7 +14,9 @@ class WatchlistCubit extends Cubit<WatchlistState> {
       {required String name,
       required String quality,
       required Color color,
-      required String path}) {
+      required String path,
+      required double lat,
+      required double long}) {
     emit(WatchlistLoading());
 
     watchlistItems.add(WatchlistItem(
@@ -22,14 +24,18 @@ class WatchlistCubit extends Cubit<WatchlistState> {
       airQuality: quality,
       backgroundColor: color,
       imagePath: path,
+      lat: lat,
+      long: long,
     ));
 
     emit(WatchlistSuccess());
   }
 
-  void removeItem({required int index}) {}
-
-  void initWatchlist() {
-    emit(WatchlistSuccess());
+  void removeItem({required double lat, required double long}) {
+    for (int i = 0; i < watchlistItems.length; i++) {
+      if (watchlistItems[i].lat == lat && watchlistItems[i].long == long) {
+        watchlistItems.removeAt(i);
+      }
+    }
   }
 }

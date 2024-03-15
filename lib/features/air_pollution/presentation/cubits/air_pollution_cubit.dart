@@ -31,6 +31,8 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
   late Address address;
   late WeatherEntity weatherEntity;
 
+  bool bookmarkSelected = false;
+
   AirPollutionCubit(
       {required this.getCurrentAirPollution, required this.getCurrentWeather})
       : super(AirPollutionLoading());
@@ -76,6 +78,8 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
               pronvice: first.administrativeArea ?? '',
               district: first.subAdministrativeArea ?? '',
               street: first.street ?? '');
+
+          setNewLatLong(lat, long);
 
           emit(AirPollutionSuccess());
         });

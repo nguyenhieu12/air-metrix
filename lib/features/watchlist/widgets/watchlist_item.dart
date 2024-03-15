@@ -6,12 +6,16 @@ class WatchlistItem extends StatefulWidget {
       required this.locationName,
       required this.airQuality,
       required this.backgroundColor,
-      required this.imagePath});
+      required this.imagePath,
+      required this.lat,
+      required this.long});
 
   final String locationName;
   final String airQuality;
   final Color backgroundColor;
   final String imagePath;
+  final double lat;
+  final double long;
 
   @override
   State<WatchlistItem> createState() => _WatchlistItemState();

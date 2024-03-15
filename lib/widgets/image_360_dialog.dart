@@ -151,13 +151,13 @@ class _ArDialogState extends State<Image360Dialog> {
   Widget _buildChooseButton() {
     return ElevatedButton(
         onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => Image360Screen(
-                      imagePath: isPollutionSelected
-                          ? airPollutionImagePath
-                          : airFreshImagePath)));
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => Image360Screen(
+          //             imagePath: isPollutionSelected
+          //                 ? airPollutionImagePath
+          //                 : airFreshImagePath)));
         },
         style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
         child: Text(

@@ -178,7 +178,7 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   Future<void> _onShareTap() async {
-    await Share.share('test');
+    await Share.share('Sharing air quality data now!');
   }
 
   Future<void> _onCompareTap() async {

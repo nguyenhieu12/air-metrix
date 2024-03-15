@@ -23,7 +23,7 @@ class _WatchlistPageState extends State<WatchlistPage> {
 
     _cubit = Injector.instance();
 
-    _cubit.initWatchlist();
+    // _cubit.initWatchlist();
   }
 
   @override
@@ -79,7 +79,8 @@ class _WatchlistPageState extends State<WatchlistPage> {
               endActionPane:
                   ActionPane(motion: const StretchMotion(), children: [
                 SlidableAction(
-                  onPressed: (context) => _cubit.removeItem(index: index),
+                  // onPressed: (context) => _cubit.removeItem(index: index),
+                  onPressed: (context) {},
                   backgroundColor: Colors.red,
                   icon: Icons.delete,
                   label: 'Delete',
@@ -95,7 +96,7 @@ class _WatchlistPageState extends State<WatchlistPage> {
     return Padding(
       padding: EdgeInsets.only(left: 15.w, right: 15.w, top: 15.h),
       child: Container(
-        width: MediaQuery.of(context).size.width,
+        // width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(5),
@@ -114,42 +115,44 @@ class _WatchlistPageState extends State<WatchlistPage> {
         child: Row(
           children: [
             Gap(10.w),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.location_on_outlined,
-                      size: 26.w,
-                      color: item.backgroundColor,
-                    ),
-                    Flexible(
-                      child: Text(
-                        item.locationName,
-                        style: TextStyle(
-                            color: item.backgroundColor,
-                            fontSize: 22.w,
-                            fontWeight: FontWeight.w500),
-                        overflow: TextOverflow.ellipsis,
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.location_on_outlined,
+                        size: 26.w,
+                        color: item.backgroundColor,
+                      ),
+                      Flexible(
+                        child: Text(
+                          item.locationName,
+                          style: TextStyle(
+                              color: item.backgroundColor,
+                              fontSize: 22.w,
+                              fontWeight: FontWeight.w500),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Gap(10.h),
+                  Padding(
+                    padding: EdgeInsets.only(left: 5.w),
+                    child: Text(
+                      'Quality: ${item.airQuality}',
+                      style: TextStyle(
+                        color: item.backgroundColor,
+                        fontSize: 21.w,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                  ],
-                ),
-                Gap(10.h),
-                Padding(
-                  padding: EdgeInsets.only(left: 5.w),
-                  child: Text(
-                    'Quality: ${item.airQuality}',
-                    style: TextStyle(
-                      color: item.backgroundColor,
-                      fontSize: 21.w,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
             Gap(20.w),
             SizedBox(
@@ -164,6 +167,12 @@ class _WatchlistPageState extends State<WatchlistPage> {
         ),
       ),
     );
+
+    // return Container(
+    //   width: 200.w,
+    //   height: 150.w,
+    //   color: Colors.red,
+    // );
   }
 
   Widget _buildEmptyElement() {

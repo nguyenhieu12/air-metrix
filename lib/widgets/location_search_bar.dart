@@ -38,8 +38,6 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
   double? lat;
   double? long;
 
-  bool bookmarkSelected = false;
-
   @override
   void initState() {
     super.initState();
@@ -83,6 +81,8 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
                     });
                   },
                   onSelected: (selectedText) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+
                     _handleSearchByName(selectedText);
                   },
 
@@ -129,40 +129,77 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
     );
   }
 
-  Container _buildBookmarkIcon() {
+  Widget _buildBookmarkIcon() {
     return Container(
       width: 38.w,
       height: 38.w,
       decoration: BoxDecoration(
-          color: bookmarkSelected ? Colors.red : Colors.transparent,
+          color: widget.airPollutionCubit.bookmarkSelected
+              ? Colors.red
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(40),
           border: Border.all(
-              color: bookmarkSelected ? Colors.red : Colors.black,
-              width: bookmarkSelected ? 0 : 1.5)),
+              color: widget.airPollutionCubit.bookmarkSelected
+                  ? Colors.red
+                  : Colors.black,
+              width: widget.airPollutionCubit.bookmarkSelected ? 0 : 1.5)),
       child: GestureDetector(
         onTap: _handleAddToWatchlist,
         child: Icon(
           Icons.bookmark_border_outlined,
           size: 24.w,
-          color: bookmarkSelected ? Colors.white : Colors.black,
+          color: widget.airPollutionCubit.bookmarkSelected
+              ? Colors.white
+              : Colors.black,
         ),
       ),
     );
   }
 
+  bool checkBookmarkSelected() {
+    for (int i = 0; i < _watchlistCubit.watchlistItems.length; i++) {
+      if ((_watchlistCubit.watchlistItems[i].lat ==
+              widget.airPollutionCubit.currentLat) &&
+          (_watchlistCubit.watchlistItems[i].lat ==
+              widget.airPollutionCubit.currentLat)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   void _handleAddToWatchlist() {
-    _watchlistCubit.addNewItem(
-        name:
-            '${widget.airPollutionCubit.address.pronvice}, ${widget.airPollutionCubit.address.country}',
-        quality: PollutantMessage.getPollutantMessage(
-            widget.airPollutionCubit.airQualityIndex),
-        color: FilterAppColors.getAQIColor(
-            widget.airPollutionCubit.airQualityIndex),
-        path: widget.airPollutionCubit.getQualityImagePath(
-            aqi: widget.airPollutionCubit.airQualityIndex));
-    setState(() {
-      bookmarkSelected = !bookmarkSelected;
-    });
+    if (widget.airPollutionCubit.bookmarkSelected == false) {
+      _watchlistCubit.addNewItem(
+          name:
+              '${widget.airPollutionCubit.address.pronvice}, ${widget.airPollutionCubit.address.country}',
+          quality: PollutantMessage.getPollutantMessage(
+              widget.airPollutionCubit.airQualityIndex),
+          color: FilterAppColors.getAQIColor(
+              widget.airPollutionCubit.airQualityIndex),
+          path: widget.airPollutionCubit.getQualityImagePath(
+              aqi: widget.airPollutionCubit.airQualityIndex),
+          lat: widget.airPollutionCubit.currentLat,
+          long: widget.airPollutionCubit.currentLong);
+      setState(() {
+        widget.airPollutionCubit.bookmarkSelected = true;
+      });
+
+      showAddWatchlistSnackbar(
+          message: 'Add successfully', color: Colors.green);
+    } else {
+      _watchlistCubit.removeItem(
+          lat: widget.airPollutionCubit.currentLat,
+          long: widget.airPollutionCubit.currentLong);
+
+      setState(() {
+        widget.airPollutionCubit.bookmarkSelected = false;
+      });
+
+      showAddWatchlistSnackbar(
+          message: 'Remove successfully', color: Colors.red);
+    }
   }
 
   Widget _buildGetLocationIcon() {
@@ -361,7 +398,7 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
 
   void _handleSearchByCoordinates(BuildContext context) async {
     if (lat != null && long != null) {
-      await widget.airPollutionCubit?.fetchAirPollutionData(lat!, long!);
+      await widget.airPollutionCubit.fetchAirPollutionData(lat!, long!);
       _searchBarFocus.unfocus();
       // ignore: use_build_context_synchronously
       Navigator.pop(context, [lat, long]);
@@ -372,7 +409,7 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
     if (await userLocation.isAccepted()) {
       Position currentPosition = await Utils.getUserLocation();
 
-      widget.airPollutionCubit?.fetchAirPollutionData(
+      widget.airPollutionCubit.fetchAirPollutionData(
           currentPosition.latitude, currentPosition.longitude);
     }
   }
@@ -386,6 +423,41 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
         double.parse(coordinatesData['lat']),
         double.parse(coordinatesData['lon']));
 
-    setState(() {});
+    setState(() {
+      widget.airPollutionCubit.bookmarkSelected = false;
+    });
+  }
+
+  void showAddWatchlistSnackbar(
+      {required String message, required Color color}) {
+    SnackBar snackBar = SnackBar(
+      content: Row(
+        children: [
+          Icon(
+            Icons.bookmark,
+            color: Colors.white,
+            size: 24.w,
+          ),
+          Gap(8.w),
+          Text(
+            message,
+            style: TextStyle(
+              fontSize: 18.w,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+      backgroundColor: color,
+      dismissDirection: DismissDirection.up,
+      behavior: SnackBarBehavior.floating,
+      margin: EdgeInsets.only(
+          left: 10.w,
+          right: 10.w,
+          bottom: MediaQuery.of(context).size.height - 80),
+      duration: const Duration(seconds: 1),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

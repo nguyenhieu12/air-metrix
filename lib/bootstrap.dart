@@ -50,7 +50,6 @@ class MyApp extends StatelessWidget {
                   BlocProvider<TabChangeCubit>(
                       create: (context) => TabChangeCubit()),
                 ],
-                // child: const Image360Screen(imagePath: './assets/images/air_fresh.png',),
                 child: const LandingPage(),
               ),
             ));

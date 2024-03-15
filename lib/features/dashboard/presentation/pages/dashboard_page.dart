@@ -128,8 +128,9 @@ class _DashboardPageState extends State<DashboardPage> {
         children: [
           Gap(20.h),
           LocationSearchBar(airPollutionCubit: airPollutionCubit),
-          Gap(15.h),
+          Gap(10.h),
           _buildLocalInformation(),
+          Gap(10.h),
           _buildGlobalInformation()
         ],
       ),
@@ -159,42 +160,53 @@ class _DashboardPageState extends State<DashboardPage> {
         children: [
           Text('Air pollution', style: headerTextStyle),
           Gap(6.h),
-          Container(
-            decoration: BoxDecoration(
-                color: FilterAppColors.getAQIColor(
-                    dashboardCubit.airPollutionCubit.airQualityIndex),
-                borderRadius: BorderRadius.circular(5)),
-            child: Column(
-              children: [
-                Gap(4.h),
-                _buildLocationName(state),
-                Text(
-                  PollutantMessage.getPollutantMessage(
-                      airPollutionCubit.airQualityIndex),
-                  style: TextStyle(color: Colors.white, fontSize: 24.w),
+          Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                    color: FilterAppColors.getAQIColor(
+                        dashboardCubit.airPollutionCubit.airQualityIndex),
+                    borderRadius: BorderRadius.circular(5)),
+                child: Column(
+                  children: [
+                    Gap(4.h),
+                    _buildLocationName(state),
+                    Text(
+                      PollutantMessage.getPollutantMessage(
+                          airPollutionCubit.airQualityIndex),
+                      style: TextStyle(color: Colors.white, fontSize: 24.w),
+                    )
+                  ],
                 ),
-                Gap(4.h),
-                ColoredBox(
-                  color: Colors.white,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildWeatherComponent(
-                          name: 'Temperature',
-                          value: airPollutionCubit.weatherEntity.temp,
-                          unit: AppUnits.tempUnit,
-                          iconPath: './assets/icons/temp_icon.png',
-                          iconSize: 45.w),
-                      _buildWeatherComponent(
-                          name: 'Humidity',
-                          value: airPollutionCubit.weatherEntity.humidity,
-                          unit: AppUnits.humidityUnit,
-                          iconPath: './assets/icons/humidity_icon.png',
-                          iconSize: 40.w),
-                    ],
-                  ),
+              ),
+              Gap(8.h),
+              ColoredBox(
+                color: Colors.white,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildWeatherComponent(
+                        name: 'Temperature',
+                        value: airPollutionCubit.weatherEntity.temp,
+                        unit: AppUnits.tempUnit,
+                        iconPath: './assets/icons/temp_icon.png',
+                        iconSize: 40.w,
+                        distance: 6.w),
+                    Gap(4.w),
+                    _buildWeatherComponent(
+                        name: 'Humidity',
+                        value: airPollutionCubit.weatherEntity.humidity,
+                        unit: AppUnits.humidityUnit,
+                        iconPath: './assets/icons/humidity_icon.png',
+                        iconSize: 35.w,
+                        distance: 12.w),
+                  ],
                 ),
-                Row(
+              ),
+              Gap(10.h),
+              ColoredBox(
+                color: Colors.white,
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     _buildWeatherComponent(
@@ -202,17 +214,20 @@ class _DashboardPageState extends State<DashboardPage> {
                         value: airPollutionCubit.weatherEntity.pressure,
                         unit: AppUnits.pressureUnit,
                         iconPath: './assets/icons/pressure_icon.png',
-                        iconSize: 45.w),
+                        iconSize: 45.w,
+                        distance: 10.w),
+                    Gap(4.w),
                     _buildWeatherComponent(
                         name: 'Wind',
                         value: airPollutionCubit.weatherEntity.windSpeed,
                         unit: AppUnits.windUnit,
                         iconPath: './assets/icons/wind_icon.png',
-                        iconSize: 40.w),
+                        iconSize: 55.w,
+                        distance: 2.w),
                   ],
-                )
-              ],
-            ),
+                ),
+              )
+            ],
           )
         ],
       ),
@@ -224,7 +239,8 @@ class _DashboardPageState extends State<DashboardPage> {
       required dynamic value,
       required String unit,
       required String iconPath,
-      required double iconSize}) {
+      required double iconSize,
+      required double distance}) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.45,
       decoration: BoxDecoration(
@@ -242,7 +258,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   width: iconSize,
                   height: iconSize,
                   child: Image.asset(iconPath)),
-              Gap(4.w),
+              Gap(distance),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -273,27 +289,14 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget _buildErrorContent() {
     return Expanded(
       child: Center(
-          // child: GestureDetector(
-          //   onTap: () => context
-          //       .read<AirPollutionCubit>()
-          //       .handleReloadCurrentAirPollution(currentLat, currentLong),
-          //   child: Row(children: [
-          //     Icon(
-          //       Icons.refresh,
-          //       color: AppColors.reload,
-          //       size: 30.w,
-          //     ),
-          //     Gap(10.w),
-          //     Text(
-          //       'Reload',
-          //       style: TextStyle(
-          //           fontSize: 20.w,
-          //           fontWeight: FontWeight.w500,
-          //           color: AppColors.reload),
-          //     )
-          //   ]),
-          // ),
-          ),
+        child: Text(
+              'Cannot load data',
+              style: TextStyle(
+                  fontSize: 18.w,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black),
+            ),
+      ),
     );
   }
 

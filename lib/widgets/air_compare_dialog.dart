@@ -6,6 +6,7 @@ import 'package:envi_metrix/features/app/cubits/app_cubit.dart';
 import 'package:envi_metrix/injector/injector.dart';
 import 'package:envi_metrix/utils/global_variables.dart';
 import 'package:envi_metrix/utils/pollutant_message.dart';
+import 'package:envi_metrix/utils/utils.dart';
 import 'package:envi_metrix/widgets/air_compare_search_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -189,7 +190,10 @@ class _AirCompareDialogState extends State<AirCompareDialog> {
           Text(
             'SO2: ${_airPollutionCubit.airEntity.so2} ${AppUnits.contamitantUnit}',
             style: TextStyle(
-                color: Colors.black,
+                color: Utils.getBackgroundColor(
+                    'SO2',
+                    convertConcentrationToDouble(
+                        _airPollutionCubit.airEntity.so2)),
                 fontWeight: FontWeight.w400,
                 fontSize: 16.w),
           ),
@@ -197,7 +201,10 @@ class _AirCompareDialogState extends State<AirCompareDialog> {
           Text(
             'NO2: ${_airPollutionCubit.airEntity.no2} ${AppUnits.contamitantUnit}',
             style: TextStyle(
-                color: Colors.black,
+                color: Utils.getBackgroundColor(
+                    'NO2',
+                    convertConcentrationToDouble(
+                        _airPollutionCubit.airEntity.no2)),
                 fontWeight: FontWeight.w400,
                 fontSize: 16.w),
           ),
@@ -205,7 +212,10 @@ class _AirCompareDialogState extends State<AirCompareDialog> {
           Text(
             'PM10: ${_airPollutionCubit.airEntity.pm10} ${AppUnits.contamitantUnit}',
             style: TextStyle(
-                color: Colors.black,
+                color: Utils.getBackgroundColor(
+                    'PM10',
+                    convertConcentrationToDouble(
+                        _airPollutionCubit.airEntity.pm10)),
                 fontWeight: FontWeight.w400,
                 fontSize: 16.w),
           ),
@@ -213,7 +223,10 @@ class _AirCompareDialogState extends State<AirCompareDialog> {
           Text(
             'PM2.5: ${_airPollutionCubit.airEntity.pm2_5} ${AppUnits.contamitantUnit}',
             style: TextStyle(
-                color: Colors.black,
+                color: Utils.getBackgroundColor(
+                    'PM2.5',
+                    convertConcentrationToDouble(
+                        _airPollutionCubit.airEntity.pm2_5)),
                 fontWeight: FontWeight.w400,
                 fontSize: 16.w),
           ),
@@ -221,7 +234,10 @@ class _AirCompareDialogState extends State<AirCompareDialog> {
           Text(
             'O3: ${_airPollutionCubit.airEntity.o3} ${AppUnits.contamitantUnit}',
             style: TextStyle(
-                color: Colors.black,
+                color: Utils.getBackgroundColor(
+                    'O3',
+                    convertConcentrationToDouble(
+                        _airPollutionCubit.airEntity.o3)),
                 fontWeight: FontWeight.w400,
                 fontSize: 16.w),
           ),
@@ -229,7 +245,10 @@ class _AirCompareDialogState extends State<AirCompareDialog> {
           Text(
             'CO: ${_airPollutionCubit.airEntity.co} ${AppUnits.contamitantUnit}',
             style: TextStyle(
-                color: Colors.black,
+                color: Utils.getBackgroundColor(
+                    'CO',
+                    convertConcentrationToDouble(
+                        _airPollutionCubit.airEntity.co)),
                 fontWeight: FontWeight.w400,
                 fontSize: 16.w),
           ),
@@ -263,7 +282,8 @@ class _AirCompareDialogState extends State<AirCompareDialog> {
           Text(
             'SO2: ${_cubit.airEntity.so2} ${AppUnits.contamitantUnit}',
             style: TextStyle(
-                color: Colors.black,
+                color: Utils.getBackgroundColor(
+                    'SO2', convertConcentrationToDouble(_cubit.airEntity.so2)),
                 fontWeight: FontWeight.w400,
                 fontSize: 16.w),
           ),
@@ -271,7 +291,8 @@ class _AirCompareDialogState extends State<AirCompareDialog> {
           Text(
             'NO2: ${_cubit.airEntity.no2} ${AppUnits.contamitantUnit}',
             style: TextStyle(
-                color: Colors.black,
+                color: Utils.getBackgroundColor(
+                    'NO2', convertConcentrationToDouble(_cubit.airEntity.no2)),
                 fontWeight: FontWeight.w400,
                 fontSize: 16.w),
           ),
@@ -279,7 +300,8 @@ class _AirCompareDialogState extends State<AirCompareDialog> {
           Text(
             'PM10: ${_cubit.airEntity.pm10} ${AppUnits.contamitantUnit}',
             style: TextStyle(
-                color: Colors.black,
+                color: Utils.getBackgroundColor('PM10',
+                    convertConcentrationToDouble(_cubit.airEntity.pm10)),
                 fontWeight: FontWeight.w400,
                 fontSize: 16.w),
           ),
@@ -287,7 +309,8 @@ class _AirCompareDialogState extends State<AirCompareDialog> {
           Text(
             'PM2.5: ${_cubit.airEntity.pm2_5} ${AppUnits.contamitantUnit}',
             style: TextStyle(
-                color: Colors.black,
+                color: Utils.getBackgroundColor('PM2.5',
+                    convertConcentrationToDouble(_cubit.airEntity.pm2_5)),
                 fontWeight: FontWeight.w400,
                 fontSize: 16.w),
           ),
@@ -295,7 +318,8 @@ class _AirCompareDialogState extends State<AirCompareDialog> {
           Text(
             'O3: ${_cubit.airEntity.o3} ${AppUnits.contamitantUnit}',
             style: TextStyle(
-                color: Colors.black,
+                color: Utils.getBackgroundColor(
+                    'O3', convertConcentrationToDouble(_cubit.airEntity.o3)),
                 fontWeight: FontWeight.w400,
                 fontSize: 16.w),
           ),
@@ -303,7 +327,8 @@ class _AirCompareDialogState extends State<AirCompareDialog> {
           Text(
             'CO: ${_cubit.airEntity.co} ${AppUnits.contamitantUnit}',
             style: TextStyle(
-                color: Colors.black,
+                color: Utils.getBackgroundColor(
+                    'CO', convertConcentrationToDouble(_cubit.airEntity.co)),
                 fontWeight: FontWeight.w400,
                 fontSize: 16.w),
           ),
@@ -311,5 +336,15 @@ class _AirCompareDialogState extends State<AirCompareDialog> {
         ],
       ),
     );
+  }
+
+  double convertConcentrationToDouble(dynamic value) {
+    if (value is int) {
+      return value.toDouble();
+    } else if (value is String) {
+      return double.parse(value);
+    } else {
+      return value;
+    }
   }
 }
