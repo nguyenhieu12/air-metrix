@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:envi_metrix/core/connection/internet_cubit.dart';
 import 'package:envi_metrix/core/themes/app_colors.dart';
 import 'package:envi_metrix/core/themes/filter_app_colors.dart';
@@ -42,6 +43,14 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
     4: 'Very unhealthy',
     5: 'Hazardous'
   };
+
+  List<String> chartOptions = [
+    'Next 6 hours',
+    'Next 12 hours',
+    'Next 3 days',
+  ];
+
+  String selectedValue = 'Next 6 hours';
 
   List<int> test = [];
 
@@ -155,8 +164,6 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
   }
 
   Widget _buildForecaseSection() {
-    final List<int> data = airPollutionCubit.list3DaysForecastAQI;
-
     return Padding(
       padding: EdgeInsets.only(left: 10.w, right: 10.w),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -169,49 +176,16 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
           decoration: BoxDecoration(
               color: Colors.white, borderRadius: BorderRadius.circular(10)),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Gap(20.h),
-              Padding(
-                padding: EdgeInsets.only(right: 20.w),
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: 185.h,
-                  child: LineChart(
-                    LineChartData(
-                        minY: 1,
-                        maxY: 5,
-                        lineBarsData: [
-                          LineChartBarData(
-                              spots: data
-                                  .asMap()
-                                  .entries
-                                  .map((e) => FlSpot(
-                                      e.key.toDouble(), e.value.toDouble()))
-                                  .toList(),
-                              dotData: const FlDotData(
-                                show: true,
-                              )),
-                        ],
-                        borderData: FlBorderData(
-                            border: const Border(
-                                bottom: BorderSide(), left: BorderSide())),
-                        titlesData: FlTitlesData(
-                          topTitles: const AxisTitles(
-                              sideTitles: SideTitles(
-                            showTitles: false,
-                          )),
-                          rightTitles: const AxisTitles(
-                              sideTitles: SideTitles(
-                            showTitles: false,
-                          )),
-                          bottomTitles: AxisTitles(
-                              sideTitles: _bottomTitles3DaysForecast),
-                        )),
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.linear,
-                  ),
-                ),
-              ),
+              Gap(15.h),
+              _buildDropdownChartOption(),
+              Gap(25.h),
+              selectedValue == 'Next 6 hours'
+                  ? _build6HoursForecastChart()
+                  : (selectedValue == 'Next 12 hours'
+                      ? _build12HoursForecastChart()
+                      : _build3DaysForecastChart()),
               Gap(10.h),
               Padding(
                 padding: EdgeInsets.only(left: 25.w),
@@ -233,12 +207,150 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
                     )
                   ],
                 ),
-              ),
+              )
             ],
           ),
         ),
         Gap(15.h)
       ]),
+    );
+  }
+
+  Widget _build3DaysForecastChart() {
+    final List<int> data = airPollutionCubit.list3DaysForecastAQI;
+
+    return Padding(
+      padding: EdgeInsets.only(right: 20.w),
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: 185.h,
+        child: LineChart(
+          LineChartData(
+              minY: 1,
+              maxY: 5,
+              lineBarsData: [
+                LineChartBarData(
+                    spots: data
+                        .asMap()
+                        .entries
+                        .map(
+                            (e) => FlSpot(e.key.toDouble(), e.value.toDouble()))
+                        .toList(),
+                    dotData: const FlDotData(
+                      show: true,
+                    )),
+              ],
+              borderData: FlBorderData(
+                  border:
+                      const Border(bottom: BorderSide(), left: BorderSide())),
+              titlesData: FlTitlesData(
+                topTitles: const AxisTitles(
+                    sideTitles: SideTitles(
+                  showTitles: false,
+                )),
+                rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(
+                  showTitles: false,
+                )),
+                bottomTitles:
+                    AxisTitles(sideTitles: _bottomTitles3DaysForecast),
+              )),
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.linear,
+        ),
+      ),
+    );
+  }
+
+  Widget _build6HoursForecastChart() {
+    final List<int> data = airPollutionCubit.list6HoursForecastAQI;
+
+    return Padding(
+      padding: EdgeInsets.only(right: 20.w),
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: 185.h,
+        child: LineChart(
+          LineChartData(
+              minY: 1,
+              maxY: 5,
+              lineBarsData: [
+                LineChartBarData(
+                    spots: data
+                        .asMap()
+                        .entries
+                        .map(
+                            (e) => FlSpot(e.key.toDouble(), e.value.toDouble()))
+                        .toList(),
+                    dotData: const FlDotData(
+                      show: true,
+                    )),
+              ],
+              borderData: FlBorderData(
+                  border:
+                      const Border(bottom: BorderSide(), left: BorderSide())),
+              titlesData: FlTitlesData(
+                topTitles: const AxisTitles(
+                    sideTitles: SideTitles(
+                  showTitles: false,
+                )),
+                rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(
+                  showTitles: false,
+                )),
+                bottomTitles:
+                    AxisTitles(sideTitles: _bottomTitles6HoursForecast),
+              )),
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.linear,
+        ),
+      ),
+    );
+  }
+
+  Widget _build12HoursForecastChart() {
+    final List<int> data = airPollutionCubit.list12HoursForecastAQI;
+
+    return Padding(
+      padding: EdgeInsets.only(right: 20.w),
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: 185.h,
+        child: LineChart(
+          LineChartData(
+              minY: 1,
+              maxY: 5,
+              lineBarsData: [
+                LineChartBarData(
+                    spots: data
+                        .asMap()
+                        .entries
+                        .map(
+                            (e) => FlSpot(e.key.toDouble(), e.value.toDouble()))
+                        .toList(),
+                    dotData: const FlDotData(
+                      show: true,
+                    )),
+              ],
+              borderData: FlBorderData(
+                  border:
+                      const Border(bottom: BorderSide(), left: BorderSide())),
+              titlesData: FlTitlesData(
+                topTitles: const AxisTitles(
+                    sideTitles: SideTitles(
+                  showTitles: false,
+                )),
+                rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(
+                  showTitles: false,
+                )),
+                bottomTitles:
+                    AxisTitles(sideTitles: _bottomTitles12HoursForecast),
+              )),
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.linear,
+        ),
+      ),
     );
   }
 
@@ -290,6 +402,177 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
           return Text(text);
         },
       );
+
+  SideTitles get _bottomTitles6HoursForecast => SideTitles(
+        showTitles: true,
+        getTitlesWidget: (value, meta) {
+          DateTime today = DateTime.now();
+          String text = '';
+          switch (value) {
+            case 0.0:
+              text = 'Now';
+              break;
+            case 1.0:
+              text = DateFormat('HH:mm')
+                  .format(today.add(const Duration(hours: 1)));
+              break;
+            case 2.0:
+              text = DateFormat('HH:mm')
+                  .format(today.add(const Duration(hours: 2)));
+              break;
+            case 3.0:
+              text = DateFormat('HH:mm')
+                  .format(today.add(const Duration(hours: 3)));
+              break;
+            case 4.0:
+              text = DateFormat('HH:mm')
+                  .format(today.add(const Duration(hours: 4)));
+              break;
+            case 5.0:
+              text = DateFormat('HH:mm')
+                  .format(today.add(const Duration(hours: 5)));
+              break;
+            case 6.0:
+              text = DateFormat('HH:mm')
+                  .format(today.add(const Duration(hours: 6)));
+              break;
+          }
+
+          return Text(text);
+        },
+      );
+
+  SideTitles get _bottomTitles12HoursForecast => SideTitles(
+        showTitles: true,
+        getTitlesWidget: (value, meta) {
+          DateTime today = DateTime.now();
+          String text = '';
+          switch (value) {
+            case 0.0:
+              text = 'Now';
+              break;
+            case 1.0:
+              text = DateFormat('HH:mm')
+                  .format(today.add(const Duration(hours: 2)));
+              break;
+            case 2.0:
+              text = DateFormat('HH:mm')
+                  .format(today.add(const Duration(hours: 4)));
+              break;
+            case 3.0:
+              text = DateFormat('HH:mm')
+                  .format(today.add(const Duration(hours: 6)));
+              break;
+            case 4.0:
+              text = DateFormat('HH:mm')
+                  .format(today.add(const Duration(hours: 8)));
+              break;
+            case 5.0:
+              text = DateFormat('HH:mm')
+                  .format(today.add(const Duration(hours: 10)));
+              break;
+            case 6.0:
+              text = DateFormat('HH:mm')
+                  .format(today.add(const Duration(hours: 12)));
+              break;
+          }
+
+          return Text(text);
+        },
+      );
+
+  Widget _buildDropdownChartOption() {
+    return Padding(
+      padding: EdgeInsets.only(left: 10.w),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton2<String>(
+          isExpanded: true,
+          hint: const Row(
+            children: [
+              Icon(
+                Icons.list,
+                size: 20,
+                color: Colors.white,
+              ),
+              SizedBox(
+                width: 4,
+              ),
+              Expanded(
+                child: Text(
+                  'Select Item',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+          items: chartOptions
+              .map((String item) => DropdownMenuItem<String>(
+                    value: item,
+                    child: Text(
+                      item,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ))
+              .toList(),
+          value: selectedValue,
+          onChanged: (value) {
+            setState(() {
+              selectedValue = value!;
+            });
+          },
+          buttonStyleData: ButtonStyleData(
+            height: 40,
+            width: 160,
+            padding: const EdgeInsets.only(left: 14, right: 14),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: Colors.black26,
+              ),
+              color: Colors.green.withOpacity(0.75),
+            ),
+            elevation: 2,
+          ),
+          iconStyleData: const IconStyleData(
+            icon: Icon(
+              Icons.arrow_forward_ios_outlined,
+            ),
+            iconSize: 16,
+            iconEnabledColor: Colors.white,
+            iconDisabledColor: Colors.white,
+          ),
+          dropdownStyleData: DropdownStyleData(
+            maxHeight: 200,
+            width: 150,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.green.withOpacity(0.75),
+            ),
+            offset: const Offset(0, 0),
+            scrollbarTheme: ScrollbarThemeData(
+              radius: const Radius.circular(40),
+              thickness: MaterialStateProperty.all(6),
+              thumbVisibility: MaterialStateProperty.all(true),
+            ),
+          ),
+          menuItemStyleData: const MenuItemStyleData(
+            height: 40,
+            padding: EdgeInsets.only(left: 14, right: 14),
+          ),
+        ),
+      ),
+    );
+  }
 
   Widget _buildLocationName() {
     return Row(

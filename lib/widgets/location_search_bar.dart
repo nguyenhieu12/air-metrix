@@ -92,10 +92,11 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
                   fieldViewBuilder:
                       (context, controller, focusNode, onEditingComplete) {
                     return TextFormField(
+                      // initialValue: 'HAHAH',
                       controller: controller,
                       focusNode: focusNode,
                       cursorColor: AppColors.searchBarCursor,
-                      style: TextStyle(fontSize: 20.w),
+                      style: TextStyle(fontSize: 18.w),
                       cursorHeight: 22.h,
                       decoration: InputDecoration(
                           contentPadding: EdgeInsets.zero,

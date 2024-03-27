@@ -20,6 +20,8 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
   final GetCurrentWeather getCurrentWeather;
 
   int airQualityIndex = 0;
+  List<int> list6HoursForecastAQI = [];
+  List<int> list12HoursForecastAQI = [];
   List<int> list3DaysForecastAQI = [];
 
   double currentLat = DefaultLocation.lat;

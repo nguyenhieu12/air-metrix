@@ -26,8 +26,4 @@ class AppCubit extends Cubit<AppState> {
       };
     }
   }
-
-  void checkWatchlistAdded() {
-    
-  }
 }

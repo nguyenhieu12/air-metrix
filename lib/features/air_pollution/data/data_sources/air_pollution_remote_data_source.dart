@@ -46,6 +46,16 @@ class AirPollutionRemoteDataSourceImpl implements AirPollutionRemoteDataSource {
       AirPollutionCubit cubit = Injector.instance();
 
       cubit.list3DaysForecastAQI.clear();
+      cubit.list12HoursForecastAQI.clear();
+      cubit.list6HoursForecastAQI.clear();
+
+      for (int i = 0; i < 7; i++) {
+        cubit.list6HoursForecastAQI.add(next3DaysForecast[i]['main']['aqi']);
+      }
+
+      for (int i = 0; i < 13; i += 2) {
+        cubit.list12HoursForecastAQI.add(next3DaysForecast[i]['main']['aqi']);
+      }
 
       for (int i = 0; i < next3DaysForecast.length; i += 24) {
         cubit.list3DaysForecastAQI.add(next3DaysForecast[i]['main']['aqi']);

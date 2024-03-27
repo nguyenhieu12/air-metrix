@@ -22,8 +22,6 @@ class _WatchlistPageState extends State<WatchlistPage> {
     super.initState();
 
     _cubit = Injector.instance();
-
-    // _cubit.initWatchlist();
   }
 
   @override
@@ -35,7 +33,7 @@ class _WatchlistPageState extends State<WatchlistPage> {
           if (state is WatchlistSuccess) {
             return _buildWatchlistContent();
           } else {
-            return Container(color: Colors.white);
+            return _buildEmptyElement();
           }
         },
       ),
