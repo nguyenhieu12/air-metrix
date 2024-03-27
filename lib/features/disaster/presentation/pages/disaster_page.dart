@@ -48,6 +48,9 @@ class _DisasterPageState extends State<DisasterPage> {
     'wildfires': 'Wildfire'
   };
 
+  bool isDisastersMap = true;
+  bool isAirQualityMap = false;
+
   @override
   void initState() {
     super.initState();
@@ -76,7 +79,7 @@ class _DisasterPageState extends State<DisasterPage> {
           if (state is DisasterLoading) {
             return _buildLoading();
           } else if (state is DisasterSuccess) {
-            return _buildDisasterMap(state);
+            return _buildMap(state);
           } else {
             return Container();
           }
@@ -93,40 +96,90 @@ class _DisasterPageState extends State<DisasterPage> {
             : CupertinoActivityIndicator(color: AppColors.loading));
   }
 
-  Widget _buildDisasterMap(DisasterSuccess state) {
-    return Stack(children: [
-      FlutterMap(
-        mapController: mapController,
-        options: MapOptions(
-            initialCenter: LatLng(DefaultLocation.lat, DefaultLocation.long),
-            initialZoom: 4,
-            minZoom: 3,
-            maxZoom: 20),
+  Widget _buildMapOptions() {
+    return Positioned(
+      bottom: 25.h,
+      left: 80.w,
+      child: Row(
         children: [
-          TileLayer(
-              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'),
-          MarkerLayer(markers: [..._buildMapMarker(state)]),
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                isDisastersMap = true;
+                isAirQualityMap = false;
+              });
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  color: isDisastersMap ? Colors.redAccent : Colors.white,
+                  borderRadius: BorderRadius.circular(20)),
+              child: Padding(
+                padding: EdgeInsets.only(
+                    left: 15.w, right: 15.w, top: 6.w, bottom: 6.w),
+                child: Text(
+                  'Disasters',
+                  style: TextStyle(
+                      color: isDisastersMap ? Colors.white : Colors.black,
+                      fontSize: 15.w,
+                      fontWeight: FontWeight.w500),
+                ),
+              ),
+            ),
+          ),
+          Gap(10.w),
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                isDisastersMap = false;
+                isAirQualityMap = true;
+              });
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                  color: isAirQualityMap ? Colors.green : Colors.white,
+                  borderRadius: BorderRadius.circular(20)),
+              child: Padding(
+                padding: EdgeInsets.only(
+                    left: 15.w, right: 15.w, top: 6.w, bottom: 6.w),
+                child: Text(
+                  'Air quality',
+                  style: TextStyle(
+                      color: isAirQualityMap ? Colors.white : Colors.black,
+                      fontSize: 15.w),
+                ),
+              ),
+            ),
+          )
         ],
       ),
+    );
+  }
+
+  Widget _buildMap(DisasterSuccess state) {
+    return Stack(children: [
+      isDisastersMap ? _buildDisastersMap(state) : _buildAirQualityMap(),
+      _buildMapOptions(),
       Positioned(
         right: 18.w,
         bottom: 18.h,
         child: Column(
           children: [
-            Container(
-                decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 255, 89, 0),
-                    borderRadius: BorderRadius.circular(30)),
-                child: Padding(
-                  padding: const EdgeInsets.all(3),
-                  child: IconButton(
-                      onPressed: () => _showListDisaster(context: context),
-                      icon: Icon(
-                        Icons.list,
-                        color: AppColors.whiteIcon,
-                        size: 28.w,
-                      )),
-                )),
+            isDisastersMap
+                ? Container(
+                    decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 255, 89, 0),
+                        borderRadius: BorderRadius.circular(30)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(3),
+                      child: IconButton(
+                          onPressed: () => _showListDisaster(context: context),
+                          icon: Icon(
+                            Icons.list,
+                            color: AppColors.whiteIcon,
+                            size: 28.w,
+                          )),
+                    ))
+                : const SizedBox.shrink(),
             Gap(10.h),
             Container(
                 decoration: BoxDecoration(
@@ -147,6 +200,38 @@ class _DisasterPageState extends State<DisasterPage> {
       ),
       hasDisasterSelected ? _buildDisasterCardInfo() : const SizedBox()
     ]);
+  }
+
+  Widget _buildDisastersMap(DisasterSuccess state) {
+    return FlutterMap(
+      mapController: mapController,
+      options: MapOptions(
+          initialCenter: LatLng(DefaultLocation.lat, DefaultLocation.long),
+          initialZoom: 4,
+          minZoom: 3,
+          maxZoom: 20),
+      children: [
+        TileLayer(
+            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'),
+        MarkerLayer(markers: [..._buildMapMarker(state)]),
+      ],
+    );
+  }
+
+  Widget _buildAirQualityMap() {
+    return FlutterMap(
+      options: MapOptions(
+          initialCenter: LatLng(DefaultLocation.lat, DefaultLocation.long),
+          initialZoom: 3.0),
+      children: [
+        TileLayer(
+            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'),
+        TileLayer(
+          urlTemplate:
+              'https://tiles.aqicn.org/tiles/usepa-aqi/{z}/{x}/{y}.png',
+        ),
+      ],
+    );
   }
 
   Widget _buildDisasterCardInfo() {

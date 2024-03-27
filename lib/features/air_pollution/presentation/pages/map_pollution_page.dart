@@ -43,18 +43,20 @@ class _MapPollutionPageState extends State<MapPollutionPage> {
             width: 40.w,
             height: 40.w,
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(40),
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.grey,
-                  offset: Offset(1.2, 1.2),
-                  blurRadius: 2.0,
-                  spreadRadius: 1.0
-                )
-              ]
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(40),
+                boxShadow: const [
+                  BoxShadow(
+                      color: Colors.grey,
+                      offset: Offset(1.2, 1.2),
+                      blurRadius: 2.0,
+                      spreadRadius: 1.0)
+                ]),
+            child: Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+              size: 25.w,
             ),
-            child: Icon(Icons.arrow_back, color: Colors.black, size: 25.w,),
           ),
         ),
       ),
