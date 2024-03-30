@@ -5,12 +5,14 @@ import 'package:envi_metrix/core/keys/app_keys.dart';
 import 'package:envi_metrix/features/app/cubits/app_cubit.dart';
 import 'package:envi_metrix/features/app/pages/landing_page.dart';
 import 'package:envi_metrix/injector/injector.dart';
+import 'package:envi_metrix/services/notification/notification_service.dart';
 import 'package:envi_metrix/services/tab_change/tab_change_cubit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 Future<void> bootstrap() async {
   await runZonedGuarded(() async {
@@ -25,6 +27,13 @@ Future<void> bootstrap() async {
     Gemini.init(apiKey: AppKeys.geminiApiKey);
 
     await Injector.instance<AppCubit>().initCityData();
+
+    await NotificationService().initNotification();
+
+    tz.initializeTimeZones();
+
+    await NotificationService()
+        .scheduleNotification(title: 'Test', body: 'Here is notifi');
 
     runApp(const MyApp());
   }, (error, stack) {

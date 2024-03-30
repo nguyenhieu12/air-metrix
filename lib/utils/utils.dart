@@ -6,7 +6,7 @@ import 'package:envi_metrix/features/watchlist/pages/watchlist_page.dart';
 import 'package:envi_metrix/utils/global_variables.dart';
 import 'package:envi_metrix/utils/page_transition.dart';
 import 'package:envi_metrix/widgets/air_compare_dialog.dart';
-import 'package:envi_metrix/widgets/image_360_dialog.dart';
+import 'package:envi_metrix/widgets/ar_dialog.dart';
 import 'package:envi_metrix/widgets/internet_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -121,7 +121,7 @@ class Utils {
   }
 
   static void showArSelectionDialog(
-      {required BuildContext context, required Image360Dialog child}) {
+      {required BuildContext context, required ArSelectionDialog child}) {
     showGeneralDialog(
       context: context,
       pageBuilder: (BuildContext buildContext, Animation<double> animation,

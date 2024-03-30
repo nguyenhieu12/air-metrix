@@ -8,7 +8,7 @@ import 'package:envi_metrix/services/tab_change/tab_change_cubit.dart';
 import 'package:envi_metrix/utils/page_transition.dart';
 import 'package:envi_metrix/utils/utils.dart';
 import 'package:envi_metrix/widgets/air_compare_dialog.dart';
-import 'package:envi_metrix/widgets/image_360_dialog.dart';
+import 'package:envi_metrix/widgets/ar_dialog.dart';
 import 'package:envi_metrix/widgets/custom_navbar.dart';
 import 'package:floating_draggable_widget/floating_draggable_widget.dart';
 import 'package:flutter/material.dart';
@@ -188,7 +188,7 @@ class _LandingPageState extends State<LandingPage> {
 
   Future<void> _onArTap() async {
     Utils.showArSelectionDialog(
-        context: context, child: const Image360Dialog());
+        context: context, child: const ArSelectionDialog());
   }
 
   void _onWatchlistTap() {
