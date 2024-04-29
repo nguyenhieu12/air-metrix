@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_compare_cubit.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_pollution_cubit.dart';
 import 'package:envi_metrix/features/app/cubits/app_cubit.dart';
@@ -8,7 +6,6 @@ import 'package:envi_metrix/utils/global_variables.dart';
 import 'package:envi_metrix/utils/pollutant_message.dart';
 import 'package:envi_metrix/utils/utils.dart';
 import 'package:envi_metrix/widgets/air_compare_search_bar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

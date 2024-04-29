@@ -158,7 +158,7 @@ class _DashboardPageState extends State<DashboardPage> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Air pollution', style: headerTextStyle),
+          Text('Air quality', style: headerTextStyle),
           Gap(6.h),
           Column(
             children: [

@@ -58,29 +58,37 @@ class _ChatbotPageState extends State<ChatbotPage> {
                           ),
                         ),
                       )
-                    : const Center(child: Text('Search something!'))),
+                    : Center(
+                        child: Text(
+                        'Chat something',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20.w,
+                            fontWeight: FontWeight.w300),
+                      ))),
             if (loading) const CircularProgressIndicator(),
             ChatbotInputBox(
               onSend: () {
                 final searchedText = controller.text;
-                  chats.add(Content(
-                      role: 'user', parts: [Parts(text: searchedText)]));
-                  controller.clear();
-                  loading = true;
+                chats.add(
+                    Content(role: 'user', parts: [Parts(text: searchedText)]));
+                controller.clear();
+                loading = true;
 
-                  gemini.streamChat(chats).listen((value) {
-                    loading = false;
-                    setState(() {
-                      if (chats.isNotEmpty &&
-                          chats.last.role == value.content?.role) {
-                        chats.last.parts!.last.text =
-                            '${chats.last.parts!.last.text}${value.output}';
-                      } else {
-                        chats.add(Content(
-                            role: 'model', parts: [Parts(text: value.output)]));
-                      }
-                    });
+                gemini.streamChat(chats).listen((value) {
+                  loading = false;
+                  setState(() {
+                    if (chats.isNotEmpty &&
+                        chats.last.role == value.content?.role) {
+                      chats.last.parts!.last.text =
+                          '${chats.last.parts!.last.text}${value.output}';
+                    } else {
+                      chats.add(Content(
+                          role: 'model', parts: [Parts(text: value.output)]));
+                    }
                   });
+                });
+
                 // if (controller.text.isNotEmpty) {
                 //   final searchedText = controller.text;
                 //   chats.add(Content(
