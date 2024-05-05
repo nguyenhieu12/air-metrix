@@ -33,8 +33,6 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
   late Address address;
   late WeatherEntity weatherEntity;
 
-  bool bookmarkSelected = false;
-
   AirPollutionCubit(
       {required this.getCurrentAirPollution, required this.getCurrentWeather})
       : super(AirPollutionLoading());
@@ -85,38 +83,6 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
 
           emit(AirPollutionSuccess());
         });
-      },
-    );
-  }
-
-  Future<void> fetchAirPollutionForecase(double lat, double long) async {
-    emit(AirPollutionLoading());
-    final Either<Failure, List<AirPollutionEntity>> airPollutionForecast =
-        await getCurrentAirPollution.getAirPollutionForecast(lat, long);
-
-    airPollutionForecast.fold(
-      (Failure failure) {
-        throw ApiException();
-      },
-      (List<AirPollutionEntity> listAirPollutionEntity) {
-        // emit(AirPollutionLoaded(airPollutionEntity: listAirPollutionEntity));
-      },
-    );
-  }
-
-  Future<void> fetchAirPollutionHistory(
-      double lat, double long, int unixStartDate, int unixEndDate) async {
-    emit(AirPollutionLoading());
-    final Either<Failure, List<AirPollutionEntity>> airPollutionHistory =
-        await getCurrentAirPollution.getAirPollutionHistory(
-            lat, long, unixStartDate, unixEndDate);
-
-    airPollutionHistory.fold(
-      (Failure failure) {
-        throw ApiException();
-      },
-      (List<AirPollutionEntity> listAirPollutionEntity) {
-        // emit(AirPollutionLoaded(airPollutionEntity: listAirPollutionEntity));
       },
     );
   }

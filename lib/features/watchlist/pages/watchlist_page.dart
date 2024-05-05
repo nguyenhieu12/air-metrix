@@ -47,46 +47,55 @@ class _WatchlistPageState extends State<WatchlistPage> {
   }
 
   Widget _buildListElement() {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.green,
-        centerTitle: true,
-        title: Text(
-          'Watchlist',
-          style: TextStyle(
-              fontSize: 22.w, color: Colors.white, fontWeight: FontWeight.w500),
-        ),
-        leading: Padding(
-          padding: EdgeInsets.only(left: 20.w),
-          child: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Icon(
-              Icons.arrow_back_rounded,
-              color: Colors.white,
-              size: 28.w,
+    return BlocBuilder<WatchlistCubit, WatchlistState>(
+      bloc: _cubit,
+      buildWhen: (previous, current) => previous != current,
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.green,
+            centerTitle: true,
+            title: Text(
+              'Watchlist',
+              style: TextStyle(
+                  fontSize: 22.w,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500),
+            ),
+            leading: Padding(
+              padding: EdgeInsets.only(left: 20.w),
+              child: GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Icon(
+                  Icons.arrow_back_rounded,
+                  color: Colors.white,
+                  size: 28.w,
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-      body: ListView.builder(
-          itemCount: _cubit.watchlistItems.length,
-          itemBuilder: (context, index) {
-            final item = _cubit.watchlistItems[index];
+          body: ListView.builder(
+              itemCount: _cubit.watchlistItems.length,
+              itemBuilder: (context, index) {
+                final item = _cubit.watchlistItems[index];
 
-            return Slidable(
-              endActionPane:
-                  ActionPane(motion: const StretchMotion(), children: [
-                SlidableAction(
-                  // onPressed: (context) => _cubit.removeItem(index: index),
-                  onPressed: (context) {},
-                  backgroundColor: Colors.red,
-                  icon: Icons.delete,
-                  label: 'Delete',
-                )
-              ]),
-              child: _buildItemContent(item: item),
-            );
-          }),
+                return Slidable(
+                  endActionPane:
+                      ActionPane(motion: const StretchMotion(), children: [
+                    SlidableAction(
+                      spacing: 10,
+                      onPressed: (context) =>
+                          _cubit.removeItem(lat: item.lat, long: item.long),
+                      backgroundColor: Colors.red,
+                      icon: Icons.delete,
+                      label: 'Delete',
+                    )
+                  ]),
+                  child: _buildItemContent(item: item),
+                );
+              }),
+        );
+      },
     );
   }
 

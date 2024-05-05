@@ -32,10 +32,14 @@ class WatchlistCubit extends Cubit<WatchlistState> {
   }
 
   void removeItem({required double lat, required double long}) {
+    emit(WatchlistLoading());
+
     for (int i = 0; i < watchlistItems.length; i++) {
       if (watchlistItems[i].lat == lat && watchlistItems[i].long == long) {
         watchlistItems.removeAt(i);
       }
     }
+
+    emit(WatchlistSuccess());
   }
 }
