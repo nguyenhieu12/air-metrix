@@ -80,10 +80,10 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget _buildAirLoading() {
     return Center(
       child: SizedBox(
-        height: 300.h,
+        height: 350.h,
         child: Column(
           children: [
-            Gap(100.h),
+            Gap(50.h),
             Text(
               'Loading air data',
               style: TextStyle(

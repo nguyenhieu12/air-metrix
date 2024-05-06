@@ -17,6 +17,7 @@ import 'package:envi_metrix/widgets/ar_dialog.dart';
 import 'package:envi_metrix/widgets/custom_navbar.dart';
 import 'package:floating_draggable_widget/floating_draggable_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -192,7 +193,7 @@ class _LandingPageState extends State<LandingPage> {
   Future<void> _onShareTap() async {
     final image =
         await screenshotController.captureFromWidget(_buildShareImage());
-
+    
     await Share.shareXFiles([
       XFile.fromData(image, name: "air_quality.png", mimeType: "image/png")
     ]);
@@ -215,118 +216,112 @@ class _LandingPageState extends State<LandingPage> {
   Widget _buildShareImage() {
     return Screenshot(
       controller: screenshotController,
-      child: Container(
-            decoration: BoxDecoration(
-                color: FilterAppColors.getAQIColor(
-                    _airPollutionCubit.airQualityIndex),
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(5), topRight: Radius.circular(5))),
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              _buildLocationName(),
-              Text(
-                  PollutantMessage.getPollutantMessage(
-                      _airPollutionCubit.airQualityIndex),
-                  style: TextStyle(color: Colors.white, fontSize: 4.w))
-            ]),
-          ),
-      // child: Column(
-      //   children: [
-      //     Container(
-      //       decoration: BoxDecoration(
-      //           color: FilterAppColors.getAQIColor(
-      //               _airPollutionCubit.airQualityIndex),
-      //           borderRadius: const BorderRadius.only(
-      //               topLeft: Radius.circular(5), topRight: Radius.circular(5))),
-      //       child: Column(mainAxisSize: MainAxisSize.min, children: [
-      //         _buildLocationName(),
-      //         Text(
-      //             PollutantMessage.getPollutantMessage(
-      //                 _airPollutionCubit.airQualityIndex),
-      //             style: TextStyle(color: Colors.white, fontSize: 20.w))
-      //       ]),
-      //     ),
-      //     _buildContaminantInfo()
-      //   ],
+      child: _buildContaminantInfo(),
+      // child: Container(
+      //   width: 1000.w,
+      //   height: 350.w,
+      //   decoration: BoxDecoration(
+      //       color: Colors.white,
+      //       image: DecorationImage(
+      //           image: AssetImage(
+      //             _airPollutionCubit.getQualityImagePath(
+      //                 aqi: _airPollutionCubit.airQualityIndex),
+      //           ),
+      //           fit: BoxFit.cover),
+      //       borderRadius: const BorderRadius.only(
+      //           topLeft: Radius.circular(5), topRight: Radius.circular(5))),
+      //   // child: _buildContaminantInfo(),
       // ),
     );
   }
 
   Widget _buildContaminantInfo() {
-    return Container(
-      decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(5), bottomRight: Radius.circular(5))),
-      child: Column(
-        children: [
-          Text(
-            'SO2: ${_airPollutionCubit.airEntity.so2} ${AppUnits.contamitantUnit}',
-            style: TextStyle(
-                color: Utils.getBackgroundColor(
-                    'SO2',
-                    convertConcentrationToDouble(
-                        _airPollutionCubit.airEntity.so2)),
-                fontWeight: FontWeight.w400,
-                fontSize: 16.w),
-          ),
-          Gap(6.h),
-          Text(
-            'NO2: ${_airPollutionCubit.airEntity.no2} ${AppUnits.contamitantUnit}',
-            style: TextStyle(
-                color: Utils.getBackgroundColor(
-                    'NO2',
-                    convertConcentrationToDouble(
-                        _airPollutionCubit.airEntity.no2)),
-                fontWeight: FontWeight.w400,
-                fontSize: 16.w),
-          ),
-          Gap(6.h),
-          Text(
-            'PM10: ${_airPollutionCubit.airEntity.pm10} ${AppUnits.contamitantUnit}',
-            style: TextStyle(
-                color: Utils.getBackgroundColor(
-                    'PM10',
-                    convertConcentrationToDouble(
-                        _airPollutionCubit.airEntity.pm10)),
-                fontWeight: FontWeight.w400,
-                fontSize: 16.w),
-          ),
-          Gap(6.h),
-          Text(
-            'PM2.5: ${_airPollutionCubit.airEntity.pm2_5} ${AppUnits.contamitantUnit}',
-            style: TextStyle(
-                color: Utils.getBackgroundColor(
-                    'PM2.5',
-                    convertConcentrationToDouble(
-                        _airPollutionCubit.airEntity.pm2_5)),
-                fontWeight: FontWeight.w400,
-                fontSize: 16.w),
-          ),
-          Gap(6.h),
-          Text(
-            'O3: ${_airPollutionCubit.airEntity.o3} ${AppUnits.contamitantUnit}',
-            style: TextStyle(
-                color: Utils.getBackgroundColor(
-                    'O3',
-                    convertConcentrationToDouble(
-                        _airPollutionCubit.airEntity.o3)),
-                fontWeight: FontWeight.w400,
-                fontSize: 16.w),
-          ),
-          Gap(6.h),
-          Text(
-            'CO: ${_airPollutionCubit.airEntity.co} ${AppUnits.contamitantUnit}',
-            style: TextStyle(
-                color: Utils.getBackgroundColor(
-                    'CO',
-                    convertConcentrationToDouble(
-                        _airPollutionCubit.airEntity.co)),
-                fontWeight: FontWeight.w400,
-                fontSize: 16.w),
-          ),
-          Gap(10.h),
-        ],
-      ),
+    return ListView(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      children: [
+        Container(
+            width: 500.w,
+            height: 500.w,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                image: DecorationImage(
+                    image: AssetImage(
+                      _airPollutionCubit.getQualityImagePath(
+                          aqi: _airPollutionCubit.airQualityIndex),
+                    ),
+                    fit: BoxFit.cover),
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(5),
+                    topRight: Radius.circular(5)))),
+        Gap(10.h),
+        Text(
+          'SO2: ${_airPollutionCubit.airEntity.so2} ${AppUnits.contamitantUnit}',
+          style: TextStyle(
+              color: Utils.getBackgroundColor(
+                  'SO2',
+                  convertConcentrationToDouble(
+                      _airPollutionCubit.airEntity.so2)),
+              fontWeight: FontWeight.w400,
+              fontSize: 18.w),
+        ),
+        Gap(6.h),
+        Text(
+          'NO2: ${_airPollutionCubit.airEntity.no2} ${AppUnits.contamitantUnit}',
+          style: TextStyle(
+              color: Utils.getBackgroundColor(
+                  'NO2',
+                  convertConcentrationToDouble(
+                      _airPollutionCubit.airEntity.no2)),
+              fontWeight: FontWeight.w400,
+              fontSize: 18.w),
+        ),
+        Gap(6.h),
+        Text(
+          'PM10: ${_airPollutionCubit.airEntity.pm10} ${AppUnits.contamitantUnit}',
+          style: TextStyle(
+              color: Utils.getBackgroundColor(
+                  'PM10',
+                  convertConcentrationToDouble(
+                      _airPollutionCubit.airEntity.pm10)),
+              fontWeight: FontWeight.w400,
+              fontSize: 18.w),
+        ),
+        Gap(6.h),
+        Text(
+          'PM2.5: ${_airPollutionCubit.airEntity.pm2_5} ${AppUnits.contamitantUnit}',
+          style: TextStyle(
+              color: Utils.getBackgroundColor(
+                  'PM2.5',
+                  convertConcentrationToDouble(
+                      _airPollutionCubit.airEntity.pm2_5)),
+              fontWeight: FontWeight.w400,
+              fontSize: 18.w),
+        ),
+        Gap(6.h),
+        Text(
+          'O3: ${_airPollutionCubit.airEntity.o3} ${AppUnits.contamitantUnit}',
+          style: TextStyle(
+              color: Utils.getBackgroundColor(
+                  'O3',
+                  convertConcentrationToDouble(
+                      _airPollutionCubit.airEntity.o3)),
+              fontWeight: FontWeight.w400,
+              fontSize: 18.w),
+        ),
+        Gap(6.h),
+        Text(
+          'CO: ${_airPollutionCubit.airEntity.co} ${AppUnits.contamitantUnit}',
+          style: TextStyle(
+              color: Utils.getBackgroundColor(
+                  'CO',
+                  convertConcentrationToDouble(
+                      _airPollutionCubit.airEntity.co)),
+              fontWeight: FontWeight.w400,
+              fontSize: 18.w),
+        ),
+        Gap(10.h),
+      ],
     );
   }
 

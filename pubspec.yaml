@@ -33,7 +33,7 @@ dependencies:
   flutter_markdown: ^0.6.19
   flutter_svg: ^2.0.10+1
   gauge_indicator: ^0.4.3
-  share_plus: ^7.2.2
+  share_plus: ^9.0.0
   facebook_messenger_share: ^0.0.3
   fluttertoast: ^8.2.4
   flutter_speed_dial: ^7.0.0
@@ -43,7 +43,6 @@ dependencies:
   dropdown_button2: ^2.3.9
   flutter_datetime_picker: ^1.5.1
   flutter_local_notifications: ^17.0.0
-  # arcore_flutter_plugin: ^0.1.0
   arcore_flutter_plugin: 
     path: packages/arcore_flutter_plugin
   flutter_gemini: 

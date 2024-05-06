@@ -67,6 +67,7 @@ class _AirCompareSearchBarState extends State<AirCompareSearchBar> {
             });
           },
           onSelected: (selectedText) {
+            FocusManager.instance.primaryFocus?.unfocus();
             widget.onSelected?.call(selectedText);
           },
 

@@ -607,22 +607,9 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Text(
-                'Overview',
-                style: headerTextStyle,
-              ),
-              Gap(10.w),
-              GestureDetector(
-                onTap: () => Navigator.of(context, rootNavigator: true).push(
-                    PageTransition.slideTransition(const MapPollutionPage())),
-                child: Icon(
-                  Icons.map_outlined,
-                  size: 24.w,
-                ),
-              )
-            ],
+          Text(
+            'Overview',
+            style: headerTextStyle,
           ),
           Column(
             children: [

@@ -46,6 +46,7 @@ class NewsUnitTile extends StatelessWidget {
                       color: Colors.grey,
                       blurRadius: 0.75)
                 ]),
+            
           ),
           Gap(10.w),
           SizedBox(
