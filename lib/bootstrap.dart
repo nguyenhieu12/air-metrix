@@ -12,11 +12,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:timezone/data/latest.dart' as tz;
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 Future<void> bootstrap() async {
   await runZonedGuarded(() async {
-    WidgetsFlutterBinding.ensureInitialized();
+    WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
     await Injector.init();
 
@@ -30,10 +31,10 @@ Future<void> bootstrap() async {
 
     await NotificationService().initNotification();
 
-    tz.initializeTimeZones();
-
     await NotificationService()
         .scheduleNotification(title: 'Test', body: 'Here is notifi');
+
+    FlutterNativeSplash.remove();
 
     runApp(const MyApp());
   }, (error, stack) {

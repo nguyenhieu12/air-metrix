@@ -241,7 +241,7 @@ class _DisasterPageState extends State<DisasterPage> {
       right: 80.w,
       bottom: 20.h,
       child: Container(
-        width: 320.w,
+        width: 330.w,
         height: 85.h,
         decoration: BoxDecoration(
             color: Colors.white,

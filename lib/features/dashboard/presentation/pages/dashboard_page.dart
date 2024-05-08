@@ -20,6 +20,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:screenshot/screenshot.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -153,6 +154,8 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _buildAirInfo(AirPollutionSuccess state) {
+    double temp = airPollutionCubit.weatherEntity.temp - 273.0;
+
     return Padding(
       padding: EdgeInsets.only(left: 10.w, right: 10.w),
       child: Column(
@@ -188,7 +191,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   children: [
                     _buildWeatherComponent(
                         name: 'Temperature',
-                        value: airPollutionCubit.weatherEntity.temp,
+                        value: temp.toPrecision(2),
                         unit: AppUnits.tempUnit,
                         iconPath: './assets/icons/temp_icon.png',
                         iconSize: 40.w,

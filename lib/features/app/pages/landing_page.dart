@@ -193,7 +193,7 @@ class _LandingPageState extends State<LandingPage> {
   Future<void> _onShareTap() async {
     final image =
         await screenshotController.captureFromWidget(_buildShareImage());
-    
+
     await Share.shareXFiles([
       XFile.fromData(image, name: "air_quality.png", mimeType: "image/png")
     ]);
@@ -216,22 +216,21 @@ class _LandingPageState extends State<LandingPage> {
   Widget _buildShareImage() {
     return Screenshot(
       controller: screenshotController,
-      child: _buildContaminantInfo(),
-      // child: Container(
-      //   width: 1000.w,
-      //   height: 350.w,
-      //   decoration: BoxDecoration(
-      //       color: Colors.white,
-      //       image: DecorationImage(
-      //           image: AssetImage(
-      //             _airPollutionCubit.getQualityImagePath(
-      //                 aqi: _airPollutionCubit.airQualityIndex),
-      //           ),
-      //           fit: BoxFit.cover),
-      //       borderRadius: const BorderRadius.only(
-      //           topLeft: Radius.circular(5), topRight: Radius.circular(5))),
-      //   // child: _buildContaminantInfo(),
-      // ),
+      // child: _buildContaminantInfo(),
+      child: Container(
+        width: 1000.w,
+        height: 350.w,
+        decoration: BoxDecoration(
+            color: Colors.white,
+            image: DecorationImage(
+                image: AssetImage(
+                  _airPollutionCubit.getQualityImagePath(
+                      aqi: _airPollutionCubit.airQualityIndex),
+                ),
+                fit: BoxFit.cover),
+            borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(5), topRight: Radius.circular(5))),
+      ),
     );
   }
 
