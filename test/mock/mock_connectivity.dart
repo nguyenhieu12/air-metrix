@@ -1,5 +1,4 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:mockito/mockito.dart';
 
 enum ConnectivityCase { CASE_ERROR, CASE_SUCCESS }
 

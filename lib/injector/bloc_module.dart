@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:envi_metrix/core/connection/internet_cubit.dart';
 import 'package:envi_metrix/features/air_pollution/data/data_sources/air_pollution_remote_data_source.dart';
 import 'package:envi_metrix/features/air_pollution/data/data_sources/weather_remote_data_source.dart';
 import 'package:envi_metrix/features/air_pollution/data/repositories/air_pollution_repository_impl.dart';
@@ -8,6 +9,7 @@ import 'package:envi_metrix/features/air_pollution/domain/use_cases/get_current_
 import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_compare_cubit.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_pollution_cubit.dart';
 import 'package:envi_metrix/features/app/cubits/app_cubit.dart';
+import 'package:envi_metrix/features/chatbot/cubits/chatbot_cubit.dart';
 import 'package:envi_metrix/features/dashboard/presentation/cubits/dashboard_cubit.dart';
 import 'package:envi_metrix/features/disaster/data/data_sources/disaster_remote_datasource.dart';
 import 'package:envi_metrix/features/disaster/data/repositories/disaster_repository_impl.dart';
@@ -46,6 +48,8 @@ class BlocModule {
                   disasterRemoteDatasource:
                       DisasterRemoteDatasourceImpl(dio: Dio())))))
       ..registerSingleton<DashboardCubit>(DashboardCubit())
+      ..registerSingleton<ChatbotCubit>(ChatbotCubit())
+      ..registerSingleton<InternetCubit>(InternetCubit())
       ..registerLazySingleton<NewsCubit>(() => NewsCubit(
           getNews: GetNews(
               newsRepository: NewsRepositoryImpl(

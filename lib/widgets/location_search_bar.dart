@@ -408,7 +408,7 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
 
   void _handleSearchByCoordinates(BuildContext context) async {
     if (lat != null && long != null) {
-      await widget.airPollutionCubit.fetchAirPollutionData(lat!, long!);
+      await widget.airPollutionCubit.fetchAirPollutionData(lat!, long!, false);
       _searchBarFocus.unfocus();
       // ignore: use_build_context_synchronously
       Navigator.pop(context, [lat, long]);
@@ -420,7 +420,7 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
       Position currentPosition = await Utils.getUserLocation();
 
       widget.airPollutionCubit.fetchAirPollutionData(
-          currentPosition.latitude, currentPosition.longitude);
+          currentPosition.latitude, currentPosition.longitude, false);
     }
   }
 
@@ -431,7 +431,8 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
 
     widget.airPollutionCubit.fetchAirPollutionData(
         double.parse(coordinatesData['lat']),
-        double.parse(coordinatesData['lon']));
+        double.parse(coordinatesData['lon']),
+        false);
   }
 
   void showAddWatchlistSnackbar(

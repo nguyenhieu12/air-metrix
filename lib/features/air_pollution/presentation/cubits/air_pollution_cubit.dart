@@ -7,9 +7,12 @@ import 'package:envi_metrix/features/air_pollution/domain/entities/weather_entit
 import 'package:envi_metrix/features/air_pollution/domain/use_cases/get_current_air_pollution.dart';
 import 'package:envi_metrix/features/air_pollution/domain/use_cases/get_current_weather.dart';
 import 'package:envi_metrix/services/location/default_location.dart';
+import 'package:envi_metrix/services/location/user_location.dart';
+import 'package:envi_metrix/utils/utils.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../../../../../core/errors/failures.dart';
 
@@ -26,6 +29,7 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
 
   double currentLat = DefaultLocation.lat;
   double currentLong = DefaultLocation.long;
+  UserLocation userLocation = UserLocation();
 
   String locationName = '';
 
@@ -37,7 +41,8 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
       {required this.getCurrentAirPollution, required this.getCurrentWeather})
       : super(AirPollutionLoading());
 
-  Future<void> fetchAirPollutionData(double lat, double long) async {
+  Future<void> fetchAirPollutionData(
+      double lat, double long, bool needLocation) async {
     emit(AirPollutionLoading());
 
     final connect = await Connectivity().checkConnectivity();
@@ -47,11 +52,23 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
       return;
     }
 
+    if (needLocation) {
+      if (await userLocation.isAccepted()) {
+        Position currentPosition = await Utils.getUserLocation();
+
+        currentLat = currentPosition.latitude;
+        currentLong = currentPosition.longitude;
+      }
+    } else {
+      currentLat = lat;
+      currentLong = long;
+    }
+
     final Either<Failure, AirPollutionEntity> airPollutionData =
-        await getCurrentAirPollution.getCurrentAirPollution(lat, long);
+        await getCurrentAirPollution.getCurrentAirPollution(currentLat, currentLong);
 
     final Either<Failure, WeatherEntity> weatherData =
-        await getCurrentWeather.getCurrentWeather(lat, long);
+        await getCurrentWeather.getCurrentWeather(currentLat, currentLong);
 
     airPollutionData.fold(
       (Failure failure) {
@@ -66,7 +83,7 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
           throw ApiException();
         }, (WeatherEntity weather) async {
           List<Placemark> placemarks =
-              await placemarkFromCoordinates(lat, long);
+              await placemarkFromCoordinates(currentLat, currentLong);
 
           final first = placemarks.first;
 
@@ -79,7 +96,7 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
               district: first.subAdministrativeArea ?? '',
               street: first.street ?? '');
 
-          setNewLatLong(lat, long);
+          // setNewLatLong(lat, long);
 
           emit(AirPollutionSuccess());
         });
@@ -88,7 +105,7 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
   }
 
   void handleReloadCurrentAirPollution(double lat, double long) {
-    fetchAirPollutionData(lat, long);
+    fetchAirPollutionData(lat, long, false);
   }
 
   void setNewLatLong(double lat, double long) {

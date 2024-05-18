@@ -1,8 +1,9 @@
+import 'package:envi_metrix/core/connection/internet_cubit.dart';
 import 'package:envi_metrix/core/models/nav_model.dart';
-import 'package:envi_metrix/core/themes/filter_app_colors.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_pollution_cubit.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/pages/air_pollution_page.dart';
-import 'package:envi_metrix/features/app/pages/chatbot_page.dart';
+import 'package:envi_metrix/features/chatbot/cubits/chatbot_cubit.dart';
+import 'package:envi_metrix/features/chatbot/pages/chatbot_page.dart';
 import 'package:envi_metrix/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:envi_metrix/features/disaster/presentation/pages/disaster_page.dart';
 import 'package:envi_metrix/features/news/presentation/pages/news_page.dart';
@@ -10,14 +11,12 @@ import 'package:envi_metrix/injector/injector.dart';
 import 'package:envi_metrix/services/tab_change/tab_change_cubit.dart';
 import 'package:envi_metrix/utils/global_variables.dart';
 import 'package:envi_metrix/utils/page_transition.dart';
-import 'package:envi_metrix/utils/pollutant_message.dart';
 import 'package:envi_metrix/utils/utils.dart';
 import 'package:envi_metrix/widgets/air_compare_dialog.dart';
 import 'package:envi_metrix/widgets/ar_dialog.dart';
 import 'package:envi_metrix/widgets/custom_navbar.dart';
 import 'package:floating_draggable_widget/floating_draggable_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -34,6 +33,8 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   late AirPollutionCubit _airPollutionCubit;
+  late ChatbotCubit _chatbotCubit;
+  late InternetCubit _internetCubit;
   final dashboardNavKey = GlobalKey<NavigatorState>();
   final airNavKey = GlobalKey<NavigatorState>();
   final watchlistNavKey = GlobalKey<NavigatorState>();
@@ -49,8 +50,17 @@ class _LandingPageState extends State<LandingPage> {
 
     _airPollutionCubit = Injector.instance();
 
+    _chatbotCubit = Injector.instance();
+
+    _internetCubit = context.read<InternetCubit>();
+
     items = [
-      NavModel(page: const DashboardPage(), navKey: dashboardNavKey),
+      NavModel(
+          page: BlocProvider.value(
+            value: _internetCubit,
+            child: const DashboardPage(),
+          ),
+          navKey: dashboardNavKey),
       NavModel(page: const AirPollutionPage(), navKey: airNavKey),
       NavModel(page: const NewsPage(), navKey: newsNavKey),
       NavModel(page: const DisasterPage(), navKey: mapNavKey),
@@ -176,8 +186,10 @@ class _LandingPageState extends State<LandingPage> {
 
   Widget _buildChatbotButton() {
     return GestureDetector(
-      onTap: () => Navigator.of(context)
-          .push(PageTransition.slideTransition(const ChatbotPage())),
+      onTap: () =>
+          Navigator.of(context).push(PageTransition.slideTransition(ChatbotPage(
+        chatbotCubit: _chatbotCubit,
+      ))),
       child: Container(
         decoration: BoxDecoration(
             image: const DecorationImage(

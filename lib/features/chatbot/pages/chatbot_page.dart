@@ -1,11 +1,13 @@
 import 'package:dash_chat_2/dash_chat_2.dart';
+import 'package:envi_metrix/features/chatbot/cubits/chatbot_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ChatbotPage extends StatefulWidget {
-  const ChatbotPage({super.key});
+  const ChatbotPage({super.key, required this.chatbotCubit});
+
+  final ChatbotCubit chatbotCubit;
 
   @override
   State<ChatbotPage> createState() => _ChatbotPageState();
@@ -18,8 +20,6 @@ class _ChatbotPageState extends State<ChatbotPage> {
     id: '1',
     firstName: 'Gemini',
   );
-
-  List<ChatMessage> messages = [];
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +47,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
     return DashChat(
       currentUser: currentUser,
       onSend: _sendMessage,
-      messages: messages,
+      messages: widget.chatbotCubit.messages,
       messageOptions: const MessageOptions(
         currentUserTextColor: Colors.white,
         currentUserContainerColor: Colors.blue,
@@ -57,25 +57,20 @@ class _ChatbotPageState extends State<ChatbotPage> {
 
   void _sendMessage(ChatMessage chatMessage) {
     FocusManager.instance.primaryFocus?.unfocus;
-    // chatMessage.isMarkdown = true;
-
-    // for (int i = 0; i < messages.length; i++) {
-    //   messages[i].isMarkdown = true;
-    // }
 
     setState(() {
-      messages = [chatMessage, ...messages];
+      widget.chatbotCubit.messages = [chatMessage, ...widget.chatbotCubit.messages];
     });
 
     try {
       String question = chatMessage.text;
       gemini.streamGenerateContent(question).listen((event) {
-        ChatMessage? lastMessage = messages.firstOrNull;
+        ChatMessage? lastMessage = widget.chatbotCubit.messages.firstOrNull;
 
         // lastMessage?.isMarkdown = true;
 
         if (lastMessage != null && lastMessage.user == geminiUser) {
-          lastMessage = messages.removeAt(0);
+          lastMessage = widget.chatbotCubit.messages.removeAt(0);
           String response = event.content?.parts?.fold(
                   '', (previous, current) => '$previous ${current.text}') ??
               '';
@@ -83,7 +78,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
           lastMessage.text += response;
 
           setState(() {
-            messages = [lastMessage!, ...messages];
+            widget.chatbotCubit.messages = [lastMessage!, ...widget.chatbotCubit.messages];
           });
         } else {
           String response = event.content?.parts?.fold(
@@ -97,7 +92,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
               text: response);
 
           setState(() {
-            messages = [message, ...messages];
+            widget.chatbotCubit.messages = [message, ...widget.chatbotCubit.messages];
           });
         }
       });

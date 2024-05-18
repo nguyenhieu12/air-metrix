@@ -3,16 +3,17 @@ import 'dart:async';
 import 'package:envi_metrix/core/connection/internet_cubit.dart';
 import 'package:envi_metrix/core/keys/app_keys.dart';
 import 'package:envi_metrix/features/app/cubits/app_cubit.dart';
+import 'package:envi_metrix/features/app/pages/introduction_page.dart';
 import 'package:envi_metrix/features/app/pages/landing_page.dart';
 import 'package:envi_metrix/injector/injector.dart';
-import 'package:envi_metrix/services/notification/notification_service.dart';
 import 'package:envi_metrix/services/tab_change/tab_change_cubit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> bootstrap() async {
   await runZonedGuarded(() async {
@@ -29,14 +30,12 @@ Future<void> bootstrap() async {
 
     await Injector.instance<AppCubit>().initCityData();
 
-    await NotificationService().initNotification();
-
-    await NotificationService()
-        .scheduleNotification(title: 'Test', body: 'Here is notifi');
-
     FlutterNativeSplash.remove();
 
-    runApp(const MyApp());
+    final prefs = await SharedPreferences.getInstance();
+    final bool? hasShownIntro = prefs.getBool('introShowed');
+
+    runApp(MyApp(showIntroScreen: hasShownIntro));
   }, (error, stack) {
     if (kDebugMode) {
       print(error);
@@ -46,7 +45,9 @@ Future<void> bootstrap() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, this.showIntroScreen});
+
+  final bool? showIntroScreen;
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +61,9 @@ class MyApp extends StatelessWidget {
                   BlocProvider<TabChangeCubit>(
                       create: (context) => TabChangeCubit()),
                 ],
-                child: const LandingPage(),
+                child: showIntroScreen == null
+                    ? const IntroductionPage()
+                    : const LandingPage(),
               ),
             ));
   }

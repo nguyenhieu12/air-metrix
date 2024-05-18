@@ -1,24 +1,22 @@
-import 'dart:io';
-
 import 'package:envi_metrix/core/connection/internet_cubit.dart';
-import 'package:envi_metrix/core/themes/app_colors.dart';
 import 'package:envi_metrix/core/themes/filter_app_colors.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_pollution_cubit.dart';
 import 'package:envi_metrix/features/dashboard/presentation/cubits/dashboard_cubit.dart';
 import 'package:envi_metrix/features/disaster/presentation/cubits/disaster_cubit.dart';
 import 'package:envi_metrix/injector/injector.dart';
 import 'package:envi_metrix/services/location/default_location.dart';
+import 'package:envi_metrix/services/location/user_location.dart';
 import 'package:envi_metrix/utils/global_variables.dart';
 import 'package:envi_metrix/utils/pollutant_message.dart';
 import 'package:envi_metrix/utils/styles.dart';
 import 'package:envi_metrix/utils/utils.dart';
 import 'package:envi_metrix/widgets/location_search_bar.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:screenshot/screenshot.dart';
 
@@ -34,6 +32,8 @@ class _DashboardPageState extends State<DashboardPage> {
   late DisasterCubit disasterCubit;
 
   final DashboardCubit dashboardCubit = DashboardCubit();
+
+  final UserLocation userLocation = UserLocation();
 
   Map<String, String> disasterName = {
     'drought': 'Drought',
@@ -56,8 +56,9 @@ class _DashboardPageState extends State<DashboardPage> {
     airPollutionCubit = Injector.instance();
     disasterCubit = Injector.instance();
 
-    dashboardCubit.getDashboardInitData(
-        DefaultLocation.lat, DefaultLocation.long);
+    // getDashboardData();
+
+    dashboardCubit.getDashboardInitData();
   }
 
   @override
@@ -238,6 +239,18 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
+  // Future<void> getDashboardData() async {
+  //   if (await userLocation.isAccepted()) {
+  //     Position currentPosition = await Utils.getUserLocation();
+
+  //     dashboardCubit.getDashboardInitData(
+  //         currentPosition.latitude, currentPosition.longitude);
+  //   } else {
+  //     dashboardCubit.getDashboardInitData(
+  //         DefaultLocation.lat, DefaultLocation.long);
+  //   }
+  // }
+
   Widget _buildWeatherComponent(
       {required String name,
       required dynamic value,
@@ -294,12 +307,10 @@ class _DashboardPageState extends State<DashboardPage> {
     return Expanded(
       child: Center(
         child: Text(
-              'Cannot load data',
-              style: TextStyle(
-                  fontSize: 18.w,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.black),
-            ),
+          'Cannot load data',
+          style: TextStyle(
+              fontSize: 18.w, fontWeight: FontWeight.w400, color: Colors.black),
+        ),
       ),
     );
   }
