@@ -43,6 +43,7 @@ class _LandingPageState extends State<LandingPage> {
   int selectedTab = 0;
   List<NavModel> items = [];
   final screenshotController = ScreenshotController();
+  final String currentComparedLocationName = '';
 
   @override
   void initState() {
@@ -78,45 +79,51 @@ class _LandingPageState extends State<LandingPage> {
   Widget build(BuildContext context) {
     return BlocProvider<TabChangeCubit>(
       create: (context) => TabChangeCubit(),
-      child: FloatingDraggableWidget(
-        autoAlign: true,
-        mainScreenWidget: Scaffold(
-          body: IndexedStack(
-            index: selectedTab,
-            children: items
-                .map((page) => Navigator(
-                      key: page.navKey,
-                      onGenerateInitialRoutes: (navigator, initialRoute) {
-                        return [
-                          MaterialPageRoute(builder: (context) => page.page)
-                        ];
-                      },
-                    ))
-                .toList(),
-          ),
-          bottomNavigationBar: CustomNavbar(
+      child: BlocListener<InternetCubit, InternetState>(
+        bloc: _internetCubit,
+        listener: (context, state) =>
+            Utils.showInternetNotifySnackbar(context, state),
+        listenWhen: (previous, current) => previous != current,
+        child: FloatingDraggableWidget(
+          autoAlign: true,
+          mainScreenWidget: Scaffold(
+            body: IndexedStack(
               index: selectedTab,
-              onTap: (index) {
-                if (index == selectedTab) {
-                  items[index]
-                      .navKey
-                      .currentState
-                      ?.popUntil((route) => route.isFirst);
-                } else {
-                  setState(() {
-                    selectedTab = index;
-                  });
-                }
-              }),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
-          floatingActionButton: _buildFloatingActionButton(),
+              children: items
+                  .map((page) => Navigator(
+                        key: page.navKey,
+                        onGenerateInitialRoutes: (navigator, initialRoute) {
+                          return [
+                            MaterialPageRoute(builder: (context) => page.page)
+                          ];
+                        },
+                      ))
+                  .toList(),
+            ),
+            bottomNavigationBar: CustomNavbar(
+                index: selectedTab,
+                onTap: (index) {
+                  if (index == selectedTab) {
+                    items[index]
+                        .navKey
+                        .currentState
+                        ?.popUntil((route) => route.isFirst);
+                  } else {
+                    setState(() {
+                      selectedTab = index;
+                    });
+                  }
+                }),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
+            floatingActionButton: _buildFloatingActionButton(),
+          ),
+          floatingWidget: _buildChatbotButton(),
+          floatingWidgetWidth: 54.w,
+          floatingWidgetHeight: 54.w,
+          dx: 10.w,
+          dy: 580.h,
         ),
-        floatingWidget: _buildChatbotButton(),
-        floatingWidgetWidth: 54.w,
-        floatingWidgetHeight: 54.w,
-        dx: 10.w,
-        dy: 580.h,
       ),
     );
   }
@@ -228,7 +235,6 @@ class _LandingPageState extends State<LandingPage> {
   Widget _buildShareImage() {
     return Screenshot(
       controller: screenshotController,
-      // child: _buildContaminantInfo(),
       child: Container(
         width: 1000.w,
         height: 350.w,
@@ -243,119 +249,6 @@ class _LandingPageState extends State<LandingPage> {
             borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(5), topRight: Radius.circular(5))),
       ),
-    );
-  }
-
-  Widget _buildContaminantInfo() {
-    return ListView(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      children: [
-        Container(
-            width: 500.w,
-            height: 500.w,
-            decoration: BoxDecoration(
-                color: Colors.white,
-                image: DecorationImage(
-                    image: AssetImage(
-                      _airPollutionCubit.getQualityImagePath(
-                          aqi: _airPollutionCubit.airQualityIndex),
-                    ),
-                    fit: BoxFit.cover),
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(5),
-                    topRight: Radius.circular(5)))),
-        Gap(10.h),
-        Text(
-          'SO2: ${_airPollutionCubit.airEntity.so2} ${AppUnits.contamitantUnit}',
-          style: TextStyle(
-              color: Utils.getBackgroundColor(
-                  'SO2',
-                  convertConcentrationToDouble(
-                      _airPollutionCubit.airEntity.so2)),
-              fontWeight: FontWeight.w400,
-              fontSize: 18.w),
-        ),
-        Gap(6.h),
-        Text(
-          'NO2: ${_airPollutionCubit.airEntity.no2} ${AppUnits.contamitantUnit}',
-          style: TextStyle(
-              color: Utils.getBackgroundColor(
-                  'NO2',
-                  convertConcentrationToDouble(
-                      _airPollutionCubit.airEntity.no2)),
-              fontWeight: FontWeight.w400,
-              fontSize: 18.w),
-        ),
-        Gap(6.h),
-        Text(
-          'PM10: ${_airPollutionCubit.airEntity.pm10} ${AppUnits.contamitantUnit}',
-          style: TextStyle(
-              color: Utils.getBackgroundColor(
-                  'PM10',
-                  convertConcentrationToDouble(
-                      _airPollutionCubit.airEntity.pm10)),
-              fontWeight: FontWeight.w400,
-              fontSize: 18.w),
-        ),
-        Gap(6.h),
-        Text(
-          'PM2.5: ${_airPollutionCubit.airEntity.pm2_5} ${AppUnits.contamitantUnit}',
-          style: TextStyle(
-              color: Utils.getBackgroundColor(
-                  'PM2.5',
-                  convertConcentrationToDouble(
-                      _airPollutionCubit.airEntity.pm2_5)),
-              fontWeight: FontWeight.w400,
-              fontSize: 18.w),
-        ),
-        Gap(6.h),
-        Text(
-          'O3: ${_airPollutionCubit.airEntity.o3} ${AppUnits.contamitantUnit}',
-          style: TextStyle(
-              color: Utils.getBackgroundColor(
-                  'O3',
-                  convertConcentrationToDouble(
-                      _airPollutionCubit.airEntity.o3)),
-              fontWeight: FontWeight.w400,
-              fontSize: 18.w),
-        ),
-        Gap(6.h),
-        Text(
-          'CO: ${_airPollutionCubit.airEntity.co} ${AppUnits.contamitantUnit}',
-          style: TextStyle(
-              color: Utils.getBackgroundColor(
-                  'CO',
-                  convertConcentrationToDouble(
-                      _airPollutionCubit.airEntity.co)),
-              fontWeight: FontWeight.w400,
-              fontSize: 18.w),
-        ),
-        Gap(10.h),
-      ],
-    );
-  }
-
-  Widget _buildLocationName() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          Icons.location_on_outlined,
-          size: 4.w,
-          color: Colors.white,
-        ),
-        Gap(6.w),
-        Flexible(
-          child: Text(
-              '${_airPollutionCubit.address.pronvice}, ${_airPollutionCubit.address.country}',
-              style: TextStyle(
-                  fontSize: 4.w,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white),
-              overflow: TextOverflow.ellipsis),
-        ),
-      ],
     );
   }
 

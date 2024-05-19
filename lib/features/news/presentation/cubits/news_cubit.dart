@@ -20,6 +20,7 @@ class NewsCubit extends Cubit<NewsState> {
     final connect = await Connectivity().checkConnectivity();
 
     if (connect == ConnectivityResult.none) {
+      await Future.delayed(const Duration(milliseconds: 750));
       emit(const NewsFailed(errorMessage: 'Lost Internet connection'));
       return;
     }

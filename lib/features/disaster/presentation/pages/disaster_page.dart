@@ -7,6 +7,7 @@ import 'package:envi_metrix/injector/injector.dart';
 import 'package:envi_metrix/services/location/default_location.dart';
 import 'package:envi_metrix/services/location/user_location.dart';
 import 'package:envi_metrix/utils/utils.dart';
+import 'package:envi_metrix/widgets/disaster_symbol_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,20 +35,6 @@ class _DisasterPageState extends State<DisasterPage> {
 
   bool hasDisasterSelected = false;
 
-  Map<String, String> listSymbol = {
-    'drought': 'Drought',
-    'dustHaze': 'Dust and haze',
-    'earthquakes': 'Earthquake',
-    'floods': 'Flood',
-    'landslides': 'Landslide',
-    'seaLakeIce': 'Sea and Lake Ice',
-    'severeStorms': 'Severe Storm',
-    'snow': 'Snow',
-    'tempExtremes': 'High Temperature',
-    'volcanoes': 'Volcano',
-    'wildfires': 'Wildfire'
-  };
-
   bool isDisastersMap = true;
   bool isAirQualityMap = false;
 
@@ -55,19 +42,15 @@ class _DisasterPageState extends State<DisasterPage> {
   void initState() {
     super.initState();
 
-    initDisasterData();
+    disasterCubit = Injector.instance();
+
+    disasterCubit.getDisaster();
   }
 
   @override
   void dispose() {
     mapController.dispose();
     super.dispose();
-  }
-
-  Future<void> initDisasterData() async {
-    disasterCubit = Injector.instance();
-
-    disasterCubit.getDisaster();
   }
 
   @override
@@ -81,9 +64,67 @@ class _DisasterPageState extends State<DisasterPage> {
           } else if (state is DisasterSuccess) {
             return _buildMap(state);
           } else {
-            return Container();
+            return _buildMapErrorContent();
           }
         },
+      ),
+    );
+  }
+
+  Widget _buildMapErrorContent() {
+    return Center(
+      child: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+        child: Column(
+          children: [
+            ColorFiltered(
+              colorFilter:
+                  const ColorFilter.mode(Colors.green, BlendMode.srcIn),
+              child: Image.asset('./assets/icons/map_error_icon.png',
+                  width: 85.w, height: 85.w),
+            ),
+            Gap(5.h),
+            Text(
+              'Cannot load map data',
+              style: TextStyle(
+                  fontSize: 18.w,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.green),
+            ),
+            Text(
+              'Check your Internet connection',
+              style: TextStyle(
+                  fontSize: 15.w,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.green),
+            ),
+            Gap(10.h),
+            GestureDetector(
+              onTap: () => disasterCubit.getDisaster(),
+              child: Container(
+                width: 120.w,
+                height: 35.w,
+                decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(30)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.refresh,
+                      color: Colors.white,
+                      size: 22.w,
+                    ),
+                    Gap(6.w),
+                    DefaultTextStyle(
+                        style: TextStyle(color: Colors.white, fontSize: 20.w),
+                        child: const Text('Reload'))
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -172,7 +213,7 @@ class _DisasterPageState extends State<DisasterPage> {
                     child: Padding(
                       padding: const EdgeInsets.all(3),
                       child: IconButton(
-                          onPressed: () => _showListDisaster(context: context),
+                          onPressed: () => _showListDisaster(),
                           icon: Icon(
                             Icons.list,
                             color: AppColors.whiteIcon,
@@ -383,98 +424,11 @@ class _DisasterPageState extends State<DisasterPage> {
     }
   }
 
-  void _showListDisaster({required BuildContext context}) {
-    Utils.showAnimationDialog(
+  void _showListDisaster() {
+    showDialog(
+        barrierColor: Colors.grey.withOpacity(0.5),
+        barrierDismissible: true,
         context: context,
-        begin: const Offset(1.0, 0.0),
-        end: const Offset(0.0, 0.0),
-        child: _buildDisasterListSymbol());
-  }
-
-  Widget _buildDisasterListSymbol() {
-    return Container(
-      decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(10)),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Gap(10.h),
-          Row(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 50.w),
-                child: Text(
-                  'Disaster symbols',
-                  style: TextStyle(
-                      fontSize: 20.w,
-                      fontWeight: FontWeight.w400,
-                      color: AppColors.textDefault),
-                ),
-              ),
-              Gap(10.w),
-              GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: Icon(
-                  Icons.clear_outlined,
-                  color: Colors.black,
-                  size: 22.w,
-                ),
-              )
-            ],
-          ),
-          Gap(20.h),
-          Padding(
-            padding: EdgeInsets.only(left: 20.w, right: 20.w),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [_buildListSymbol(), Gap(15.w), _buildListName()],
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildListSymbol() {
-    List<Widget> symbols = [];
-
-    for (var symbol in listSymbol.keys) {
-      symbols.add(
-        Image.asset(
-          './assets/icons/${symbol}_icon.png',
-          width: 33.w,
-          height: 33.w,
-        ),
-      );
-
-      symbols.add(Gap(16.5.h));
-    }
-
-    return Column(
-      children: [...symbols],
-    );
-  }
-
-  Widget _buildListName() {
-    List<Widget> names = [];
-
-    for (var name in listSymbol.values) {
-      name == 'Drought' ? names.add(Gap(8.h)) : names.add(const SizedBox());
-      names.add(Text(
-        name,
-        style: TextStyle(
-            color: AppColors.textDefault,
-            fontSize: 16.2.w,
-            fontWeight: FontWeight.w400),
-      ));
-      names.add(
-        Gap(25.5.h),
-      );
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [...names],
-    );
+        builder: (context) => const DisasterSymbolDialog());
   }
 }

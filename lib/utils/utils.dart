@@ -120,6 +120,17 @@ class Utils {
     }
   }
 
+  static void showShareErrorSnackbar(
+      BuildContext context, InternetState internetState) {
+    InternetSnackbar.showInternetNotifiSnackbar(
+        context: context,
+        message: 'Lost Internet connection',
+        icon: Icon(Icons.wifi_off, size: 24.w, color: AppColors.snackbarIcon),
+        backgroundColor: Colors.red,
+        duration: const Duration(milliseconds: 1500),
+        displayCloseIcon: true);
+  }
+
   static void showArSelectionDialog(
       {required BuildContext context, required ArSelectionDialog child}) {
     showGeneralDialog(

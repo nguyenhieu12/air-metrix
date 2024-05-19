@@ -21,6 +21,7 @@ import 'package:envi_metrix/features/news/domain/use_cases/get_news.dart';
 import 'package:envi_metrix/features/news/presentation/cubits/news_cubit.dart';
 import 'package:envi_metrix/features/watchlist/cubits/watchlist_cubit.dart';
 import 'package:envi_metrix/injector/injector.dart';
+import 'package:envi_metrix/services/location_search_bar/location_search_bar_cubit.dart';
 
 class BlocModule {
   BlocModule._();
@@ -50,6 +51,7 @@ class BlocModule {
       ..registerSingleton<DashboardCubit>(DashboardCubit())
       ..registerSingleton<ChatbotCubit>(ChatbotCubit())
       ..registerSingleton<InternetCubit>(InternetCubit())
+      ..registerSingleton<LocationSearchBarCubit>(LocationSearchBarCubit())
       ..registerLazySingleton<NewsCubit>(() => NewsCubit(
           getNews: GetNews(
               newsRepository: NewsRepositoryImpl(

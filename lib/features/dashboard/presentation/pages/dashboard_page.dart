@@ -1,22 +1,18 @@
-import 'package:envi_metrix/core/connection/internet_cubit.dart';
 import 'package:envi_metrix/core/themes/filter_app_colors.dart';
 import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_pollution_cubit.dart';
 import 'package:envi_metrix/features/dashboard/presentation/cubits/dashboard_cubit.dart';
 import 'package:envi_metrix/features/disaster/presentation/cubits/disaster_cubit.dart';
 import 'package:envi_metrix/injector/injector.dart';
-import 'package:envi_metrix/services/location/default_location.dart';
 import 'package:envi_metrix/services/location/user_location.dart';
 import 'package:envi_metrix/utils/global_variables.dart';
 import 'package:envi_metrix/utils/pollutant_message.dart';
 import 'package:envi_metrix/utils/styles.dart';
-import 'package:envi_metrix/utils/utils.dart';
 import 'package:envi_metrix/widgets/location_search_bar.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:screenshot/screenshot.dart';
 
@@ -56,8 +52,6 @@ class _DashboardPageState extends State<DashboardPage> {
     airPollutionCubit = Injector.instance();
     disasterCubit = Injector.instance();
 
-    // getDashboardData();
-
     dashboardCubit.getDashboardInitData();
   }
 
@@ -65,16 +59,7 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: BlocConsumer<InternetCubit, InternetState>(
-          listenWhen: (previous, current) =>
-              current is InternetConnected || current is InternetDisconnected,
-          listener: (context, state) {
-            Utils.showInternetNotifySnackbar(context, state);
-          },
-          builder: (context, state) {
-            return _buildDashboardContent();
-          },
-        ),
+        body: _buildDashboardContent(),
       ),
     );
   }
@@ -89,13 +74,13 @@ class _DashboardPageState extends State<DashboardPage> {
             Text(
               'Loading air data',
               style: TextStyle(
-                  color: Colors.black,
+                  color: Colors.blue,
                   fontSize: 22.w,
                   fontWeight: FontWeight.w400),
             ),
             Gap(10.h),
             LoadingAnimationWidget.fourRotatingDots(
-                color: Colors.green, size: 60.w)
+                color: Colors.blue, size: 60.w)
           ],
         ),
       ),
@@ -111,13 +96,13 @@ class _DashboardPageState extends State<DashboardPage> {
             Text(
               'Loading disasters data',
               style: TextStyle(
-                  color: Colors.black,
+                  color: Colors.orange,
                   fontSize: 22.w,
                   fontWeight: FontWeight.w400),
             ),
             Gap(10.h),
             LoadingAnimationWidget.threeArchedCircle(
-                color: Colors.red, size: 60.w)
+                color: Colors.orange, size: 60.w)
           ],
         ),
       ),
@@ -125,17 +110,20 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _buildDashboardContent() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Gap(20.h),
-          LocationSearchBar(airPollutionCubit: airPollutionCubit),
-          Gap(10.h),
-          _buildLocalInformation(),
-          Gap(10.h),
-          _buildGlobalInformation()
-        ],
+    return RefreshIndicator(
+      onRefresh: () => dashboardCubit.getDashboardInitData(),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Gap(20.h),
+            LocationSearchBar(airPollutionCubit: airPollutionCubit),
+            Gap(10.h),
+            _buildLocalInformation(),
+            Gap(10.h),
+            _buildGlobalInformation()
+          ],
+        ),
       ),
     );
   }
@@ -149,7 +137,7 @@ class _DashboardPageState extends State<DashboardPage> {
           } else if (state is AirPollutionSuccess) {
             return _buildAirInfo(state);
           } else {
-            return _buildErrorContent();
+            return _buildAirErrorContent();
           }
         });
   }
@@ -239,18 +227,6 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  // Future<void> getDashboardData() async {
-  //   if (await userLocation.isAccepted()) {
-  //     Position currentPosition = await Utils.getUserLocation();
-
-  //     dashboardCubit.getDashboardInitData(
-  //         currentPosition.latitude, currentPosition.longitude);
-  //   } else {
-  //     dashboardCubit.getDashboardInitData(
-  //         DefaultLocation.lat, DefaultLocation.long);
-  //   }
-  // }
-
   Widget _buildWeatherComponent(
       {required String name,
       required dynamic value,
@@ -303,14 +279,105 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  Widget _buildErrorContent() {
-    return Expanded(
-      child: Center(
-        child: Text(
-          'Cannot load data',
-          style: TextStyle(
-              fontSize: 18.w, fontWeight: FontWeight.w400, color: Colors.black),
-        ),
+  Widget _buildAirErrorContent() {
+    return Center(
+      child: Column(
+        children: [
+          Gap(50.h),
+          Image.asset('./assets/icons/air_error_icon.png',
+              width: 75.w, height: 75.w),
+          Gap(5.h),
+          Text(
+            'Cannot load air quality data',
+            style: TextStyle(
+                fontSize: 19.w,
+                fontWeight: FontWeight.w400,
+                color: Colors.blue),
+          ),
+          Text(
+            'Check your Internet connection',
+            style: TextStyle(
+                fontSize: 15.w,
+                fontWeight: FontWeight.w400,
+                color: Colors.blue),
+          ),
+          Gap(10.h),
+          GestureDetector(
+            onTap: () => dashboardCubit.getAirData(),
+            child: Container(
+              width: 120.w,
+              height: 35.w,
+              decoration: BoxDecoration(
+                  color: Colors.blue, borderRadius: BorderRadius.circular(30)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.refresh,
+                    color: Colors.white,
+                    size: 22.w,
+                  ),
+                  Gap(6.w),
+                  DefaultTextStyle(
+                      style: TextStyle(color: Colors.white, fontSize: 20.w),
+                      child: const Text('Reload'))
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDisasterErrorContent() {
+    return Center(
+      child: Column(
+        children: [
+          Gap(100.h),
+          Image.asset('./assets/icons/disaster_error_icon.png',
+              width: 85.w, height: 85.w),
+          Gap(5.h),
+          Text(
+            'Cannot load disaster data',
+            style: TextStyle(
+                fontSize: 19.w,
+                fontWeight: FontWeight.w400,
+                color: Colors.orange),
+          ),
+          Text(
+            'Check your Internet connection',
+            style: TextStyle(
+                fontSize: 15.w,
+                fontWeight: FontWeight.w400,
+                color: Colors.orange),
+          ),
+          Gap(10.h),
+          GestureDetector(
+            onTap: () => dashboardCubit.getDisastersData(),
+            child: Container(
+              width: 120.w,
+              height: 35.w,
+              decoration: BoxDecoration(
+                  color: Colors.orange,
+                  borderRadius: BorderRadius.circular(30)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.refresh,
+                    color: Colors.white,
+                    size: 22.w,
+                  ),
+                  Gap(6.w),
+                  DefaultTextStyle(
+                      style: TextStyle(color: Colors.white, fontSize: 20.w),
+                      child: const Text('Reload'))
+                ],
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
@@ -349,28 +416,33 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget _buildGlobalInformation() {
     return BlocBuilder<DisasterCubit, DisasterState>(
         bloc: dashboardCubit.disasterCubit,
+        buildWhen: (previous, current) => previous != current,
         builder: ((context, state) {
           if (state is DisasterLoading) {
             return _buildDisasterLoading();
           } else if (state is DisasterSuccess) {
-            return Padding(
-              padding: EdgeInsets.only(left: 10.w, right: 10.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('Disasters', style: headerTextStyle),
-                  Gap(6.h),
-                  _buildDisasterQuantity(),
-                  Gap(12.h),
-                  _buildDisastersList(),
-                ],
-              ),
-            );
+            return _buildGlobalDisasterContent();
           } else {
-            return Container();
+            return _buildDisasterErrorContent();
           }
         }));
+  }
+
+  Widget _buildGlobalDisasterContent() {
+    return Padding(
+      padding: EdgeInsets.only(left: 10.w, right: 10.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('Disasters', style: headerTextStyle),
+          Gap(6.h),
+          _buildDisasterQuantity(),
+          Gap(12.h),
+          _buildDisastersList(),
+        ],
+      ),
+    );
   }
 
   Widget _buildDisasterQuantity() {

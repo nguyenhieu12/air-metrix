@@ -21,7 +21,7 @@ class DisasterCubit extends Cubit<DisasterState> {
 
   List<Color> disastersChartColor = [];
 
-  DisasterCubit({required this.getCurrentDisaster}) : super(DisasterInitial());
+  DisasterCubit({required this.getCurrentDisaster}) : super(DisasterLoading());
 
   Future<void> getDisaster() async {
     emit(DisasterLoading());
@@ -29,6 +29,7 @@ class DisasterCubit extends Cubit<DisasterState> {
     final connect = await Connectivity().checkConnectivity();
 
     if (connect == ConnectivityResult.none) {
+      await Future.delayed(const Duration(milliseconds: 750));
       emit(const DisasterFailed(errorMessage: 'Lost Internet connection'));
       return;
     }

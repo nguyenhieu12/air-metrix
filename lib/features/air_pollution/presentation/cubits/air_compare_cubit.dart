@@ -27,12 +27,15 @@ class AirCompareCubit extends Cubit<AirCompareState> {
 
   final GetAirPollutionInformation getCurrentAirPollution;
 
+  String currentComparedLocation = '';
+
   Future<void> fetchAirPollutionData(double lat, double long) async {
     emit(AirCompareLoading());
 
     final connect = await Connectivity().checkConnectivity();
 
     if (connect == ConnectivityResult.none) {
+      Future.delayed(const Duration(milliseconds: 700));
       emit(AirCompareFailed());
       return;
     }

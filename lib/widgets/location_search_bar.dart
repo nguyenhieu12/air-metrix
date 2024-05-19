@@ -5,6 +5,7 @@ import 'package:envi_metrix/features/app/cubits/app_cubit.dart';
 import 'package:envi_metrix/features/watchlist/cubits/watchlist_cubit.dart';
 import 'package:envi_metrix/injector/injector.dart';
 import 'package:envi_metrix/services/location/user_location.dart';
+import 'package:envi_metrix/services/location_search_bar/location_search_bar_cubit.dart';
 import 'package:envi_metrix/utils/pollutant_message.dart';
 import 'package:envi_metrix/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class LocationSearchBar extends StatefulWidget {
 class _LocationSearchBarState extends State<LocationSearchBar> {
   late AppCubit _cubit;
   late WatchlistCubit _watchlistCubit;
+  late LocationSearchBarCubit _locationSearchBarCubit;
 
   final TextEditingController _searchController = TextEditingController();
   final TextEditingController _latController = TextEditingController();
@@ -52,6 +54,8 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
 
     _watchlistCubit = Injector.instance();
 
+    _locationSearchBarCubit = Injector.instance();
+
     _cubit.initCityData();
   }
 
@@ -63,71 +67,86 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: Padding(
-        padding: EdgeInsets.only(left: 10.w),
-        child: Row(
-          children: [
-            SizedBox(
-                width: 255.w,
-                child: Autocomplete<String>(
-                  optionsBuilder: (TextEditingValue textEditingValue) {
-                    if (textEditingValue.text == '') {
-                      return const Iterable<String>.empty();
-                    }
+    return BlocBuilder<LocationSearchBarCubit, LocationSearchBarState>(
+      bloc: _locationSearchBarCubit,
+      buildWhen: (previous, current) => previous != current,
+      builder: (context, state) {
+        return Material(
+          color: Colors.transparent,
+          child: Padding(
+            padding: EdgeInsets.only(left: 10.w),
+            child: Row(
+              children: [
+                SizedBox(
+                    width: 255.w,
+                    child: Autocomplete<String>(
+                      optionsBuilder: (TextEditingValue textEditingValue) {
+                        if (textEditingValue.text == '') {
+                          return const Iterable<String>.empty();
+                        }
 
-                    return _cubit.cityNames.where((element) {
-                      return element.contains(
-                          capitalizeFirstLetter(textEditingValue.text));
-                    }).toSet();
-                  },
-                  onSelected: (selectedText) {
-                    FocusManager.instance.primaryFocus?.unfocus();
+                        return _cubit.cityNames.where((element) {
+                          return element.contains(
+                              capitalizeFirstLetter(textEditingValue.text));
+                        }).toSet();
+                      },
+                      onSelected: (selectedText) {
+                        FocusManager.instance.primaryFocus?.unfocus();
 
-                    _handleSearchByName(selectedText);
-                  },
+                        _locationSearchBarCubit.handleSearchByName(
+                            widget.airPollutionCubit, _cubit, selectedText);
+                      },
+                      fieldViewBuilder:
+                          (context, controller, focusNode, onEditingComplete) {
+                        controller.text =
+                            widget.airPollutionCubit.currentLocationName;
 
-                  // optionsViewBuilder: ((context, onSelected, options) {
-                  //   retur
-                  // }),
-                  fieldViewBuilder:
-                      (context, controller, focusNode, onEditingComplete) {
-                    return TextFormField(
-                      controller: controller,
-                      focusNode: focusNode,
-                      cursorColor: AppColors.searchBarCursor,
-                      style: TextStyle(fontSize: 18.w),
-                      cursorHeight: 22.h,
-                      decoration: InputDecoration(
-                          contentPadding: EdgeInsets.zero,
-                          hintText: 'Search',
-                          hintStyle: TextStyle(
-                            fontSize: 19.w,
-                          ),
-                          prefixIcon: Padding(
-                            padding: EdgeInsets.only(left: 5.w),
-                            child: Icon(
-                              Icons.search,
-                              size: 25.w,
-                            ),
-                          ),
-                          suffixIcon: _buildSuffixIcon(context),
-                          enabledBorder:
-                              _getBorder(AppColors.searchBarBorder, 20),
-                          focusedBorder:
-                              _getBorder(AppColors.searchBarBorderFocused, 20)),
-                      onTapOutside: (event) => focusNode.unfocus(),
-                    );
-                  },
-                )),
-            Gap(6.w),
-            _buildBookmarkIcon(),
-            Gap(6.w),
-            _buildGetLocationIcon(),
-          ],
-        ),
-      ),
+                        return TextFormField(
+                          controller: controller,
+                          focusNode: focusNode,
+                          cursorColor: AppColors.searchBarCursor,
+                          style: TextStyle(fontSize: 18.w),
+                          cursorHeight: 22.h,
+                          decoration: InputDecoration(
+                              contentPadding: EdgeInsets.zero,
+                              hintText: 'Search',
+                              hintStyle: TextStyle(
+                                fontSize: 19.w,
+                              ),
+                              prefixIcon: Padding(
+                                padding: EdgeInsets.only(left: 5.w),
+                                child: Icon(
+                                  Icons.search,
+                                  size: 25.w,
+                                ),
+                              ),
+                              suffixIcon: Padding(
+                                padding: EdgeInsets.only(right: 5.w),
+                                child: GestureDetector(
+                                  onTap: () => controller.text = '',
+                                  child: Icon(
+                                    Icons.highlight_remove,
+                                    size: 25.w,
+                                  ),
+                                ),
+                              ),
+                              enabledBorder:
+                                  _getBorder(AppColors.searchBarBorder, 20),
+                              focusedBorder: _getBorder(
+                                  AppColors.searchBarBorderFocused, 20)),
+                          onTapOutside: (event) => focusNode.unfocus(),
+                        );
+                      },
+                    )),
+                Gap(6.w),
+                _buildBookmarkIcon(),
+                Gap(6.w),
+                _buildGetLocationIcon(),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -228,30 +247,6 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
         ),
       ),
     );
-  }
-
-  Widget _buildSuffixIcon(BuildContext context) {
-    return isFocused
-        ? Padding(
-            padding: EdgeInsets.only(right: 10.w),
-            child: GestureDetector(
-              onTap: () => _searchController.clear(),
-              child: Icon(
-                Icons.clear,
-                size: 25.w,
-              ),
-            ),
-          )
-        : Padding(
-            padding: EdgeInsets.only(right: 10.w),
-            child: GestureDetector(
-              onTap: () => showCoordinatesInput(context),
-              child: Icon(
-                Icons.add_location_alt_outlined,
-                size: 25.w,
-              ),
-            ),
-          );
   }
 
   void showCoordinatesInput(BuildContext context) {
@@ -422,17 +417,6 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
       widget.airPollutionCubit.fetchAirPollutionData(
           currentPosition.latitude, currentPosition.longitude, false);
     }
-  }
-
-  void _handleSearchByName(String selectedText) {
-    widget.airPollutionCubit.locationName = selectedText;
-
-    Map<String, dynamic> coordinatesData = _cubit.cityData[selectedText];
-
-    widget.airPollutionCubit.fetchAirPollutionData(
-        double.parse(coordinatesData['lat']),
-        double.parse(coordinatesData['lon']),
-        false);
   }
 
   void showAddWatchlistSnackbar(

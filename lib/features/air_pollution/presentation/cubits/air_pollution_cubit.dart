@@ -31,7 +31,7 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
   double currentLong = DefaultLocation.long;
   UserLocation userLocation = UserLocation();
 
-  String locationName = '';
+  String currentLocationName = '';
 
   late AirPollutionEntity airEntity;
   late Address address;
@@ -48,6 +48,9 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
     final connect = await Connectivity().checkConnectivity();
 
     if (connect == ConnectivityResult.none) {
+      currentLat = lat;
+      currentLong = long;
+      await Future.delayed(const Duration(milliseconds: 650));
       emit(const AirPollutionFailed(errorMessage: 'Lost Internet connection'));
       return;
     }
@@ -65,7 +68,8 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
     }
 
     final Either<Failure, AirPollutionEntity> airPollutionData =
-        await getCurrentAirPollution.getCurrentAirPollution(currentLat, currentLong);
+        await getCurrentAirPollution.getCurrentAirPollution(
+            currentLat, currentLong);
 
     final Either<Failure, WeatherEntity> weatherData =
         await getCurrentWeather.getCurrentWeather(currentLat, currentLong);
@@ -95,8 +99,6 @@ class AirPollutionCubit extends Cubit<AirPollutionState> {
               pronvice: first.administrativeArea ?? '',
               district: first.subAdministrativeArea ?? '',
               street: first.street ?? '');
-
-          // setNewLatLong(lat, long);
 
           emit(AirPollutionSuccess());
         });

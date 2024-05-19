@@ -47,6 +47,7 @@ class _AirCompareDialogState extends State<AirCompareDialog> {
             color: Colors.white, borderRadius: BorderRadius.circular(10)),
         child: BlocBuilder<AirCompareCubit, AirCompareState>(
             bloc: _cubit,
+            buildWhen: (previous, current) => previous != current,
             builder: (context, state) {
               return _getCompareDialogContent(state);
             }),
@@ -63,7 +64,9 @@ class _AirCompareDialogState extends State<AirCompareDialog> {
             BlocProvider.value(
               value: _appCubit,
               child: AirCompareSearchBar(
-                onSelected: (name) => _cubit.searchByName(name),
+                onSelected: (name) {
+                  _cubit.searchByName(name);
+                },
               ),
             ),
             _buildInitContent()
@@ -76,8 +79,9 @@ class _AirCompareDialogState extends State<AirCompareDialog> {
           children: [
             BlocProvider.value(
                 value: _appCubit,
-                child: AirCompareSearchBar(
-                    onSelected: (name) => _cubit.searchByName(name))),
+                child: AirCompareSearchBar(onSelected: (name) {
+                  _cubit.searchByName(name);
+                })),
             Gap(12.h),
             _buildLoading()
           ],
@@ -89,8 +93,9 @@ class _AirCompareDialogState extends State<AirCompareDialog> {
           children: [
             BlocProvider.value(
                 value: _appCubit,
-                child: AirCompareSearchBar(
-                    onSelected: (name) => _cubit.searchByName(name))),
+                child: AirCompareSearchBar(onSelected: (name) {
+                  _cubit.searchByName(name);
+                })),
             Gap(12.h),
             _buildCompareContent()
           ],
@@ -102,8 +107,9 @@ class _AirCompareDialogState extends State<AirCompareDialog> {
           children: [
             BlocProvider.value(
                 value: _appCubit,
-                child: AirCompareSearchBar(
-                    onSelected: (name) => _cubit.searchByName(name))),
+                child: AirCompareSearchBar(onSelected: (name) {
+                  _cubit.searchByName(name);
+                })),
             Gap(12.h),
             _buildError()
           ],
@@ -135,9 +141,22 @@ class _AirCompareDialogState extends State<AirCompareDialog> {
   }
 
   Widget _buildError() {
-    return const Expanded(
+    return Expanded(
         child: Center(
-      child: Text('Cannot load data'),
+      child: Column(
+        children: [
+          Gap(120.h),
+          Text(
+            'Cannot load data',
+            style: TextStyle(fontSize: 19.w),
+          ),
+          Text(
+            'Check your Internet connection',
+            style: TextStyle(fontSize: 15.w),
+          ),
+          Gap(6.h),
+        ],
+      ),
     ));
   }
 

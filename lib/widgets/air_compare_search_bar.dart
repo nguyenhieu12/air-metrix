@@ -1,12 +1,15 @@
 import 'package:envi_metrix/core/themes/app_colors.dart';
+import 'package:envi_metrix/features/air_pollution/presentation/cubits/air_compare_cubit.dart';
 import 'package:envi_metrix/features/app/cubits/app_cubit.dart';
+import 'package:envi_metrix/injector/injector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 
 class AirCompareSearchBar extends StatefulWidget {
-  const AirCompareSearchBar({super.key, this.onSelected});
+  const AirCompareSearchBar(
+      {super.key, this.onSelected});
 
   final Function(String)? onSelected;
 
@@ -16,10 +19,13 @@ class AirCompareSearchBar extends StatefulWidget {
 
 class _AirCompareSearchBarState extends State<AirCompareSearchBar> {
   late AppCubit _appCubit;
+  late AirCompareCubit _airCompareCubit;
 
   @override
   void initState() {
     super.initState();
+
+    _airCompareCubit = Injector.instance();
 
     _appCubit = context.read<AppCubit>();
   }
@@ -34,11 +40,7 @@ class _AirCompareSearchBarState extends State<AirCompareSearchBar> {
           children: [
             Gap(10.h),
             Row(
-              children: [
-                _buildSearchBar(),
-                Gap(20.w),
-                _buildCloseIcon()
-              ],
+              children: [_buildSearchBar(), Gap(20.w), _buildCloseIcon()],
             ),
           ],
         ),
@@ -49,7 +51,11 @@ class _AirCompareSearchBarState extends State<AirCompareSearchBar> {
   Widget _buildCloseIcon() {
     return GestureDetector(
       onTap: () => Navigator.of(context).pop(),
-      child: Icon(Icons.clear, size: 28.w, color: Colors.black,),
+      child: Icon(
+        Icons.clear,
+        size: 28.w,
+        color: Colors.black,
+      ),
     );
   }
 
@@ -64,18 +70,19 @@ class _AirCompareSearchBarState extends State<AirCompareSearchBar> {
 
             return _appCubit.cityNames.where((element) {
               return element.contains(textEditingValue.text);
-            });
+            }).toSet();
           },
           onSelected: (selectedText) {
             FocusManager.instance.primaryFocus?.unfocus();
+
+            _airCompareCubit.currentComparedLocation = selectedText;
+
             widget.onSelected?.call(selectedText);
           },
-
-          // optionsViewBuilder: ((context, onSelected, options) {
-          //   retur
-          // }),
           fieldViewBuilder:
               (context, controller, focusNode, onEditingComplete) {
+            controller.text = _airCompareCubit.currentComparedLocation;
+
             return TextFormField(
               controller: controller,
               focusNode: focusNode,
@@ -95,7 +102,13 @@ class _AirCompareSearchBarState extends State<AirCompareSearchBar> {
                       size: 24.w,
                     ),
                   ),
-                  // suffixIcon: _buildSuffixIcon(context),
+                  suffixIcon: Padding(
+                    padding: EdgeInsets.only(right: 5.w),
+                    child: GestureDetector(
+                      onTap: () => controller.text = '',
+                      child: Icon(Icons.highlight_remove, size: 24.w,),
+                    ),
+                  ),
                   enabledBorder: _getBorder(AppColors.searchBarBorder, 10),
                   focusedBorder:
                       _getBorder(AppColors.searchBarBorderFocused, 10)),
@@ -112,7 +125,5 @@ class _AirCompareSearchBarState extends State<AirCompareSearchBar> {
     );
   }
 
-  // Widget _buildSuffixIcon(BuildContext context) {
-
-  // }
+  
 }

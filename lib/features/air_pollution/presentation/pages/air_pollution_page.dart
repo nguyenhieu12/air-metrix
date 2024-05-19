@@ -57,79 +57,83 @@ class _AirPollutionPageState extends State<AirPollutionPage> {
     super.initState();
 
     airPollutionCubit = Injector.instance();
-
-    // initializeAirPollution();
-  }
-
-  Future<void> initializeAirPollution() async {
-    airPollutionCubit = Injector.instance();
-
-    // airPollutionCubit.fetchAirPollutionData(
-    //     airPollutionCubit.currentLat, airPollutionCubit.currentLong);
-
-    // if (await userLocation.isAccepted()) {
-    //   Position currentPosition = await Utils.getUserLocation();
-
-    //   currentLat = currentPosition.latitude;
-    //   currentLong = currentPosition.longitude;
-
-    //   airPollutionCubit.fetchAirPollutionData(
-    //       DefaultLocation.lat, DefaultLocation.long);
-    // } else {
-    //   airPollutionCubit.fetchAirPollutionData(
-    //       DefaultLocation.lat, DefaultLocation.long);
-    // }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<InternetCubit, InternetState>(
-        builder: ((context, state) {
-      return BlocProvider(
-        create: (context) => airPollutionCubit,
-        child: Scaffold(
-          body: BlocProvider.value(
-            value: Injector.instance<AirPollutionCubit>(),
-            child: BlocBuilder<AirPollutionCubit, AirPollutionState>(
-                builder: (context, state) {
-              if (state is AirPollutionLoading) {
-                return _buildLoading();
-              } else if (state is AirPollutionSuccess) {
-                return _buildAirPollutionContent();
-              } else {
-                return _buildErrorContent();
-              }
-            }),
-          ),
+    return RefreshIndicator(
+      onRefresh: () => airPollutionCubit.fetchAirPollutionData(
+          airPollutionCubit.currentLat, airPollutionCubit.currentLong, false),
+      child: Scaffold(
+        body: BlocProvider.value(
+          value: Injector.instance<AirPollutionCubit>(),
+          child: BlocBuilder<AirPollutionCubit, AirPollutionState>(
+              builder: (context, state) {
+            if (state is AirPollutionLoading) {
+              return _buildLoading();
+            } else if (state is AirPollutionSuccess) {
+              return _buildAirPollutionContent();
+            } else {
+              return _buildErrorContent();
+            }
+          }),
         ),
-      );
-    }), listener: ((context, state) {
-      Utils.showInternetNotifySnackbar(context, state);
-    }));
+      ),
+    );
   }
 
   Widget _buildErrorContent() {
-    return Expanded(
-      child: Center(
-        child: GestureDetector(
-          onTap: () => context
-              .read<AirPollutionCubit>()
-              .handleReloadCurrentAirPollution(currentLat, currentLong),
-          child: Row(children: [
-            Icon(
-              Icons.refresh,
-              color: AppColors.reload,
-              size: 30.w,
-            ),
-            Gap(10.w),
+    return Center(
+      child: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+        child: Column(
+          children: [
+            Image.asset('./assets/icons/air_error_icon.png',
+                width: 85.w, height: 85.w),
+            Gap(5.h),
             Text(
-              'Reload',
+              'Cannot load air quality data',
               style: TextStyle(
-                  fontSize: 20.w,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.reload),
+                  fontSize: 18.w,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.blue),
+            ),
+            Text(
+              'Check your Internet connection',
+              style: TextStyle(
+                  fontSize: 15.w,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.blue),
+            ),
+            Gap(10.h),
+            GestureDetector(
+              onTap: () => airPollutionCubit.fetchAirPollutionData(
+                  airPollutionCubit.currentLat,
+                  airPollutionCubit.currentLong,
+                  false),
+              child: Container(
+                width: 120.w,
+                height: 35.w,
+                decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(30)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.refresh,
+                      color: Colors.white,
+                      size: 22.w,
+                    ),
+                    Gap(6.w),
+                    DefaultTextStyle(
+                        style: TextStyle(color: Colors.white, fontSize: 20.w),
+                        child: const Text('Reload'))
+                  ],
+                ),
+              ),
             )
-          ]),
+          ],
         ),
       ),
     );

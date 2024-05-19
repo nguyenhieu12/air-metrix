@@ -11,16 +11,7 @@ final class DashboardInitial extends DashboardState {}
 
 final class DashboardLoading extends DashboardState {}
 
-final class DashboardSuccess extends DashboardState {
-  final AirPollutionEntity airPollutionEntity;
-  final List<DisasterEntity> listDisasterEntity;
-  final Address address;
-
-  const DashboardSuccess(
-      {required this.airPollutionEntity,
-      required this.listDisasterEntity,
-      required this.address});
-}
+final class DashboardSuccess extends DashboardState {}
 
 final class DashboardFailed extends DashboardState {
   final String errorMessage;
